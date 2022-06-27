@@ -1,7 +1,9 @@
 :root {
-  /* Using html color names here only for showcase,
-   * you shouldn't be using color names in real projects. */
-  --heading-color-1: gold;
-  --heading-color-2: darksalmon;
-  --heading-color-3: powderblue;
+  --primary-color: rgb(92 131 165);
+  --base-error-font-size: 1rem;
+  --input-error-font-size: 0.6rem;
+  --brand-font-size: 2.5rem;
+  --header-font-size: 2rem;
+  --navbar-text-color: rgb(255 255 255);
+  --navbar-hover-color: rgba(0 0 0 / 10%);
 }

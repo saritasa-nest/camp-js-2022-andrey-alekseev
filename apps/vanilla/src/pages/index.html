@@ -4,13 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./index.css" />
-    <title>Vite App</title>
+    <title>Anime</title>
   </head>
-  <body class="default-layout">
-    <h1 class="title">Main page ⚡</h1>
-    <div class="links">
-      <a href="/example/">Go to example page</a>
-    </div>
-    <script type="module" src="./index.ts"></script>
+  <body>
+    <nav class="navbar">
+      <a href="/" class="navbar__brand">
+        <img alt="" class="navbar__brand-image" src="assets/logo.png" />
+        Anime
+      </a>
+      <ul>
+        <li class="navbar__login-link"><a href="login/">Login</a></li>
+        <li class="navbar__user-dropdown-link">
+          <button class="dropdown-trigger" data-target="navbar-account-dropdown">
+            <em class="material-icons right">arrow_drop_down</em>
+          </button>
+          <ul id="navbar-account-dropdown" class="dropdown-content">
+            <li><a href="#">Profile</a></li>
+            <li><a class="logout-link" href="logout/">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <div class="container"></div>
+    <script type="module" src="./scripts/index.ts"></script>
   </body>
 </html>
