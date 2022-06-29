@@ -1,4 +1,11 @@
+@import "materialize-css";
+@import "material-icons";
+
 html {
   font-size: 20px;
   font-family: system-ui, sans-serif;
+}
+
+.align-right {
+  float: right;
 }

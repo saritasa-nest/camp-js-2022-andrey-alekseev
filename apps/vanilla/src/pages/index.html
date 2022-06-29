@@ -4,13 +4,74 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./index.css" />
-    <title>Vite App</title>
+    <title>Anime</title>
   </head>
-  <body class="default-layout">
-    <h1 class="title">Main page ⚡</h1>
-    <div class="links">
-      <a href="/example/">Go to example page</a>
+  <body>
+    <ul id="navbar-account-dropdown" class="dropdown-content">
+      <li><a href="#">Profile</a></li>
+      <li><a class="logout-link" href="logout/">Logout</a></li>
+    </ul>
+    <nav class="navbar">
+      <div class="nav-wrapper">
+        <a href="/" class="brand-logo">
+          <img alt="" class="brand-logo__image" src="./assets/logo.png" />
+          Anime
+        </a>
+        <ul class="align-right">
+          <li class="navbar__login-link"><a href="login/">Login</a></li>
+          <li class="navbar__user-dropdown-link">
+            <button
+              type="button"
+              title="Open account dropdown"
+              class="dropdown-trigger"
+              data-target="navbar-account-dropdown"
+            >
+              <em class="material-icons align-right">arrow_drop_down</em>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <p id="anime-table-desc">Here you can see anime</p>
+      <table
+        class="anime-table responsive-table highlight centered"
+        aria-label="Anime"
+        aria-describedby="anime-table-desc"
+      >
+        <thead class="anime-table__header">
+          <tr>
+            <th class="anime-table__header-column">Image</th>
+            <th
+              class="anime-table__header-column anime-table__header-column_sortable anime-table__header-column_sort anime-table__header-column_sort-asc"
+              data-sort-field="titleEng"
+            >
+              <div class="anime-table__header-text">Title</div>
+            </th>
+            <th class="anime-table__header-column">
+              <div class="anime-table__header-text">Japan Title</div>
+            </th>
+            <th
+              class="anime-table__header-column anime-table__header-column_sortable"
+              data-sort-field="airedStart"
+            >
+              <div class="anime-table__header-text">Aired Start</div>
+            </th>
+            <th class="anime-table__header-column">
+              <div class="anime-table__header-text">Type</div>
+            </th>
+            <th
+              class="anime-table__header-column anime-table__header-column_sortable"
+              data-sort-field="status"
+            >
+              <div class="anime-table__header-text">Status</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="anime-table__body"></tbody>
+      </table>
+      <div class="pagination-wrapper"></div>
     </div>
-    <script type="module" src="./index.ts"></script>
+    <script type="module" src="./scripts/index.ts"></script>
   </body>
 </html>

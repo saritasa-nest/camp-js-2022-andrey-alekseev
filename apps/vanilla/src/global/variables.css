@@ -1,7 +1,10 @@
 :root {
-  /* Using html color names here only for showcase,
-   * you shouldn't be using color names in real projects. */
-  --heading-color-1: gold;
-  --heading-color-2: darksalmon;
-  --heading-color-3: powderblue;
+  --base-color: rgb(92 131 165);
+  --base-color-light: rgb(92 131 165 / 30%);
+  --icons-font: "Material Icons", sans-serif;
+  --controls-font-size: 1.2rem;
+  --controls-icons-font-size: 1.5rem;
+  --base-inline-height: 1.333;
+  --table-header-width: 128px;
+  --table-row-image-size: 128px;
 }

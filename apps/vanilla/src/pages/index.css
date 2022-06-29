@@ -1,5 +1,80 @@
 @import url("../global/index.css");
 
-.title {
-  color: var(--heading-color-1);
+/* Anime table */
+
+.anime-table__row-image {
+  width: var(--table-row-image-size);
+  height: var(--table-row-image-size);
+  object-fit: cover;
+}
+
+.anime-table__header-column {
+  width: var(--table-header-width);
+  word-break: break-word;
+}
+
+.anime-table__header-column_sortable {
+  cursor: pointer;
+}
+
+.anime-table__header-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.anime-table__header-column_sort {
+  position: relative;
+  background-color: var(--base-color-light);
+}
+
+.anime-table__header-column_sort-asc .anime-table__header-text::before {
+  font-family: var(--icons-font);
+  content: "arrow_drop_down";
+}
+
+.anime-table__header-column_sort-desc .anime-table__header-text::before {
+  font-family: var(--icons-font);
+  content: "arrow_drop_up";
+}
+
+/* Pagination */
+
+.pagination-wrapper {
+  display: flex;
+  margin-left: auto;
+  justify-content: end;
+}
+
+.pagination-block__buttons {
+  display: flex;
+  align-items: center;
+}
+
+.pagination-block__button {
+  display: inline-block;
+  font-size: var(--controls-font-size);
+  padding-inline: 10px;
+  line-height: var(--base-inline-height);
+  background-color: unset;
+  border: unset;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.pagination-block__button:not(:disabled) {
+  cursor: pointer;
+}
+
+.pagination-block__button:focus {
+  background-color: var(--base-color-light);
+}
+
+.pagination-block__button .material-icons {
+  font-size: var(--controls-icons-font-size);
+  line-height: var(--base-inline-height);
+}
+
+.pagination-block__button_active {
+  background-color: var(--base-color-light);
 }

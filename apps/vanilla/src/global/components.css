@@ -1,28 +1,18 @@
-a,
-:link,
-.link {
-  --link-color: var(--primary-color);
-
-  color: var(--link-color);
-  text-decoration: none;
-  border-bottom: 1px solid var(--link-color);
+.navbar {
+  background-color: var(--base-color);
 }
 
-a:hover,
-:link:hover,
-.link:hover {
-  --link-color: var(--primary-light-color);
+/* Material style */
+.nav-wrapper {
+  padding-inline: 10px;
 }
 
-.links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+.brand-logo__image {
+  height: 50px;
+  width: auto;
 }
 
-.default-layout {
-  --default-layout-width: 600px;
-
-  margin: 80px auto 0;
-  max-width: var(--default-layout-width);
+.navbar__login-link,
+.navbar__user-dropdown-link {
+  display: none;
 }
