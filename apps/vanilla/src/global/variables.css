@@ -1,12 +1,18 @@
 :root {
   --base-color: rgb(92 131 165);
+  --primary-color: rgb(82 190 17);
+  --primary-text-color: rgb(65 143 20);
   --base-color-light: rgb(92 131 165 / 30%);
+  --base-box-shadow: 0 0 20px rgba(107 114 113 / 15%);
+  --base-border-radius: 5%;
   --icons-font: "Material Icons", sans-serif;
+  --small-font-size: 0.8rem;
   --controls-font-size: 1.2rem;
   --controls-icons-font-size: 1.5rem;
   --base-inline-height: 1.333;
   --table-header-width: 128px;
   --table-row-image-size: 128px;
+  --anime-image-width: 256px;
   --base-error-font-size: 1rem;
   --input-error-font-size: 0.6rem;
   --brand-font-size: 2.5rem;

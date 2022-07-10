@@ -16,8 +16,11 @@ import {
   LimitOffsetQueryMapper,
 } from '@js-camp/core/mappers/limitOffsetQuery.mapper';
 import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
+import { Anime } from '@js-camp/core/models/anime/anime';
+import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
+import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
 
-import { http } from '../../../api';
+import { http } from '..';
 
 const url = 'anime/';
 
@@ -42,6 +45,17 @@ export namespace AnimeService {
     return PaginationMapper.mapPaginationFromDto(
       data,
       AnimeBaseMapper.fromDto,
+    );
+  }
+
+  /**
+   * Get anime details.
+   * @param id Anime id.
+   */
+  export async function getDetails(id: number): Promise<Anime> {
+    const { data } = await http.get<AnimeDto>(`${url}anime/${id}/`);
+    return AnimeMapper.fromDto(
+      data,
     );
   }
 }

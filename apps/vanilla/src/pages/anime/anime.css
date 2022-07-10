@@ -1,0 +1,71 @@
+@import url("../../global/index.css");
+
+.anime {
+  display: grid;
+  box-shadow: var(--base-box-shadow);
+  grid-template-columns: 1fr 3fr;
+  padding: 10px;
+  column-gap: 10px;
+}
+
+.anime__image {
+  width: var(--anime-image-width);
+  height: auto;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.anime__content {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+/* Header styles */
+
+.anime__header {
+  display: grid;
+  grid-template-columns: 6fr 1fr;
+}
+
+.anime__status {
+  text-align: center;
+}
+
+.anime__status-text {
+  background-color: var(--primary-color);
+  border-radius: var(--base-border-radius);
+}
+
+.anime__studios-list,
+.anime__genres-list {
+  display: flex;
+  column-gap: 5px;
+  grid-column: 1 / 3;
+  margin-block-start: 0;
+  font-size: var(--small-font-size);
+}
+
+.anime__studios-list li,
+.anime__genres-list li {
+  background-color: var(--base-color-light);
+  border-radius: var(--base-border-radius);
+  padding: 5px;
+}
+
+.anime__type,
+.anime__is-aring {
+  font-weight: bold;
+}
+
+.anime__trailer {
+  width: 100%;
+  height: 100%;
+  min-height: 512px;
+}
+
+.anime__error-text {
+  text-align: center;
+  grid-column: 1 / 3;
+  color: var(--error-color);
+  align-self: center;
+}

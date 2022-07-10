@@ -22,6 +22,7 @@ export default defineConfig({
         resolve(root, 'index.html'),
         resolve(root, 'login', 'index.html'),
         resolve(root, 'register', 'index.html'),
+        resolve(root, 'anime', 'index.html'),
       ],
     },
   },

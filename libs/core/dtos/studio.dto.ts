@@ -1,5 +1,5 @@
-/** Genre DTO. */
-export interface GenreDto {
+/** Studio dto. */
+export interface StudioDto {
 
   /** Id. */
   readonly id: number;
@@ -13,6 +13,4 @@ export interface GenreDto {
   /** Time of the last modification, for example, "2014-12-20T17:30:50.416Z". */
   readonly modified: string;
 
-  /** Type. */
-  readonly type: string;
 }
