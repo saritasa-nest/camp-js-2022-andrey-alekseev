@@ -7,30 +7,23 @@
     <title>Anime</title>
   </head>
   <body>
-    <ul id="navbar-account-dropdown" class="dropdown-content">
-      <li><a href="#">Profile</a></li>
-      <li><a class="logout-link" href="logout/">Logout</a></li>
-    </ul>
     <nav class="navbar">
-      <div class="nav-wrapper">
-        <a href="/" class="brand-logo">
-          <img alt="" class="brand-logo__image" src="./assets/logo.png" />
-          Anime
-        </a>
-        <ul class="align-right">
-          <li class="navbar__login-link"><a href="login/">Login</a></li>
-          <li class="navbar__user-dropdown-link">
-            <button
-              type="button"
-              title="Open account dropdown"
-              class="dropdown-trigger"
-              data-target="navbar-account-dropdown"
-            >
-              <em class="material-icons align-right">arrow_drop_down</em>
-            </button>
-          </li>
-        </ul>
-      </div>
+      <a href="/" class="navbar__brand">
+        <img alt="" class="navbar__brand-image" src="assets/logo.png" />
+        Anime
+      </a>
+      <ul>
+        <li class="navbar__login-link"><a href="login/">Login</a></li>
+        <li class="navbar__user-dropdown-link">
+          <button class="dropdown-trigger" data-target="navbar-account-dropdown">
+            <em class="material-icons right">arrow_drop_down</em>
+          </button>
+          <ul id="navbar-account-dropdown" class="dropdown-content">
+            <li><a href="#">Profile</a></li>
+            <li><a class="logout-link" href="logout/">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
     </nav>
     <div class="container">
       <p id="anime-table-desc">Here you can see anime</p>
@@ -40,33 +33,33 @@
         aria-describedby="anime-table-desc"
       >
         <thead class="anime-table__header">
-          <tr>
-            <th class="anime-table__header-column">Image</th>
-            <th
-              class="anime-table__header-column anime-table__header-column_sortable anime-table__header-column_sort anime-table__header-column_sort-asc"
-              data-sort-field="titleEng"
-            >
-              <div class="anime-table__header-text">Title</div>
-            </th>
-            <th class="anime-table__header-column">
-              <div class="anime-table__header-text">Japan Title</div>
-            </th>
-            <th
-              class="anime-table__header-column anime-table__header-column_sortable"
-              data-sort-field="airedStart"
-            >
-              <div class="anime-table__header-text">Aired Start</div>
-            </th>
-            <th class="anime-table__header-column">
-              <div class="anime-table__header-text">Type</div>
-            </th>
-            <th
-              class="anime-table__header-column anime-table__header-column_sortable"
-              data-sort-field="status"
-            >
-              <div class="anime-table__header-text">Status</div>
-            </th>
-          </tr>
+        <tr>
+          <th class="anime-table__header-column">Image</th>
+          <th
+            class="anime-table__header-column anime-table__header-column_sortable anime-table__header-column_sort anime-table__header-column_sort-asc"
+            data-sort-field="titleEng"
+          >
+            <div class="anime-table__header-text">Title</div>
+          </th>
+          <th class="anime-table__header-column">
+            <div class="anime-table__header-text">Japan Title</div>
+          </th>
+          <th
+            class="anime-table__header-column anime-table__header-column_sortable"
+            data-sort-field="airedStart"
+          >
+            <div class="anime-table__header-text">Aired Start</div>
+          </th>
+          <th class="anime-table__header-column">
+            <div class="anime-table__header-text">Type</div>
+          </th>
+          <th
+            class="anime-table__header-column anime-table__header-column_sortable"
+            data-sort-field="status"
+          >
+            <div class="anime-table__header-text">Status</div>
+          </th>
+        </tr>
         </thead>
         <tbody class="anime-table__body"></tbody>
       </table>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./register.css" />
+    <title>Registration</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="col s12">
+        <h1 class="visually-hidden">Registration</h1>
+        <div class="back-link">
+          <a href="/" class="back-link__link">
+            <em class="material-icons">arrow_back</em>
+            Main page
+          </a>
+        </div>
+        <p class="page-title">Create new account</p>
+        <form class="register-form">
+          <div class="input-field">
+            <input id="email" required type="email" autocomplete="email" />
+            <label for="email">Email</label>
+            <span id="email-error" class="input-field__error"></span>
+          </div>
+          <div class="input-field">
+            <input
+              class="validate"
+              id="first-name"
+              maxlength="30"
+              type="text"
+              autocomplete="given-name"
+            />
+            <label for="first-name">First name</label>
+          </div>
+          <div class="input-field">
+            <input
+              class="validate"
+              id="last-name"
+              maxlength="30"
+              type="text"
+              autocomplete="family-name"
+            />
+            <label for="last-name">Last name</label>
+          </div>
+          <div class="input-field">
+            <input
+              id="password"
+              required
+              type="password"
+              minlength="8"
+              maxlength="128"
+              autocomplete="new-password"
+            />
+            <label for="password">Password</label>
+            <span class="helper-text password-rules">
+              <ul class="password-rules__list">
+                <li class="password-rules__list-item" data-rule="min-length">
+                  Password must contain at least 8 characters
+                </li>
+                <li class="password-rules__list-item" data-rule="case-symbols">
+                  Password must contain combination of two: upper case, lower
+                  case, special character
+                </li>
+                <li
+                  class="password-rules__list-item"
+                  data-rule="letters-numbers"
+                >
+                  A mixture of letters and numbers
+                </li>
+              </ul>
+            </span>
+          </div>
+          <div class="base-error">
+            <div class="base-error__text"></div>
+          </div>
+          <div class="row">
+            <div class="col s9">
+              <button
+                disabled
+                type="submit"
+                class="btn submit-button"
+              >
+                Register
+              </button>
+            </div>
+            <div class="col s3 right-align">
+              <a href="/login/">Already have account?</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <script type="module" src="./register.ts"></script>
+  </body>
+</html>

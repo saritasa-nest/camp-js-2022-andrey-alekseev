@@ -10,6 +10,7 @@ import { AnimeService } from '../../../api/services/animeService';
 
 import { Paginator } from './pagination';
 import { SortingProcessor } from './sorting';
+import './navbar';
 
 const EMPTY_SYMBOL = '-';
 
