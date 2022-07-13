@@ -11,6 +11,11 @@ export enum AnimeSortField {
   Status = 'status',
 }
 
+/** Anime filter options. */
+export enum AnimeFilterField {
+  Type = 'type',
+}
+
 /** Base model for anime. */
 export class AnimeBase extends Immerable {
 

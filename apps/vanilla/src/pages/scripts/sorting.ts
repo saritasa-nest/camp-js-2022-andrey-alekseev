@@ -2,6 +2,8 @@ import { SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
 
 import { AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 
+import { TableUpdateCallback } from './types';
+
 /** Class for column that can be sorted. */
 const SORTABLE_COLUMN_CLASS = 'anime-table__header-column_sortable';
 
@@ -29,7 +31,7 @@ export class SortingProcessor {
   public readonly sortingBlock: Element;
 
   /** Callback that must be called after sorting changed. */
-  public readonly sortingChangedCallback: Function;
+  public readonly sortingChangedCallback: TableUpdateCallback;
 
   /** Current sort. */
   private _currentSort: CurrentSort | null;
@@ -37,7 +39,7 @@ export class SortingProcessor {
   public constructor(
     sortingBlock: Element,
     initialSortField: AnimeSortField,
-    sortingChangedCallback: Function,
+    sortingChangedCallback: TableUpdateCallback,
   ) {
     const currentSortedItem = sortingBlock.querySelector(
       `[data-sort-field=${initialSortField}]`,
@@ -56,7 +58,7 @@ export class SortingProcessor {
     this.sortingBlock = sortingBlock;
     this.sortingBlock.addEventListener(
       'click',
-        event => this.handleClick(event),
+        event => this.onClick(event),
     );
 
     this.sortingChangedCallback = sortingChangedCallback;
@@ -74,7 +76,7 @@ export class SortingProcessor {
    * Handle click on header.
    * @param event Click event.
    */
-  private handleClick(event: Event): void {
+  private onClick(event: Event): void {
     const target = event.target as HTMLElement;
     if (target === null) {
       return;
