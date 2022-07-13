@@ -2,28 +2,22 @@ import {
   LimitOffsetPagination,
   LimitOffsetPaginationOptions,
 } from '@js-camp/core/models/limitOffsetPagination';
-
 import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
-
 import { AnimeBase, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
-
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
-
 import {
   PaginationMapper,
 } from '@js-camp/core/mappers/limitOffsetPagination.mapper';
 import {
   LimitOffsetPaginationDto,
 } from '@js-camp/core/dtos/limitOffsetPagination.dto';
-
 import { SortOptions } from '@js-camp/core/models/sortOptions';
 import {
   LimitOffsetQueryMapper,
 } from '@js-camp/core/mappers/limitOffsetQuery.mapper';
-
 import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
 
-import { http } from '..';
+import { http } from '../../../api';
 
 const url = 'anime/';
 

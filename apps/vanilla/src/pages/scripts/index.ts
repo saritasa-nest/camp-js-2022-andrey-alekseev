@@ -4,36 +4,27 @@ import { AnimeBase, AnimeSortField } from '@js-camp/core/models/anime/animeBase'
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { AnimeStatus } from '@js-camp/core/models/anime/animeStatus';
 
-import M from 'materialize-css';
+import { AnimeService } from '../../api/services/animeService';
 
-import { AnimeService } from '../../../api/services/animeService';
+import { getElementOrRaiseError } from '../../../utils/query';
 
 import { Paginator } from './pagination';
 import { SortingProcessor } from './sorting';
+
 import './navbar';
 
 const EMPTY_SYMBOL = '-';
 
 document.addEventListener('DOMContentLoaded', () => {
-  M.AutoInit();
-  const tableBody = document.querySelector<HTMLTableElement>(
+  const tableBody = getElementOrRaiseError<HTMLTableElement>(
     '.anime-table__body',
   );
-  if (tableBody === null) {
-    throw new Error('There is no table body');
-  }
-  const tablePaginationBlock = document.querySelector<Element>(
+  const tablePaginationBlock = getElementOrRaiseError<Element>(
     '.pagination-wrapper',
   );
-  if (tablePaginationBlock === null) {
-    throw new Error('There is no table pagination block');
-  }
-  const tableHeader = document.querySelector<Element>(
+  const tableHeader = getElementOrRaiseError<Element>(
     '.anime-table__header',
   );
-  if (tableHeader === null) {
-    throw new Error('There is no table header');
-  }
   const table = new Table(
     tableBody,
     tablePaginationBlock,

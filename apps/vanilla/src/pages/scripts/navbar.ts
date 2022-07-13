@@ -2,6 +2,7 @@ import M from 'materialize-css';
 
 import { UserService } from '../../api/services/userService';
 import { AuthService } from '../../api/services/authService';
+import { getElementOrRaiseError } from '../../../utils/query';
 
 document.addEventListener('DOMContentLoaded', () => {
   initDropDown();
@@ -15,39 +16,28 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function initNavbarForUser(): Promise<void> {
   const email = await UserService.getEmail();
-  const userDropDown = document.querySelector<HTMLElement>('.navbar__user-dropdown-link');
+  const userDropDown = getElementOrRaiseError<HTMLElement>('.navbar__user-dropdown-link');
 
-  const dropDownTrigger = document.querySelector('.dropdown-trigger');
-  const loginLink = document.querySelector<HTMLElement>('.navbar__login-link');
+  const dropDownTrigger = getElementOrRaiseError('.dropdown-trigger');
+  const loginLink = getElementOrRaiseError<HTMLElement>('.navbar__login-link');
   if (email !== null && dropDownTrigger !== null) {
     const text = document.createTextNode(`Hello, ${email}`);
     dropDownTrigger.prepend(text);
-    if (userDropDown === null) {
-      throw new Error('There are no user dropdown.');
-    }
     userDropDown.style.display = 'block';
   } else {
-    if (loginLink === null) {
-      throw new Error('There are no login link.');
-    }
     loginLink.style.display = 'block';
   }
 }
 
 /** Init user dropdown. */
 function initDropDown(): void {
-  const profileDropDown = document.querySelector('.dropdown-trigger');
-  if (profileDropDown !== null) {
-    M.Dropdown.init(profileDropDown, { coverTrigger: false });
-  }
+  const profileDropDown = getElementOrRaiseError('.dropdown-trigger');
+  M.Dropdown.init(profileDropDown, { coverTrigger: false });
 }
 
 /** Init logout button. */
 function initLogoutButton(): void {
-  const logoutButton = document.querySelector('.logout-link');
-  if (logoutButton === null) {
-    return;
-  }
+  const logoutButton = getElementOrRaiseError('.logout-link');
   logoutButton.addEventListener('click', async event => {
     event.preventDefault();
     await AuthService.logout();
