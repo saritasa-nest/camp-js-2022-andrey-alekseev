@@ -11,5 +11,5 @@ export interface LimitOffsetQueryDto {
   readonly ordering: string;
 
   /** Field to search. */
-  readonly  search: string | null;
+  readonly search: string | null;
 }
