@@ -27,16 +27,20 @@ export namespace AnimeService {
    * Get list of anime.
    * @param paginationOptions Pagination options.
    * @param sortOptions Sorting options.
+   * @param searchString The name of the anime entered by the user.
    */
   export async function getList(
     paginationOptions: LimitOffsetPaginationOptions,
     sortOptions: SortOptions<AnimeSortField> | null,
+    searchString: string | null,
   ): Promise<LimitOffsetPagination<AnimeBase>> {
+
     const { data } = await http.get<LimitOffsetPaginationDto<AnimeBaseDto>>(`${url}anime/`, {
       params: LimitOffsetQueryMapper.toDto<AnimeSortField>(
         paginationOptions,
         sortOptions,
         animeSortFieldMap,
+        searchString,
       ),
     });
     return PaginationMapper.mapPaginationFromDto(

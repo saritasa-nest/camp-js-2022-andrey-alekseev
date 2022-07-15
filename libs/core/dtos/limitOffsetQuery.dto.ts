@@ -9,4 +9,7 @@ export interface LimitOffsetQueryDto {
 
   /** Field to sort. */
   readonly ordering: string;
+
+  /** Field to search. */
+  readonly  search: string | null;
 }

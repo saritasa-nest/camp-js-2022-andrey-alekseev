@@ -12,6 +12,7 @@ import { Paginator } from './pagination';
 import { SortingProcessor } from './sorting';
 
 import './navbar';
+import { AnimeSearch } from './animeSearch';
 
 const EMPTY_SYMBOL = '-';
 
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableHeader = getElementOrRaiseError<Element>(
     '.anime-table__header',
   );
+
   const table = new Table(
     tableBody,
     tablePaginationBlock,
@@ -41,6 +43,8 @@ class Table {
   private readonly tablePaginator: Paginator;
 
   private readonly sortingProcessor: SortingProcessor;
+
+  private readonly animeSearch: AnimeSearch;
 
   public constructor(
     tableBody: HTMLTableElement,
@@ -59,6 +63,14 @@ class Table {
         this.tablePaginator.resetPagination();
       },
     );
+    this.animeSearch = new AnimeSearch(
+      '.searching__input',
+      '.searching__button',
+      () => {
+        this.tablePaginator.resetPagination();
+        this.renderTable();
+      },
+    );
   }
 
   /** Fetch anime list and add it to page. */
@@ -67,6 +79,7 @@ class Table {
     const animePaginatedList = await AnimeService.getList(
       paginationOptions,
       this.sortingProcessor.getSortOptions(),
+      this.animeSearch.getInputLineContent(),
     );
     this.renderBody(animePaginatedList);
     this.tablePaginator.updatePagination(animePaginatedList.count);
