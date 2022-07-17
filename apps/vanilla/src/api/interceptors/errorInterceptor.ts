@@ -32,13 +32,16 @@ export const errorInterceptor = async(error: unknown): Promise<AxiosResponse> =>
       throw new ApiError(error);
     }
 
-    if (response.status === 401) {
+    const isRefreshTokenRequest = originalRequest.url?.includes(
+      '/token/refresh/',
+    );
+    if (response.status === 401 && !isRefreshTokenRequest) {
       try {
         await AuthService.refreshTokens();
         return http(originalRequest);
       } catch {
         await UserHelpers.clearUserData();
-        redirect(AppUrl.Base);
+        redirect(AppUrl.Login);
       }
     }
   }
