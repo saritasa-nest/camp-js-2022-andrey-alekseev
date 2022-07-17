@@ -4,6 +4,14 @@ export enum SortDirection {
   Descending = 'Descending',
 }
 
+/**
+ * Check if string is sort direction.
+ * @param sortDirection String to check.
+ */
+export function isSortDirection(sortDirection: string): sortDirection is SortDirection {
+  return Object.values(SortDirection).includes(sortDirection as SortDirection);
+}
+
 /** Sort options for a list of items. */
 export interface SortOptions<T> {
 

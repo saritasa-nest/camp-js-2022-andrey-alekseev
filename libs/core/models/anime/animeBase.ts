@@ -11,6 +11,14 @@ export enum AnimeSortField {
   Status = 'status',
 }
 
+/**
+ * Check if string is anime sort field.
+ * @param sortField String to check.
+ */
+export function isAnimeSortField(sortField: string): sortField is AnimeSortField {
+  return Object.values(AnimeSortField).includes(sortField as AnimeSortField);
+}
+
 /** Base model for anime. */
 export class AnimeBase extends Immerable {
 
