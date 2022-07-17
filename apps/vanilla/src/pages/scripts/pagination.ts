@@ -2,7 +2,7 @@ import {
   LimitOffsetPaginationOptions,
 } from '@js-camp/core/models/limitOffsetPagination';
 
-import { range } from '../../utils/helpers';
+import { range } from '../../../utils/helpers';
 
 export const ITEMS_PER_PAGE = 10;
 export const FIRST_PAGE = 1;
