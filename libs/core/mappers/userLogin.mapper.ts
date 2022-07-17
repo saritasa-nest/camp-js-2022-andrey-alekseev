@@ -1,17 +1,16 @@
-import { UserLoginForm } from '../forms/userLoginForm';
-
+import { LoginData } from '../models/user';
 import { UserLoginDto } from '../dtos/userLogin.dto';
 
 export namespace UserLoginMapper {
 
   /**
    * Maps form to dto.
-   * @param registrationForm User registration form.
+   * @param loginData User login data.
    */
-  export function toDto(registrationForm: UserLoginForm): UserLoginDto {
+  export function toDto(loginData: LoginData): UserLoginDto {
     return {
-      email: registrationForm.email,
-      password: registrationForm.password,
+      email: loginData.email,
+      password: loginData.password,
     } as UserLoginDto;
   }
 }

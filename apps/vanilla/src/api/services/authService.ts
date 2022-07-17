@@ -26,20 +26,20 @@ export namespace AuthService {
 
   /**
    * Register new user.
-   * @param registrationForm User registration form.
+   * @param registrationData User registration data.
    */
-  export async function register(registrationForm: RegistrationData): Promise<void> {
-    const userRegistrationDto = UserRegistrationMapper.toDto(registrationForm);
+  export async function register(registrationData: RegistrationData): Promise<void> {
+    const userRegistrationDto = UserRegistrationMapper.toDto(registrationData);
     const { data } = await http.post<JWTDto>(`${url}register/`, userRegistrationDto);
     await UserHelpers.setSessionToken(data);
   }
 
   /**
    * Login user.
-   * @param loginForm User register form.
+   * @param loginData User login data.
    */
-  export async function login(loginForm: LoginData): Promise<void> {
-    const userLoginDto = UserLoginMapper.toDto(loginForm);
+  export async function login(loginData: LoginData): Promise<void> {
+    const userLoginDto = UserLoginMapper.toDto(loginData);
     const { data } = await http.post<JWTDto>(`${url}login/`, userLoginDto);
     await UserHelpers.setSessionToken(data);
   }

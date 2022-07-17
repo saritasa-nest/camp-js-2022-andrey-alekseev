@@ -61,13 +61,13 @@ function processSubmitForm(event: SubmitEvent): void {
 
 /**
  * Send request to register user.
- * @param registrationForm User registration form.
+ * @param registrationData User registration data.
  */
-async function registerUser(registrationForm: RegistrationData): Promise<void> {
+async function registerUser(registrationData: RegistrationData): Promise<void> {
   const baseErrorText = getElementOrRaiseError<HTMLElement>('.base-error__text');
 
   try {
-    await AuthService.register(registrationForm);
+    await AuthService.register(registrationData);
     redirect(AppUrl.Base);
   } catch (error: unknown) {
     if (!(error instanceof ApiError)) {

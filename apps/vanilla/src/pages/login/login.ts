@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /**
  * Send request to login user.
- * @param loginForm User login form.
+ * @param loginData User login data.
  */
-async function loginUser(loginForm: LoginData): Promise<void> {
+async function loginUser(loginData: LoginData): Promise<void> {
   const baseErrorBlock = getElementOrRaiseError<HTMLElement>('.base-error__text');
   try {
-    await AuthService.login(loginForm);
+    await AuthService.login(loginData);
     redirect(AppUrl.Base);
   } catch (error: unknown) {
     if (error instanceof ApiError) {
