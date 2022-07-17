@@ -43,10 +43,15 @@ export class Paginator {
   /** Current page. */
   private _currentPage = 1;
 
-  public constructor(tablePaginationBlock: Element, pageChangedCallback: Function) {
+  public constructor(
+    tablePaginationBlock: Element,
+    pageChangedCallback: Function,
+    initialPage = 1,
+  ) {
     this.paginationBlock = tablePaginationBlock;
     this.paginationButtonsLi = [];
     this.pageChangedCallback = pageChangedCallback;
+    this._currentPage = initialPage;
     this.paginationBlock.addEventListener('click', event => this.handleClick(event));
   }
 
@@ -85,13 +90,12 @@ export class Paginator {
 
   /**
    * Update table pagination.
-   * @param totalCount Total count of items.
+   * @param totalPages Total pages of items.
    */
   public updatePagination(
-    totalCount: number,
+    totalPages: number,
   ): void {
     this.paginationBlock.innerHTML = '';
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
     this.updatePaginationButtons(totalPages);
     this.paginationBlock.append(
       this.renderPaginationButtonsBlock(),
@@ -217,7 +221,8 @@ export class Paginator {
     this.pageChangedCallback();
   }
 
-  private get currentPage(): number {
+  /** Current pagination page. */
+  public get currentPage(): number {
     return this._currentPage;
   }
 }

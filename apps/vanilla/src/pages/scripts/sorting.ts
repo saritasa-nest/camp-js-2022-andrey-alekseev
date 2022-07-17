@@ -36,23 +36,29 @@ export class SortingProcessor {
 
   public constructor(
     sortingBlock: Element,
-    initialSortField: AnimeSortField,
+    initialSortOptions: SortOptions<AnimeSortField> | null,
     sortingChangedCallback: Function,
   ) {
-    const currentSortedItem = sortingBlock.querySelector(
-      `[data-sort-field=${initialSortField}]`,
-    );
-    if (currentSortedItem === null) {
-      throw new Error(`There isn't block for ${initialSortField}`);
+    if (initialSortOptions !== null) {
+      const currentSortedItem = sortingBlock.querySelector(
+        `[data-sort-field=${initialSortOptions.field}]`,
+      );
+      if (currentSortedItem === null) {
+        throw new Error(`There isn't block for ${initialSortOptions.field}`);
+      }
+      currentSortedItem.classList.add(
+        SORTED_CLASS,
+        sortDirectionClassMap[initialSortOptions.direction],
+      );
+
+      this._currentSort = {
+        sortItem: currentSortedItem,
+        sortOptions: initialSortOptions,
+      };
+    } else {
+      this._currentSort = null;
     }
 
-    this._currentSort = {
-      sortItem: currentSortedItem,
-      sortOptions: {
-        field: initialSortField,
-        direction: SortDirection.Ascending,
-      },
-    };
     this.sortingBlock = sortingBlock;
     this.sortingBlock.addEventListener(
       'click',
