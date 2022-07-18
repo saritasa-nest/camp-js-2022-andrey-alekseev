@@ -1,6 +1,10 @@
-import { LimitOffsetPagination } from '@js-camp/core/models/limitOffsetPagination';
-
-import { AnimeBase, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import {
+  LimitOffsetPagination,
+} from '@js-camp/core/models/limitOffsetPagination';
+import {
+  AnimeBase,
+  AnimeSortField,
+} from '@js-camp/core/models/anime/animeBase';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { AnimeStatus } from '@js-camp/core/models/anime/animeStatus';
 
@@ -10,7 +14,7 @@ import { getElementOrRaiseError } from '../../../utils/query';
 
 import { Paginator } from './pagination';
 import { SortingProcessor } from './sorting';
-
+import { FiltersHandler } from './filtering';
 import './navbar';
 
 const EMPTY_SYMBOL = '-';
@@ -42,6 +46,8 @@ class Table {
 
   private readonly sortingProcessor: SortingProcessor;
 
+  private readonly filtersHandler: FiltersHandler;
+
   public constructor(
     tableBody: HTMLTableElement,
     tablePaginationBlock: Element,
@@ -59,6 +65,11 @@ class Table {
         this.tablePaginator.resetPagination();
       },
     );
+    this.filtersHandler = new FiltersHandler(
+      () => {
+        this.tablePaginator.resetPagination();
+      },
+    );
   }
 
   /** Fetch anime list and add it to page. */
@@ -67,6 +78,7 @@ class Table {
     const animePaginatedList = await AnimeService.getList(
       paginationOptions,
       this.sortingProcessor.getSortOptions(),
+      this.filtersHandler.filterOptions,
     );
     this.renderBody(animePaginatedList);
     this.tablePaginator.updatePagination(animePaginatedList.count);

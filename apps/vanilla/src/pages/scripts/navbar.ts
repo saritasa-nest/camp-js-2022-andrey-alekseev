@@ -18,7 +18,7 @@ async function initNavbarForUser(): Promise<void> {
   const email = await UserService.getEmail();
   const userDropDown = getElementOrRaiseError<HTMLElement>('.navbar__user-dropdown-link');
 
-  const dropDownTrigger = getElementOrRaiseError('.dropdown-trigger');
+  const dropDownTrigger = getElementOrRaiseError('.account-dropdown-trigger');
   const loginLink = getElementOrRaiseError<HTMLElement>('.navbar__login-link');
   if (email !== null && dropDownTrigger !== null) {
     const text = document.createTextNode(`Hello, ${email}`);
@@ -31,7 +31,7 @@ async function initNavbarForUser(): Promise<void> {
 
 /** Init user dropdown. */
 function initDropDown(): void {
-  const profileDropDown = getElementOrRaiseError('.dropdown-trigger');
+  const profileDropDown = getElementOrRaiseError('.account-dropdown-trigger');
   M.Dropdown.init(profileDropDown, { coverTrigger: false });
 }
 

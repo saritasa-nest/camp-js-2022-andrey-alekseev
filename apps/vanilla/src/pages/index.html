@@ -15,7 +15,7 @@
       <ul>
         <li class="navbar__login-link"><a href="login/">Login</a></li>
         <li class="navbar__user-dropdown-link">
-          <button class="dropdown-trigger" data-target="navbar-account-dropdown">
+          <button class="account-dropdown-trigger" data-target="navbar-account-dropdown">
             <em class="material-icons right">arrow_drop_down</em>
           </button>
           <ul id="navbar-account-dropdown" class="dropdown-content">
@@ -26,7 +26,14 @@
       </ul>
     </nav>
     <div class="container">
-      <p id="anime-table-desc">Here you can see anime</p>
+      <div class="filters">
+        <label class="input-field filters__types">
+          <span>Type</span>
+          <select class="types-select">
+            <option value="" selected>Select Type</option>
+          </select>
+        </label>
+      </div>
       <table
         class="anime-table responsive-table highlight centered"
         aria-label="Anime"

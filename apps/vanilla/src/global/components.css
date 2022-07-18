@@ -22,8 +22,9 @@
   height: 100%;
 }
 
-.dropdown-trigger {
+.account-dropdown-trigger {
   color: var(--navbar-text-color);
+  cursor: pointer;
   background-color: unset;
   border: unset;
   display: flex;
@@ -32,7 +33,7 @@
 }
 
 /* Disable default materialize focus */
-.dropdown-trigger:focus {
+.account-dropdown-trigger:focus {
   background-color: unset;
 }
 

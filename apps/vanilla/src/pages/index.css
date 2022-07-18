@@ -78,3 +78,12 @@
 .pagination-block__button_active {
   background-color: var(--base-color-light);
 }
+
+/* Filters */
+.filters {
+  display: flex;
+}
+
+.filters__types {
+  flex: 0 0 20%;
+}

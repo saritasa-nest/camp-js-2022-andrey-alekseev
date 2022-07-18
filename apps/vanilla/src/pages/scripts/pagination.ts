@@ -4,6 +4,8 @@ import {
 
 import { range } from '../../../utils/helpers';
 
+import { TableUpdateCallback } from './types';
+
 export const ITEMS_PER_PAGE = 10;
 export const FIRST_PAGE = 1;
 
@@ -35,7 +37,7 @@ export class Paginator {
   public readonly paginationBlock: Element;
 
   /** Callback that must be called after page changed. */
-  public readonly pageChangedCallback: Function;
+  public readonly pageChangedCallback: TableUpdateCallback;
 
   /** Pagination buttons. */
   private paginationButtonsLi: PaginationButton[];
@@ -43,18 +45,18 @@ export class Paginator {
   /** Current page. */
   private _currentPage = 1;
 
-  public constructor(tablePaginationBlock: Element, pageChangedCallback: Function) {
+  public constructor(tablePaginationBlock: Element, pageChangedCallback: TableUpdateCallback) {
     this.paginationBlock = tablePaginationBlock;
     this.paginationButtonsLi = [];
     this.pageChangedCallback = pageChangedCallback;
-    this.paginationBlock.addEventListener('click', event => this.handleClick(event));
+    this.paginationBlock.addEventListener('click', event => this.onClick(event));
   }
 
   /**
    * Handle click on pagination bar.
    * @param event Click event.
    */
-  private handleClick(event: Event): void {
+  private onClick(event: Event): void {
     const target = event.target as HTMLElement;
     const paginationButtonElement = target.closest<HTMLElement>(
       `.${PAGINATION_BUTTON_CLASS}`,
