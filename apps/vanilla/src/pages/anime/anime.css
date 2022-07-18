@@ -8,6 +8,20 @@
   column-gap: 10px;
 }
 
+.anime__title,
+.anime__section-header {
+  font-weight: bold;
+  line-height: var(--text-line-height);
+  font-size: var(--base-font-size);
+  margin-top: var(--text-margin);
+  margin-bottom: var(--text-margin);
+}
+
+.anime__section-line {
+  display: flex;
+  column-gap: 5px;
+}
+
 .anime__image {
   width: var(--anime-image-width);
   height: auto;
@@ -19,8 +33,6 @@
   display: grid;
   grid-template-columns: 1fr;
 }
-
-/* Header styles */
 
 .anime__header {
   display: grid;
@@ -45,8 +57,8 @@
   font-size: var(--small-font-size);
 }
 
-.anime__studios-list li,
-.anime__genres-list li {
+.anime__studios-list .anime__list-item,
+.anime__genres-list .anime__list-item {
   background-color: var(--base-color-light);
   border-radius: var(--base-border-radius);
   padding: 5px;

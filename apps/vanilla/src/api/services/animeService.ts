@@ -54,8 +54,6 @@ export namespace AnimeService {
    */
   export async function getDetails(id: number): Promise<Anime> {
     const { data } = await http.get<AnimeDto>(`${url}anime/${id}/`);
-    return AnimeMapper.fromDto(
-      data,
-    );
+    return AnimeMapper.fromDto(data);
   }
 }

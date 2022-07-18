@@ -14,6 +14,8 @@ import { ApiError } from '../../api/errors';
 import { openModal } from '../../../utils/modal';
 import { getElementOrRaiseError } from '../../../utils/query';
 
+const LIST_ITEM_CLASS = 'anime__list-item';
+
 const YOUTUBE_EMBED_LINK = 'https://www.youtube.com/embed/';
 
 document.addEventListener('DOMContentLoaded', async() => {
@@ -80,26 +82,26 @@ async function getAnime(animeId: number): Promise<Anime | null> {
  * @param anime Anime object.
  */
 function renderAnime(anime: Anime): void {
-  const animeTitleP = getElementOrRaiseError('.anime__title');
+  const animeTitleElement = getElementOrRaiseError('.anime__title');
   const animeImage = getElementOrRaiseError<HTMLImageElement>('.anime__image');
   const animeModalImage = getElementOrRaiseError<HTMLImageElement>('.modal-window__image');
-  const animeStatusTextP = getElementOrRaiseError('.anime__status-text');
-  const animeAiredP = getElementOrRaiseError('.anime__aired');
+  const animeStatusTextElement = getElementOrRaiseError('.anime__status-text');
+  const animeAiredElement = getElementOrRaiseError('.anime__aired');
   const animeGenresList = getElementOrRaiseError('.anime__genres-list');
   const animeStudiosList = getElementOrRaiseError('.anime__studios-list');
-  const animeIsAiringP = getElementOrRaiseError('.anime__is-aring');
-  const animeTypeP = getElementOrRaiseError('.anime__type');
-  const animeSynopsisP = getElementOrRaiseError('.anime__synopsis');
+  const animeIsAiringElement = getElementOrRaiseError('.anime__is-aring');
+  const animeTypeElement = getElementOrRaiseError('.anime__type');
+  const animeSynopsisElement = getElementOrRaiseError('.anime__synopsis');
   const animeYouTubeFrameWrapper = getElementOrRaiseError('.anime__trailer-wrapper');
   const animeYouTubeFrame = getElementOrRaiseError<HTMLIFrameElement>('.anime__trailer');
 
-  animeTitleP.textContent = `${anime.titleEng || EMPTY_SYMBOL} / ${anime.titleJapan || EMPTY_SYMBOL}`;
+  animeTitleElement.textContent = `${anime.titleEng || EMPTY_SYMBOL} / ${anime.titleJapan || EMPTY_SYMBOL}`;
   animeImage.src = anime.image;
   animeModalImage.src = anime.image;
-  animeStatusTextP.textContent = AnimeStatus.toReadable(anime.status);
-  animeIsAiringP.textContent = anime.isAiring ? 'Airing' : 'Not Airing';
-  animeTypeP.textContent = `Type: ${AnimeType.toReadable(anime.type)}`;
-  animeSynopsisP.textContent = anime.synopsis;
+  animeStatusTextElement.textContent = AnimeStatus.toReadable(anime.status);
+  animeIsAiringElement.textContent = anime.isAiring ? 'Airing' : 'Not Airing';
+  animeTypeElement.textContent = AnimeType.toReadable(anime.type);
+  animeSynopsisElement.textContent = anime.synopsis;
 
   if (anime.youTubeTrailerId !== null) {
     animeYouTubeFrameWrapper.classList.remove(HIDDEN_CLASS);
@@ -107,8 +109,8 @@ function renderAnime(anime: Anime): void {
   }
 
   if (anime.airedStart !== null || anime.airedEnd !== null) {
-    animeAiredP.classList.remove(HIDDEN_CLASS);
-    animeAiredP.textContent = `
+    animeAiredElement.classList.remove(HIDDEN_CLASS);
+    animeAiredElement.textContent = `
       ${anime.airedStart?.toLocaleDateString() ?? ''} -
       ${anime.airedEnd?.toLocaleDateString() ?? ''}
    `;
@@ -118,6 +120,7 @@ function renderAnime(anime: Anime): void {
     animeGenresList.classList.remove(HIDDEN_CLASS);
     anime.genres.forEach(genre => {
       const genreLi = document.createElement('li');
+      genreLi.classList.add(LIST_ITEM_CLASS);
       genreLi.textContent = genre.name;
       animeGenresList.append(genreLi);
     });
@@ -127,6 +130,7 @@ function renderAnime(anime: Anime): void {
     animeStudiosList.classList.remove(HIDDEN_CLASS);
     anime.studios.forEach(studio => {
       const studioLi = document.createElement('li');
+      studioLi.classList.add(LIST_ITEM_CLASS);
       studioLi.textContent = studio.name;
       animeStudiosList.append(studioLi);
     });
