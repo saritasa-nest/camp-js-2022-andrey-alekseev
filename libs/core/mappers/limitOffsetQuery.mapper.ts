@@ -14,11 +14,13 @@ export namespace LimitOffsetQueryMapper {
    * @param limitOffsetPaginationOptions Pagination options.
    * @param sortOptions Sort options.
    * @param fieldMap Object for mapping sort fields to the ones that are acceptable for the API.
+   * @param searchString The name of the anime entered by the user.
    */
   export function toDto<T extends string>(
     limitOffsetPaginationOptions: LimitOffsetPaginationOptions,
     sortOptions: SortOptions<T> | null,
     fieldMap: Record<T, string>,
+    searchString: string | null,
   ): LimitOffsetQueryDto {
     let ordering = '';
     if (sortOptions !== null) {
@@ -29,6 +31,7 @@ export namespace LimitOffsetQueryMapper {
       limit: limitOffsetPaginationOptions.limit,
       offset: limitOffsetPaginationOptions.offset,
       ordering,
+      search: searchString,
     };
   }
 }
