@@ -3,30 +3,31 @@ import { getElementOrRaiseError } from '../../../utils/query';
 /** The class is used to work with the anime search input. */
 export class AnimeSearch {
   /** Submit button. */
-  public submitBtn: Element;
+  private readonly submitButton: HTMLButtonElement;
 
   /** Input line. */
-  public inputLine: HTMLInputElement;
+  private readonly inputElement: HTMLInputElement;
 
   /** Submit button click handler. */
-  public btnClickCallBack: Function;
+  public submitCallBack: () => void;
 
-  public constructor(inputSelector: string, btnSelector: string, btnClickCallback: Function) {
-    this.submitBtn = getElementOrRaiseError(btnSelector);
-    this.inputLine = getElementOrRaiseError(inputSelector);
-    this.btnClickCallBack = btnClickCallback;
+  public constructor(submitCallback: () => void) {
+    this.submitButton = getElementOrRaiseError('.searching__button');
+    this.inputElement = getElementOrRaiseError('.searching__input');
+    this.submitCallBack = submitCallback;
     this.setEventListener();
   }
 
   /** Get input content. */
-  public getInputLineContent(): string | null {
-    return this.inputLine.value;
+  public getSearchString(): string {
+    return this.inputElement.value;
   }
 
   /** Set event listener. */
   public setEventListener(): void {
-    this.submitBtn.addEventListener('click', () => {
-      this.btnClickCallBack(this.getInputLineContent());
+    this.submitButton.addEventListener('click', evt => {
+      evt.preventDefault();
+      this.submitCallBack();
     });
   }
 }

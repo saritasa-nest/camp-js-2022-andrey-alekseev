@@ -23,7 +23,6 @@ export namespace LimitOffsetQueryMapper {
     searchString: string | null,
   ): LimitOffsetQueryDto {
     let ordering = '';
-    const search = searchString;
     if (sortOptions !== null) {
       const sortField = fieldMap[sortOptions.field];
       ordering = sortOptions.direction === SortDirection.Ascending ? sortField : `-${sortField}`;
@@ -32,7 +31,7 @@ export namespace LimitOffsetQueryMapper {
       limit: limitOffsetPaginationOptions.limit,
       offset: limitOffsetPaginationOptions.offset,
       ordering,
-      search,
+      search: searchString,
     };
   }
 }

@@ -64,11 +64,8 @@ class Table {
       },
     );
     this.animeSearch = new AnimeSearch(
-      '.searching__input',
-      '.searching__button',
       () => {
         this.tablePaginator.resetPagination();
-        this.renderTable();
       },
     );
   }
@@ -79,7 +76,7 @@ class Table {
     const animePaginatedList = await AnimeService.getList(
       paginationOptions,
       this.sortingProcessor.getSortOptions(),
-      this.animeSearch.getInputLineContent(),
+      this.animeSearch.getSearchString(),
     );
     this.renderBody(animePaginatedList);
     this.tablePaginator.updatePagination(animePaginatedList.count);

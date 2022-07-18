@@ -81,18 +81,9 @@
 
 /* Searching */
 .searching {
-  border-radius: 6px;
   width: 30%;
   margin-bottom: 50px;
   margin-top: 30px;
-}
-
-.searching__button {
-  border-radius: 6px;
-}
-
-.searching__input {
-  margin: 0;
 }
 
 .searching__label {
