@@ -69,10 +69,10 @@ class Table {
     this.tablePaginator = new Paginator(
       tablePaginationBlock,
       () => {
-        this.tableQueryParameters = {
+        this.setTableQueryParameters({
           ...this._tableQueryParameters,
           page: this.tablePaginator.currentPage,
-        };
+        });
         this.renderTable();
       },
       this.tableQueryParameters.page,
@@ -92,11 +92,11 @@ class Table {
       initialSortOptions,
       () => {
         const sortOptions = this.sortingProcessor.getSortOptions();
-        this.tableQueryParameters = {
+        this.setTableQueryParameters({
           ...this._tableQueryParameters,
           sortField: sortOptions?.field,
           sortDirection: sortOptions?.direction,
-        };
+        });
         this.tablePaginator.resetPagination();
       },
     );
@@ -184,7 +184,7 @@ class Table {
    *  Set table query parameters and update url.
    *  @param tableQueryParameters Table query parameters.
    */
-  private set tableQueryParameters(tableQueryParameters: TableQueryParameters) {
+  private setTableQueryParameters(tableQueryParameters: TableQueryParameters): void {
     this._tableQueryParameters = tableQueryParameters;
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set(PAGE_QUERY_PARAMETER, this._tableQueryParameters.page.toString());
@@ -212,8 +212,8 @@ interface TableQueryParameters {
   readonly page: number;
 
   /** Field to sort. */
-  readonly sortField: AnimeSortField | undefined;
+  readonly sortField?: AnimeSortField;
 
   /** Sort direction. */
-  readonly sortDirection: SortDirection | undefined;
+  readonly sortDirection?: SortDirection;
 }
