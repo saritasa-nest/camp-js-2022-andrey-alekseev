@@ -11,7 +11,11 @@ import {
   HIDDEN_CLASS,
 } from '../../../utils/constants';
 import { ApiError } from '../../api/errors';
-import { openModal } from '../../../utils/modal';
+import {
+  initApproveModal,
+  initImageModal,
+  openModal,
+} from '../../../utils/modal';
 import { getElementOrRaiseError } from '../../../utils/query';
 
 const LIST_ITEM_CLASS = 'anime__list-item';
@@ -31,11 +35,8 @@ document.addEventListener('DOMContentLoaded', async() => {
   }
 
   renderAnime(anime);
-  const animeImage = getElementOrRaiseError<HTMLImageElement>('.anime__image');
-  const animeImageModal = getElementOrRaiseError('.modal-window');
-  animeImage.addEventListener('click', () => {
-    openModal(animeImageModal);
-  });
+  initializeImageModal(anime.image);
+  initializeControls(animeId);
 });
 
 /**
@@ -84,7 +85,6 @@ async function getAnime(animeId: number): Promise<Anime | null> {
 function renderAnime(anime: Anime): void {
   const animeTitleElement = getElementOrRaiseError('.anime__title');
   const animeImage = getElementOrRaiseError<HTMLImageElement>('.anime__image');
-  const animeModalImage = getElementOrRaiseError<HTMLImageElement>('.modal-window__image');
   const animeStatusTextElement = getElementOrRaiseError('.anime__status-text');
   const animeAiredElement = getElementOrRaiseError('.anime__aired');
   const animeGenresList = getElementOrRaiseError('.anime__genres-list');
@@ -97,7 +97,6 @@ function renderAnime(anime: Anime): void {
 
   animeTitleElement.textContent = `${anime.titleEng || EMPTY_SYMBOL} / ${anime.titleJapan || EMPTY_SYMBOL}`;
   animeImage.src = anime.image;
-  animeModalImage.src = anime.image;
   animeStatusTextElement.textContent = AnimeStatus.toReadable(anime.status);
   animeIsAiringElement.textContent = anime.isAiring ? 'Airing' : 'Not Airing';
   animeTypeElement.textContent = AnimeType.toReadable(anime.type);
@@ -135,4 +134,48 @@ function renderAnime(anime: Anime): void {
       animeStudiosList.append(studioLi);
     });
   }
+}
+
+/**
+ * Initialize image modal.
+ * @param imageUrl Anime image url.
+ */
+function initializeImageModal(imageUrl: string): void {
+  const animeImage = getElementOrRaiseError<HTMLImageElement>('.anime__image');
+  const modal = getElementOrRaiseError('.modal-window');
+  animeImage.addEventListener('click', () => {
+    initImageModal(modal, imageUrl);
+    openModal(modal);
+  });
+}
+
+/** Initialize anime controls.
+ * @param animeId AnimeId.
+ */
+function initializeControls(animeId: number): void {
+  const deleteButton = getElementOrRaiseError<HTMLButtonElement>(
+    '.anime__delete-button',
+  );
+  deleteButton.addEventListener(
+    'click',
+    () => onDeleteClick(animeId),
+  );
+}
+
+/**
+ * Handle delete button click.
+ * @param animeId Anime id.
+ */
+function onDeleteClick(animeId: number): void {
+  const modal = getElementOrRaiseError('.modal-window');
+  initApproveModal(
+    modal,
+    'Do you really want to delete this Anime?',
+    'Delete',
+    async() => {
+      await AnimeService.deleteAnime(animeId);
+      redirect(AppUrl.Base);
+    },
+  );
+  openModal(modal);
 }

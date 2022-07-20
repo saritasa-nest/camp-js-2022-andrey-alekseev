@@ -9,8 +9,11 @@
   <body>
     <div class="container">
       <div class="anime">
-        <div class="anime__image-wrapper">
+        <div class="anime__side-panel">
           <img class="anime__image" alt="" src="" />
+          <div class="anime__controls">
+            <button type="button" class="anime__delete-button btn">Delete</button>
+          </div>
         </div>
         <div class="anime__content">
           <div class="anime__header">
@@ -33,18 +36,13 @@
             <p class="anime__synopsis"></p>
           </section>
           <div class="anime__trailer-wrapper hidden">
-            <iframe
-              title="Trailer"
-              class="anime__trailer"
-            >
-            </iframe>
+            <iframe title="Trailer" class="anime__trailer"> </iframe>
           </div>
         </div>
       </div>
     </div>
     <div class="modal-window">
       <div class="modal-window__content">
-        <img alt="" class="modal-window__image" src="" />
       </div>
     </div>
     <script type="module" src="./anime.ts"></script>

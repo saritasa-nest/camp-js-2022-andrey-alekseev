@@ -101,3 +101,12 @@
 .modal-window__image {
   max-width: 100%;
 }
+
+.modal-window__approve {
+  padding: 10px;
+  text-align: center;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}

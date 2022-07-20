@@ -56,4 +56,12 @@ export namespace AnimeService {
     const { data } = await http.get<AnimeDto>(`${url}anime/${id}/`);
     return AnimeMapper.fromDto(data);
   }
+
+  /**
+   * Delete anime.
+   * @param id Anime id.
+   */
+  export async function deleteAnime(id: number): Promise<void> {
+    await http.delete<AnimeDto>(`${url}anime/${id}/`);
+  }
 }
