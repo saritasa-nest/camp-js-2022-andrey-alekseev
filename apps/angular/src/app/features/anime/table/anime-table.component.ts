@@ -9,8 +9,8 @@ import { AnimeService } from '../../../../core/services/anime.service';
 /** Anime list component. */
 @Component({
   selector: 'anime-table',
-  templateUrl: './animeTable.component.html',
-  styleUrls: ['./animeTable.component.css'],
+  templateUrl: './anime-table.component.html',
+  styleUrls: ['./anime-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnimeTableComponent implements OnInit {

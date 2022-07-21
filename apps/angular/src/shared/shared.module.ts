@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { AnimeTypePipe } from './pipes/animeType.pipe';
-import { AnimeStatusPipe } from './pipes/animeStatus.pipe';
+import { AnimeTypePipe } from './pipes/anime-type.pipe';
+import { AnimeStatusPipe } from './pipes/anime-status.pipe';
 import { LoaderComponent } from './components/loader/loader.component';
 
 const EXPORTED_DECLARATIONS = [

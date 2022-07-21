@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { routePaths } from '../../core/utils/routePaths';
+import { routePaths } from '../../core/utils/route-paths';
 
 /**
  * Layout component.

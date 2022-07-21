@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { SharedModule } from '../../../shared/shared.module';
 
 import { AnimeRoutingModule } from './anime-routing.module';
-import { AnimeTableComponent } from './table/animeTable.component';
+import { AnimeTableComponent } from './table/anime-table.component';
 
 /** Anime module. */
 @NgModule({
