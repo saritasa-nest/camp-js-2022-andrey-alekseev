@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { SharedModule } from './../shared/shared.module';
+import { HttpClientModule } from '@angular/common/http';
+
+import { SharedModule } from '../shared/shared.module';
+import { httpInterceptorProviders } from '../core/interceptors';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LayoutsModule } from './layout/layout.module';
 
 /** App module. */
 @NgModule({
@@ -11,9 +16,11 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     SharedModule,
+    LayoutsModule,
     AppRoutingModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

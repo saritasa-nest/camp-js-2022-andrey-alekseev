@@ -15,19 +15,26 @@
         "command": "cd apps/vanilla && npx vite build"
       }
     },
-
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/vanilla/src/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/vanilla/src/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "stylelint": {
       "executor": "nx-stylelint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/vanilla/**/*.css"]
+        "lintFilePatterns": [
+          "apps/vanilla/**/*.css"
+        ]
       }
     }
   },
