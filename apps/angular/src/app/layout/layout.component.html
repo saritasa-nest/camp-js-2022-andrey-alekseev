@@ -1,0 +1,14 @@
+<mat-toolbar class="toolbar" color="primary">
+  <a
+    mat-icon-button
+    routerLink="{{ routePaths.home }}"
+    class="toolbar__brand"
+    title="Home page"
+    aria-label="Home page"
+  >
+    <img alt="" class="toolbar__logo-image" src="../../assets/logo.png" />
+  </a>
+</mat-toolbar>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

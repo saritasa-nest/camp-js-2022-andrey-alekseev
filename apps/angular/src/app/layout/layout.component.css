@@ -1,0 +1,6 @@
+.toolbar__logo-image {
+  --toolbar-logo-height: 26px;
+
+  height: var(--toolbar-logo-height);
+  width: auto;
+}

@@ -1,0 +1,7 @@
+.anime-table__row-image {
+  --table-row-image-size: 128px;
+
+  width: var(--table-row-image-size);
+  height: var(--table-row-image-size);
+  object-fit: cover;
+}
