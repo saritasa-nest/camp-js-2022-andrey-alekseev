@@ -1,32 +1,19 @@
-import { AnimeFilterField } from '@js-camp/core/models/anime/animeBase';
+import { AnimeFilterOptions } from '@js-camp/core/models/anime/animeBase';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
 
 import M from 'materialize-css';
 
-import { AnimeType } from '@js-camp/core/models/anime/animeType';
+import { animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
 
 import { getElementOrRaiseError } from '../../../utils/query';
 
 import { TableUpdateCallback } from './types';
-
-const animeTypeOptionsMap: Readonly<Record<AnimeType, string>> = {
-  [AnimeType.TV]: AnimeType.toReadable(AnimeType.TV),
-  [AnimeType.OVA]: AnimeType.toReadable(AnimeType.OVA),
-  [AnimeType.Movie]: AnimeType.toReadable(AnimeType.Movie),
-  [AnimeType.Special]: AnimeType.toReadable(AnimeType.Special),
-  [AnimeType.ONA]: AnimeType.toReadable(AnimeType.ONA),
-  [AnimeType.Music]: AnimeType.toReadable(AnimeType.Music),
-  [AnimeType.Unknown]: AnimeType.toReadable(AnimeType.Unknown),
-};
 
 document.addEventListener('DOMContentLoaded', () => {
   const typesSelect = getElementOrRaiseError<HTMLSelectElement>(
     '.types-select',
   );
   for (const [value, label] of Object.entries(animeTypeOptionsMap)) {
-    if (value === 'unknown') {
-      continue;
-    }
     const typeOption = document.createElement('option');
     typeOption.value = value;
     typeOption.textContent = label;
@@ -42,7 +29,7 @@ export class FiltersHandler {
   private readonly typesSelect: HTMLSelectElement;
 
   /** Current filters. */
-  private _filterOptions: readonly FilterOption<AnimeFilterField>[];
+  private _filterOptions: readonly FilterOption<AnimeFilterOptions>[];
 
   public constructor(
     /** Callback that must be called after filters changed. */
@@ -64,9 +51,9 @@ export class FiltersHandler {
    * @param filterField Field to sort.
    * @param value Field value.
    */
-  private updateFilters(filterField: AnimeFilterField, value: string): void {
+  private updateFilters(filterField: AnimeFilterOptions, value: string): void {
     this._filterOptions = this._filterOptions.filter(
-      filterOption => filterOption.field !== AnimeFilterField.Type,
+      filterOption => filterOption.field !== AnimeFilterOptions.Type,
     );
     this._filterOptions = [
       ...this._filterOptions,
@@ -82,11 +69,11 @@ export class FiltersHandler {
   /** Handle type selected. */
   private onTypeSelected(): void {
     const { value } = this.typesSelect;
-    this.updateFilters(AnimeFilterField.Type, value);
+    this.updateFilters(AnimeFilterOptions.Type, value);
   }
 
   /** Get filter options. */
-  public get filterOptions(): readonly FilterOption<AnimeFilterField>[] {
+  public get filterOptions(): readonly FilterOption<AnimeFilterOptions>[] {
     return this._filterOptions;
   }
 }

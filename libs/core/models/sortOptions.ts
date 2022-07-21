@@ -1,7 +1,7 @@
 /** Sort direction. */
 export enum SortDirection {
-  Ascending = 'Ascending',
-  Descending = 'Descending',
+  Ascending = 'asc',
+  Descending = 'desc',
 }
 
 /** Sort options for a list of items. */

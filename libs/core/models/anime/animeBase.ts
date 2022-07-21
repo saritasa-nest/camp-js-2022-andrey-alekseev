@@ -12,8 +12,9 @@ export enum AnimeSortField {
 }
 
 /** Anime filter options. */
-export enum AnimeFilterField {
+export enum AnimeFilterOptions {
   Type = 'type',
+  Search = 'search',
 }
 
 /** Base model for anime. */

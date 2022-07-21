@@ -6,7 +6,7 @@ export enum AnimeType {
   Special = 'SPECIAL',
   ONA = 'ONA',
   Music = 'MUSIC',
-  Unknown = 'unknown',
+  Unknown = 'UNKNOWN',
 }
 
 export namespace AnimeType {
@@ -35,6 +35,19 @@ export namespace AnimeType {
    */
   export function toAnimeType(value: string): AnimeType {
     const type = value as AnimeType;
-    return TO_READABLE_MAP[type] ? type : AnimeType.Unknown;
+    if (!(type in TO_READABLE_MAP)) {
+      throw new Error('Unknown type');
+    }
+    return type;
   }
 }
+
+export const animeTypeOptionsMap: Readonly<Record<AnimeType, string>> = {
+  [AnimeType.TV]: AnimeType.toReadable(AnimeType.TV),
+  [AnimeType.OVA]: AnimeType.toReadable(AnimeType.OVA),
+  [AnimeType.Movie]: AnimeType.toReadable(AnimeType.Movie),
+  [AnimeType.Special]: AnimeType.toReadable(AnimeType.Special),
+  [AnimeType.ONA]: AnimeType.toReadable(AnimeType.ONA),
+  [AnimeType.Music]: AnimeType.toReadable(AnimeType.Music),
+  [AnimeType.Unknown]: AnimeType.toReadable(AnimeType.Unknown),
+};

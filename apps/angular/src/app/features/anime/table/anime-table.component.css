@@ -3,3 +3,9 @@
   height: var(--table-row-image-size);
   object-fit: cover;
 }
+
+.filters {
+  display: flex;
+  column-gap: 10px;
+  padding-inline: 10px;
+}
