@@ -1,23 +1,21 @@
-import {
-  LimitOffsetPagination,
-} from '@js-camp/core/models/limitOffsetPagination';
-import {
-  AnimeBase,
-  AnimeSortField,
-} from '@js-camp/core/models/anime/animeBase';
+import { LimitOffsetPagination } from '@js-camp/core/models/limitOffsetPagination';
+import { AnimeBase, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { AnimeStatus } from '@js-camp/core/models/anime/animeStatus';
 
 import { AnimeService } from '../../api/services/animeService';
-
+import {
+  ANIME_ID_QUERY_PARAMETER,
+  AppUrl,
+  EMPTY_SYMBOL,
+} from '../../../utils/constants';
+import { UserHelpers } from '../../api/helpers';
 import { getElementOrRaiseError } from '../../../utils/query';
 
 import { Paginator } from './pagination';
 import { SortingProcessor } from './sorting';
 import { FiltersHandler } from './filtering';
 import './navbar';
-
-const EMPTY_SYMBOL = '-';
 
 document.addEventListener('DOMContentLoaded', () => {
   const tableBody = getElementOrRaiseError<HTMLTableElement>(
@@ -80,7 +78,7 @@ class Table {
       this.sortingProcessor.getSortOptions(),
       this.filtersHandler.filterOptions,
     );
-    this.renderBody(animePaginatedList);
+    await this.renderBody(animePaginatedList);
     this.tablePaginator.updatePagination(animePaginatedList.count);
   }
 
@@ -88,26 +86,33 @@ class Table {
    * Update table body.
    * @param animePaginatedList Paginated list of anime.
    */
-  private renderBody(animePaginatedList: LimitOffsetPagination<AnimeBase>): void {
+  private async renderBody(animePaginatedList: LimitOffsetPagination<AnimeBase>): Promise<void> {
     this.tableBody.innerHTML = '';
+    const isUserLoggedIn = await UserHelpers.isUserLoggedIn();
     animePaginatedList.items.forEach(animeBase => {
-      this.tableBody.append(this.createTableRow(animeBase));
+      this.tableBody.append(this.createTableRow(animeBase, isUserLoggedIn));
     });
   }
 
   /**
    * Get anime table row.
    * @param animeBase Anime list item.
+   * @param isUserLoggedIn Is user logged in.
    */
-  private createTableRow(animeBase: AnimeBase): HTMLTableRowElement {
+  private createTableRow(animeBase: AnimeBase, isUserLoggedIn: boolean): HTMLTableRowElement {
     const tableRow = document.createElement('tr');
+    tableRow.classList.add('anime-table__row');
+    const animeLink = `
+        <a class="anime-table__row-link" href="${AppUrl.AnimeDetails}?${ANIME_ID_QUERY_PARAMETER}=${animeBase.id}"></a>
+    `;
     tableRow.innerHTML = `
     <td>
+        ${isUserLoggedIn ? animeLink : ''}
         <img alt="${animeBase.titleEng}" class="anime-table__row-image" src="${animeBase.image}">
     </td>
     <td>${animeBase.titleEng || EMPTY_SYMBOL}</td>
     <td>${animeBase.titleJapan || EMPTY_SYMBOL}</td>
-    <td>${animeBase.airedStart !== null ? animeBase.airedStart.toLocaleString() : EMPTY_SYMBOL}</td>
+    <td>${animeBase.airedStart !== null ? animeBase.airedStart.toLocaleDateString() : EMPTY_SYMBOL}</td>
     <td>${AnimeType.toReadable(animeBase.type)}</td>
     <td>${AnimeStatus.toReadable(animeBase.status)}</td>
   `;

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./anime.css" />
+    <title>Anime</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="anime">
+        <div class="anime__image-wrapper">
+          <img class="anime__image" alt="" src="" />
+        </div>
+        <div class="anime__content">
+          <div class="anime__header">
+            <h1 class="anime__title"></h1>
+            <div class="anime__status"><p class="anime__status-text"></p></div>
+            <ul class="anime__genres-list hidden"></ul>
+            <p class="anime__aired hidden"></p>
+            <ul class="anime__studios-list"></ul>
+          </div>
+          <section class="anime__section-line">
+            <h2 class="anime__section-header">Airing status:</h2>
+            <p class="anime__is-aring"></p>
+          </section>
+          <section class="anime__section-line">
+            <h2 class="anime__section-header">Type:</h2>
+            <p class="anime__type"></p>
+          </section>
+          <section>
+            <h2 class="anime__section-header">Synopsis</h2>
+            <p class="anime__synopsis"></p>
+          </section>
+          <div class="anime__trailer-wrapper hidden">
+            <iframe
+              title="Trailer"
+              class="anime__trailer"
+            >
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-window">
+      <div class="modal-window__content">
+        <img alt="" class="modal-window__image" src="" />
+      </div>
+    </div>
+    <script type="module" src="./anime.ts"></script>
+  </body>
+</html>

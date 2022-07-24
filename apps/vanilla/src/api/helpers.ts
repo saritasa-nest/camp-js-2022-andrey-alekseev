@@ -6,6 +6,12 @@ import { StorageService } from './services/storageService';
 
 export namespace UserHelpers {
 
+  /** Check if user logged in. */
+  export async function isUserLoggedIn(): Promise<boolean> {
+    const accessToken = await StorageService.get<string>(KEY_ACCESS_TOKEN);
+    return accessToken !== null;
+  }
+
   /**
    * Sets session token.
    * @param token Session token.

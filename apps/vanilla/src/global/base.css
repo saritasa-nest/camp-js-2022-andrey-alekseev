@@ -16,3 +16,7 @@ html {
   width: 1px;
   margin: 0;
 }
+
+.hidden {
+  display: none;
+}

@@ -5,7 +5,6 @@ import { http } from '../index';
 import { UserHelpers } from '../helpers';
 import { AppUrl } from '../../../utils/constants';
 import { ApiError } from '../errors';
-import { CONFIG } from '../config';
 import { redirect } from '../../../utils/navigation';
 
 /**
@@ -22,25 +21,27 @@ export const errorInterceptor = async(error: unknown): Promise<AxiosResponse> =>
       return Promise.reject(error);
     }
 
-    const { headers } = originalRequest;
+    // Login returns 401 on bad credentials
     const isNoTokenExpiredError = (
-      headers === undefined ||
-      headers[CONFIG.apiTokenHeader] === undefined
+      originalRequest.url?.includes('/login/')
     );
     if (
-      response.status === 400 ||
+      response.status === 400 || response.status === 404 ||
       response.status === 401 && isNoTokenExpiredError
     ) {
       throw new ApiError(error);
     }
 
-    if (response.status === 401) {
+    const isRefreshTokenRequest = originalRequest.url?.includes(
+      '/token/refresh/',
+    );
+    if (response.status === 401 && !isRefreshTokenRequest) {
       try {
         await AuthService.refreshTokens();
         return http(originalRequest);
       } catch {
         await UserHelpers.clearUserData();
-        redirect(AppUrl.Base);
+        redirect(AppUrl.Login);
       }
     }
   }

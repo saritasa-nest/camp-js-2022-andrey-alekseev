@@ -3,8 +3,8 @@ import { UserDto } from '@js-camp/core/dtos/user.dto';
 import { UserMapper } from '@js-camp/core/mappers/user.mapper';
 
 import { http } from '..';
-
-import { KEY_ACCESS_TOKEN, KEY_EMAIL } from '../../../utils/localStorageKeys';
+import { KEY_EMAIL } from '../../../utils/localStorageKeys';
+import { UserHelpers } from '../helpers';
 
 import { StorageService } from './storageService';
 
@@ -20,8 +20,7 @@ export namespace UserService {
 
   /** Get user's email. */
   export async function getEmail(): Promise<string | null> {
-    const accessToken = await StorageService.get<string>(KEY_ACCESS_TOKEN);
-    if (accessToken === null) {
+    if (!(await UserHelpers.isUserLoggedIn())) {
       return null;
     }
 
