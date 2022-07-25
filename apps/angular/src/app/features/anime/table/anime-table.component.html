@@ -77,6 +77,7 @@
 </mat-table>
 
 <mat-paginator
+  *ngIf="listManager.pagePagination$ | async as pagination"
   color="primary"
   showFirstLastButtons
   [pageSizeOptions]="[5, 10, 20]"

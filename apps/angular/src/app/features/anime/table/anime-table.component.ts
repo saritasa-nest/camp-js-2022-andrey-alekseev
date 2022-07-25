@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { AnimeBase, AnimeFilterOptions, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
@@ -28,7 +28,7 @@ interface AnimeFiltersType {
   styleUrls: ['./anime-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AnimeTableComponent {
+export class AnimeTableComponent implements OnInit, OnDestroy {
   /** Anime list manager. */
   public listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions> = new ListManager();
 
@@ -57,42 +57,52 @@ export class AnimeTableComponent {
   /** Anime type options map. */
   public animeTypeOptionsMap = animeTypeOptionsMap;
 
+  private filtersFormSubscription?: Subscription;
+
   public constructor(
-    private animeService: AnimeService,
     private formBuilder: FormBuilder,
+    animeService: AnimeService,
   ) {
     this.animeList$ = this.listManager.getPaginatedItems(
-      (paginationData, sortOptions, filterOptions) => this.animeService.getAnimeList(
+      (paginationData, sortOptions, filterOptions) => animeService.getAnimeList(
         paginationData,
         sortOptions,
         filterOptions,
       ),
     );
-    this.listManager.pagePagination$.subscribe(
-      paginationData => {
-        this.pagination = paginationData;
-      },
-    );
-    this.filtersForm.valueChanges.subscribe(
+  }
+
+  /** @inheritDoc */
+  public ngOnInit(): void {
+    this.filtersFormSubscription = this.filtersForm.valueChanges.subscribe(
       values => {
         const filterOptions: FilterOption<AnimeFilterOptions>[] = [];
-        if (values.search) {
+
+        const search = values[AnimeFilterOptions.Search];
+        if (search !== null && search !== undefined) {
           filterOptions.push({
             field: AnimeFilterOptions.Search,
             filterType: FilterType.Exact,
-            value: values.search,
+            value: search,
           });
         }
-        if (values.type) {
+
+        const types = values[AnimeFilterOptions.Type];
+        if (types !== null && types !== undefined) {
           filterOptions.push({
             field: AnimeFilterOptions.Type,
             filterType: FilterType.In,
-            value: values.type,
+            value: types,
           });
         }
         this.listManager.updateFilters(filterOptions);
       },
     );
+  }
+
+  /** @inheritDoc */
+  public ngOnDestroy(): void {
+    this.filtersFormSubscription?.unsubscribe();
   }
 
   /**
