@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { PageEvent } from '@angular/material/paginator';
 import { AnimeBase, AnimeFilterOptions, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
 import { Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
 import { AnimeType, animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AnimeService } from '../../../../core/services/anime.service';
 import { ListManager } from '../../../../core/utils/list-manager';
@@ -19,6 +21,20 @@ interface AnimeFiltersType {
 
   /** Type of type filter. */
   [AnimeFilterOptions.Type]: readonly AnimeType[] | null;
+}
+
+/** Aa. */
+enum AnimeListQueryParams {
+  SEARCH = 'search',
+  TYPE_IN = 'typeIn',
+  PAGE = 'page',
+  PAGE_SIZE = 'pageSize',
+  ORDERING_FIELD = 'orderingField',
+  ORDERING_DIRECTION = 'orderingDirection',
+}
+
+interface QueryParameters {
+  [key: string]: string;
 }
 
 /** Anime list component. */
@@ -57,10 +73,15 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
   /** Anime type options map. */
   public animeTypeOptionsMap = animeTypeOptionsMap;
 
+  private queryParams: BehaviorSubject<QueryParameters> = new BehaviorSubject<QueryParameters>({});
+
   private filtersFormSubscription?: Subscription;
 
   public constructor(
     private formBuilder: FormBuilder,
+    private activeRoute: ActivatedRoute,
+    private router: Router,
+    private location: Location,
     animeService: AnimeService,
   ) {
     this.animeList$ = this.listManager.getPaginatedItems(
@@ -70,6 +91,18 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
         filterOptions,
       ),
     );
+    // eslint-disable-next-line rxjs/no-ignored-observable
+    this.queryParams.pipe(
+      map(queryParams => {
+        this.router.navigate(
+          [],
+          {
+            queryParams,
+            queryParamsHandling: 'merge',
+          },
+        ).toString();
+      }),
+    ).subscribe();
   }
 
   /** @inheritDoc */
@@ -96,6 +129,36 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
           });
         }
         this.listManager.updateFilters(filterOptions);
+      },
+    );
+    this.listManager.pagePagination$.subscribe(
+      pagination => {
+        this.queryParams.next({
+          [AnimeListQueryParams.PAGE]: pagination.page.toString(),
+          [AnimeListQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
+        });
+      },
+    );
+    this.listManager.paginationResetParams$.subscribe(
+      ([sortOptions, filters]) => {
+        const queryParams: {
+          [key: string]: string;
+        } = {};
+        if (sortOptions !== null) {
+          queryParams[AnimeListQueryParams.ORDERING_FIELD] = sortOptions.field;
+          queryParams[AnimeListQueryParams.ORDERING_DIRECTION] = sortOptions.direction;
+        }
+        if (filters !== null) {
+          filters.forEach(filter => {
+            queryParams[filter.field] = typeof filter.value === 'string' ? filter.value : filter.value.join(',');
+          });
+        }
+        this.queryParams.next(queryParams);
+      },
+    );
+    this.activeRoute.queryParams.subscribe(
+      params => {
+
       },
     );
   }

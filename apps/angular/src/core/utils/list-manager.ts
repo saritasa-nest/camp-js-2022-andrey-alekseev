@@ -27,6 +27,14 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
   /** Pagination options.*/
   public readonly pagePagination$: Observable<PaginationData>;
 
+  /** Parameters that can reset pagination. */
+  public readonly paginationResetParams$: Observable<
+    [
+      SortOptions<TItemSortFields> | null,
+      readonly FilterOption<TItemFilterFields>[] | null,
+    ]
+  >;
+
   /** Is list loading. */
   public readonly isLoading$: Observable<boolean>;
 
@@ -39,13 +47,6 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
   private readonly sort$ = new BehaviorSubject<SortOptions<TItemSortFields> | null>(null);
 
   private readonly filters$ = new BehaviorSubject<readonly FilterOption<TItemFilterFields>[] | null>(null);
-
-  /** Parameters that can reset pagination. */
-  private readonly paginationResetParams$: Observable<
-    [
-      SortOptions<TItemSortFields> | null,
-      readonly FilterOption<TItemFilterFields>[] | null,
-    ]>;
 
   public constructor() {
     this.isLoading$ = this.loading$.asObservable();
