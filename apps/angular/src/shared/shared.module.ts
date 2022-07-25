@@ -4,12 +4,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AnimeTypePipe } from './pipes/anime-type.pipe';
 import { AnimeStatusPipe } from './pipes/anime-status.pipe';
-import { LoaderComponent } from './components/loader/loader.component';
+import { PageLoaderComponent } from './components/loader/page-loader.component';
 
 const EXPORTED_DECLARATIONS = [
   AnimeTypePipe,
   AnimeStatusPipe,
-  LoaderComponent,
+  PageLoaderComponent,
 ];
 
 /** Shared module. */

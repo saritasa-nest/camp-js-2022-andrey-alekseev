@@ -1,9 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 
-/**
- * Pipe for transforming anime type to readable.
- */
+/** Pipe for transforming anime type to readable. */
 @Pipe({
   name: 'animeType',
 })

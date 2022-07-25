@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay, Subscription } from 'rxjs';
 
 import { AnimeService } from '../../../../core/services/anime.service';
 
@@ -13,9 +13,12 @@ import { AnimeService } from '../../../../core/services/anime.service';
   styleUrls: ['./anime-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AnimeTableComponent implements OnInit {
+export class AnimeTableComponent implements OnInit, OnDestroy {
   /** List of anime. */
-  public animeList$: Observable<readonly AnimeBase[]>;
+  public readonly animeList$: Observable<readonly AnimeBase[]>;
+
+  /** Subscription for anime list. */
+  private animeListSubscription?: Subscription;
 
   /** Is table loading. */
   public isLoading = true;
@@ -31,20 +34,25 @@ export class AnimeTableComponent implements OnInit {
   ];
 
   public constructor(
-    private animeService: AnimeService,
+    animeService: AnimeService,
   ) {
-    this.animeList$ = this.animeService.getAnimeList().pipe(
+    this.animeList$ = animeService.getAnimeList().pipe(
       map(animePaginatedList => animePaginatedList.items),
       shareReplay({ refCount: true, bufferSize: 1 }),
     );
   }
 
-  /** Disable loading on fetch end. */
+  /** @inheritDoc */
   public ngOnInit(): void {
-    this.animeList$.subscribe(
+    this.animeListSubscription = this.animeList$.subscribe(
       () => {
         this.isLoading = false;
       },
     );
+  }
+
+  /** @inheritDoc */
+  public ngOnDestroy(): void {
+    this.animeListSubscription?.unsubscribe();
   }
 }

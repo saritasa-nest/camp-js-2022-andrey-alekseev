@@ -2,7 +2,7 @@
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" alt="" src="{{ anime.image }}" />
+      <img class="anime-table__row-image" [alt]="anime.titleEng" src="{{ anime.image }}" />
     </mat-cell>
   </ng-container>
 
@@ -39,6 +39,4 @@
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 </mat-table>
 
-<ng-container *ngIf="isLoading">
-  <anime-loader></anime-loader>
-</ng-container>
+<anime-page-loader *ngIf="isLoading"></anime-page-loader>

@@ -16,8 +16,4 @@ export class LayoutComponent {
   /** Route paths. */
   public readonly routePaths = routePaths;
 
-  public constructor(
-  ) {
-  }
-
 }

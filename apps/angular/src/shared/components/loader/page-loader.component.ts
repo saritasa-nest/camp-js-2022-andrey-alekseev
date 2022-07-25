@@ -2,12 +2,12 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 
 /** Loading spinner. */
 @Component({
-  selector: 'anime-loader',
-  templateUrl: './loader.component.html',
-  styleUrls: ['./loader.component.css'],
+  selector: 'anime-page-loader',
+  templateUrl: './page-loader.component.html',
+  styleUrls: ['./page-loader.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoaderComponent {
+export class PageLoaderComponent {
   /** Loader circle diameter. */
   @Input()
   public diameter = 100;
