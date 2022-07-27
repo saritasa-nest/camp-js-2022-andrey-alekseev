@@ -31,11 +31,12 @@
   [dataSource]="animeList$"
   matSort
   (matSortChange)="onSortChanged($event)"
+  [trackBy]="trackAnimeById"
 >
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" alt="" src="{{ anime.image }}" />
+      <img class="anime-table__row-image" [alt]="anime.titleEng" [src]="anime.image" />
     </mat-cell>
   </ng-container>
 

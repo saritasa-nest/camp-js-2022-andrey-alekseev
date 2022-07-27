@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { map, Observable, shareReplay, Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { AnimeBase, AnimeFilterOptions, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
@@ -49,7 +50,10 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
   public listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions> = new ListManager();
 
   /** List of anime. */
-  public animeList$: Observable<readonly AnimeBase[]>;
+  public readonly animeList$: Observable<readonly AnimeBase[]>;
+
+  /** Anime table subscriptions. */
+  private readonly animeTableSubscriptions = new Subscription();
 
   /** Pagination data. */
   public pagination: PaginationData = new PaginationData();
@@ -103,6 +107,15 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
         ).toString();
       }),
     ).subscribe();
+  }
+
+  /**
+   * Track by anime by id.
+   * @param _index Item index.
+   * @param anime Anime model.
+   */
+  public trackAnimeById(_index: number, anime: AnimeBase): number {
+    return anime.id;
   }
 
   /** @inheritDoc */

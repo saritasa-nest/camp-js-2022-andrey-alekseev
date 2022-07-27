@@ -1,9 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { AnimeStatus } from '@js-camp/core/models/anime/animeStatus';
 
-/**
- * Pipe for transforming anime status to readable.
- */
+/** Pipe for transforming anime status to readable. */
 @Pipe({
   name: 'animeStatus',
 })

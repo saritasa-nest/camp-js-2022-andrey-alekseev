@@ -35,8 +35,8 @@ export class AnimeService {
   private readonly animeListUrl: URL;
 
   public constructor(
-    private http: HttpClient,
-    private appConfig: AppConfigService,
+    private readonly http: HttpClient,
+    appConfig: AppConfigService,
   ) {
     const rootAnimeUrl = appConfig.apiUrl + BASE_URL_PREFIX;
     this.animeListUrl = new URL(`anime/`, rootAnimeUrl);
@@ -58,7 +58,7 @@ export class AnimeService {
       filterParams = FilterOptionMap.toDto(filterOptions);
     }
     return this.http.get<LimitOffsetPaginationDto<AnimeDto>>(
-      'https://api.camp-js.saritasa.rocks/api/v1/anime/anime/',
+      this.animeListUrl.toString(),
       {
         params: {
           ...LimitOffsetQueryMapper.toDto(
