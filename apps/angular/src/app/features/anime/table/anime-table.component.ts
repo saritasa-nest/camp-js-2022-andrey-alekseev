@@ -17,8 +17,8 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
   /** List of anime. */
   public readonly animeList$: Observable<readonly AnimeBase[]>;
 
-  /** Subscription for anime list. */
-  private animeListSubscription?: Subscription;
+  /** Anime table subscriptions. */
+  private readonly animeTableSubscriptions = new Subscription();
 
   /** Is table loading. */
   public isLoading = true;
@@ -42,17 +42,26 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Track by anime by id.
+   * @param _index Item index.
+   * @param anime Anime model.
+   */
+  public trackAnimeById(_index: number, anime: AnimeBase): number {
+    return anime.id;
+  }
+
   /** @inheritDoc */
   public ngOnInit(): void {
-    this.animeListSubscription = this.animeList$.subscribe(
+    this.animeTableSubscriptions.add(this.animeList$.subscribe(
       () => {
         this.isLoading = false;
       },
-    );
+    ));
   }
 
   /** @inheritDoc */
   public ngOnDestroy(): void {
-    this.animeListSubscription?.unsubscribe();
+    this.animeTableSubscriptions.unsubscribe();
   }
 }

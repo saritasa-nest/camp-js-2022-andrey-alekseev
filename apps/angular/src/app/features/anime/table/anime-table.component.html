@@ -1,8 +1,8 @@
-<mat-table [dataSource]="animeList$">
+<mat-table [dataSource]="animeList$" [trackBy]="trackAnimeById">
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" [alt]="anime.titleEng" src="{{ anime.image }}" />
+      <img class="anime-table__row-image" [alt]="anime.titleEng" [src]="anime.image" />
     </mat-cell>
   </ng-container>
 
