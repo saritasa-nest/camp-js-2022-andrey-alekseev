@@ -9,3 +9,8 @@
   column-gap: 10px;
   padding-inline: 10px;
 }
+
+.anime-table__empty-message {
+  text-align: center;
+  padding: 10px;
+}

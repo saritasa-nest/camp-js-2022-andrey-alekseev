@@ -36,7 +36,11 @@
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" [alt]="anime.titleEng" [src]="anime.image" />
+      <img
+        class="anime-table__row-image"
+        [alt]="anime.titleEng"
+        [src]="anime.image"
+      />
     </mat-cell>
   </ng-container>
 
@@ -75,6 +79,9 @@
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <div class="anime-table__empty-message" *matNoDataRow>
+    There aren't anime for this filters
+  </div>
 </mat-table>
 
 <mat-paginator

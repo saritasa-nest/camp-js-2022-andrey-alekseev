@@ -15,14 +15,29 @@ import { PaginationData } from '@js-camp/core/pagination';
 import { SortOptions } from '@js-camp/core/models/sortOptions';
 import { FilterOption } from '@js-camp/core/models/filterOption';
 
+import { withIsFirst } from '../rxjs/withIsFirst';
+
 export type ApiRequestCallback<TItem, TItemSortFields, TItemFilterFields> = (
   paginationData: PaginationData,
   sortOptions: SortOptions<TItemSortFields> | null,
   filterOptions: readonly FilterOption<TItemFilterFields>[] | null,
 ) => Observable<LimitOffsetPagination<TItem>>;
 
+/** List manager initial params. */
+export interface ListManagerInitParams<TItemSortFields, TItemFilterFields> {
+
+  /** Initial pagination data. */
+  paginationData?: PaginationData;
+
+  /** Initial sort options. */
+  sortOptions?: SortOptions<TItemSortFields>;
+
+  /** Initial filters options. */
+  filtersOptions?: readonly FilterOption<TItemFilterFields>[];
+}
+
 /** Manager to work with lists. */
-export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
+export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
 
   /** Pagination options.*/
   public readonly pagePagination$: Observable<PaginationData>;
@@ -31,7 +46,7 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
   public readonly paginationResetParams$: Observable<
     [
       SortOptions<TItemSortFields> | null,
-      readonly FilterOption<TItemFilterFields>[] | null,
+      readonly FilterOption<TItemFilterOptions>[] | null,
     ]
   >;
 
@@ -46,9 +61,25 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
 
   private readonly sort$ = new BehaviorSubject<SortOptions<TItemSortFields> | null>(null);
 
-  private readonly filters$ = new BehaviorSubject<readonly FilterOption<TItemFilterFields>[] | null>(null);
+  private readonly filters$ = new BehaviorSubject<readonly FilterOption<TItemFilterOptions>[] | null>(null);
 
-  public constructor() {
+  public constructor({
+    paginationData,
+    sortOptions,
+    filtersOptions,
+  }: ListManagerInitParams<TItemSortFields, TItemFilterOptions> = {}) {
+    if (sortOptions !== undefined) {
+      this.sort$.next(sortOptions);
+    }
+
+    if (paginationData !== undefined) {
+      this.pagination$.next(paginationData);
+    }
+
+    if (filtersOptions !== undefined) {
+      this.filters$.next(filtersOptions);
+    }
+
     this.isLoading$ = this.loading$.asObservable();
 
     this.paginationResetParams$ = combineLatest([
@@ -63,7 +94,14 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
       this.pagination$,
       this.paginationResetParams$.pipe(
         withLatestFrom(this.pagination$),
-        map(([, paginationData]) => this.resetPagination(paginationData)),
+
+        // Dont reset initial pagination
+        withIsFirst(([, pagination], isFirst) => {
+          if (!isFirst) {
+            return this.resetPagination(pagination);
+          }
+          return pagination;
+        }),
       ),
     ).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
@@ -75,7 +113,7 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
    * @param fetchFunc Function to fetch items.
    */
   public getPaginatedItems(
-    fetchFunc: ApiRequestCallback<TItem, TItemSortFields, TItemFilterFields>,
+    fetchFunc: ApiRequestCallback<TItem, TItemSortFields, TItemFilterOptions>,
   ): Observable<readonly TItem[]> {
     return this.reload$.pipe(
       switchMapTo(this.paginationResetParams$),
@@ -115,7 +153,7 @@ export class ListManager<TItem, TItemSortFields, TItemFilterFields> {
    * Update filters.
    * @param filterOptions Filter options.
    */
-  public updateFilters(filterOptions: readonly FilterOption<TItemFilterFields>[] | null): void {
+  public updateFilters(filterOptions: readonly FilterOption<TItemFilterOptions>[] | null): void {
     this.filters$.next(filterOptions);
   }
 

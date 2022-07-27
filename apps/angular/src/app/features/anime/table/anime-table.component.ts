@@ -1,19 +1,20 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { map, Observable, shareReplay, Subscription } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { AnimeBase, AnimeFilterOptions, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import { AnimeBase, AnimeFilterOptions, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
-import { BehaviorSubject, map, Observable, Subscription } from 'rxjs';
-import { Sort } from '@angular/material/sort';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
 import { AnimeType, animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
-import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+
+import { isSortDirection, SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
 
 import { AnimeService } from '../../../../core/services/anime.service';
-import { ListManager } from '../../../../core/utils/list-manager';
+import { ListManager, ListManagerInitParams } from '../../../../core/utils/list-manager';
 import { matSortToSortOptions } from '../../../../core/utils/table';
+import { getNumberQueryParameter } from '../../../../core/utils/queryParameters';
 
 interface AnimeFiltersType {
 
@@ -24,10 +25,10 @@ interface AnimeFiltersType {
   [AnimeFilterOptions.Type]: readonly AnimeType[] | null;
 }
 
-/** Aa. */
-enum AnimeListQueryParams {
+/** Anime table query parameters. */
+enum TableQueryParams {
   SEARCH = 'search',
-  TYPE_IN = 'typeIn',
+  TYPE = 'type',
   PAGE = 'page',
   PAGE_SIZE = 'pageSize',
   ORDERING_FIELD = 'orderingField',
@@ -38,6 +39,8 @@ interface QueryParameters {
   [key: string]: string;
 }
 
+const MULTIPLE_FILTERS_SEPARATOR = ',';
+
 /** Anime list component. */
 @Component({
   selector: 'anime-table',
@@ -45,18 +48,15 @@ interface QueryParameters {
   styleUrls: ['./anime-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AnimeTableComponent implements OnInit, OnDestroy {
+export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
   /** Anime list manager. */
-  public listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions> = new ListManager();
+  public readonly listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions>;
 
   /** List of anime. */
   public readonly animeList$: Observable<readonly AnimeBase[]>;
 
   /** Anime table subscriptions. */
   private readonly animeTableSubscriptions = new Subscription();
-
-  /** Pagination data. */
-  public pagination: PaginationData = new PaginationData();
 
   /** Filters form. */
   public readonly filtersForm = this.formBuilder.group<AnimeFiltersType>({
@@ -65,29 +65,32 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
   });
 
   /** Columns to display in table. */
-  public displayedColumns = [
+  public readonly displayedColumns = [
     'image',
     'titleEng',
     'titleJpn',
     'airedStart',
     'type',
     'status',
-  ];
+  ] as const;
 
   /** Anime type options map. */
-  public animeTypeOptionsMap = animeTypeOptionsMap;
+  public readonly animeTypeOptionsMap = animeTypeOptionsMap;
 
-  private queryParams: BehaviorSubject<QueryParameters> = new BehaviorSubject<QueryParameters>({});
+  private readonly queryParams$: BehaviorSubject<QueryParameters> = new BehaviorSubject<QueryParameters>({});
 
-  private filtersFormSubscription?: Subscription;
+  @ViewChild(MatSort) private tableSort?: MatSort;
+
+  private readonly initialParams: ListManagerInitParams<AnimeSortField, AnimeFilterOptions>;
 
   public constructor(
     private formBuilder: FormBuilder,
     private activeRoute: ActivatedRoute,
     private router: Router,
-    private location: Location,
     animeService: AnimeService,
   ) {
+    this.initialParams = this.getParamsFromQuery(this.activeRoute.snapshot.queryParamMap);
+    this.listManager = new ListManager(this.initialParams);
     this.animeList$ = this.listManager.getPaginatedItems(
       (paginationData, sortOptions, filterOptions) => animeService.getAnimeList(
         paginationData,
@@ -95,18 +98,6 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
         filterOptions,
       ),
     );
-    // eslint-disable-next-line rxjs/no-ignored-observable
-    this.queryParams.pipe(
-      map(queryParams => {
-        this.router.navigate(
-          [],
-          {
-            queryParams,
-            queryParamsHandling: 'merge',
-          },
-        ).toString();
-      }),
-    ).subscribe();
   }
 
   /**
@@ -120,11 +111,23 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
 
   /** @inheritDoc */
   public ngOnInit(): void {
-    this.filtersFormSubscription = this.filtersForm.valueChanges.subscribe(
-      values => {
+    this.animeTableSubscriptions.add(this.queryParams$.subscribe(
+      queryParams => {
+        this.router.navigate(
+          [],
+          {
+            queryParams,
+            queryParamsHandling: 'merge',
+          },
+        );
+      },
+    ));
+
+    this.animeTableSubscriptions.add(this.filtersForm.valueChanges.subscribe(
+      filterValues => {
         const filterOptions: FilterOption<AnimeFilterOptions>[] = [];
 
-        const search = values[AnimeFilterOptions.Search];
+        const search = filterValues[AnimeFilterOptions.Search];
         if (search !== null && search !== undefined) {
           filterOptions.push({
             field: AnimeFilterOptions.Search,
@@ -133,7 +136,7 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
           });
         }
 
-        const types = values[AnimeFilterOptions.Type];
+        const types = filterValues[AnimeFilterOptions.Type];
         if (types !== null && types !== undefined) {
           filterOptions.push({
             field: AnimeFilterOptions.Type,
@@ -143,42 +146,73 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
         }
         this.listManager.updateFilters(filterOptions);
       },
-    );
-    this.listManager.pagePagination$.subscribe(
+    ));
+
+    this.animeTableSubscriptions.add(this.listManager.pagePagination$.subscribe(
       pagination => {
-        this.queryParams.next({
-          [AnimeListQueryParams.PAGE]: pagination.page.toString(),
-          [AnimeListQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
+        this.queryParams$.next({
+          [TableQueryParams.PAGE]: pagination.page.toString(),
+          [TableQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
         });
       },
-    );
-    this.listManager.paginationResetParams$.subscribe(
+    ));
+    this.animeTableSubscriptions.add(this.listManager.paginationResetParams$.subscribe(
       ([sortOptions, filters]) => {
-        const queryParams: {
-          [key: string]: string;
-        } = {};
-        if (sortOptions !== null) {
-          queryParams[AnimeListQueryParams.ORDERING_FIELD] = sortOptions.field;
-          queryParams[AnimeListQueryParams.ORDERING_DIRECTION] = sortOptions.direction;
-        }
+        const queryParams: QueryParameters = {};
+
+        queryParams[TableQueryParams.ORDERING_FIELD] = sortOptions !== null ? sortOptions.field : '';
+        queryParams[TableQueryParams.ORDERING_DIRECTION] = sortOptions !== null ? sortOptions.direction : '';
         if (filters !== null) {
           filters.forEach(filter => {
-            queryParams[filter.field] = typeof filter.value === 'string' ? filter.value : filter.value.join(',');
+            queryParams[filter.field] = typeof filter.value === 'string' ? filter.value : filter.value.join(
+              MULTIPLE_FILTERS_SEPARATOR,
+            );
           });
         }
-        this.queryParams.next(queryParams);
+        this.queryParams$.next(queryParams);
       },
-    );
-    this.activeRoute.queryParams.subscribe(
-      params => {
+    ));
+  }
 
-      },
-    );
+  /** @inheritDoc */
+  public ngAfterViewInit(): void {
+    const { sortOptions, filtersOptions } = this.getParamsFromQuery(this.activeRoute.snapshot.queryParamMap);
+    if (this.tableSort === undefined) {
+      throw new Error(
+        'There aren\'t table sort block',
+      );
+    }
+
+    if (sortOptions !== undefined) {
+      this.tableSort.sort(
+        {
+          id: sortOptions.field,
+          start: sortOptions.direction,
+          disableClear: false,
+        },
+      );
+
+      // Tricky way to activate styles for sorted column
+      (this.tableSort.sortables.get(sortOptions.field) as MatSortHeader)._setAnimationTransitionState(
+        { toState: 'active' },
+      );
+    }
+
+    if (filtersOptions !== undefined) {
+      for (const filterOption of filtersOptions) {
+        if (typeof filterOption.value === 'string' && filterOption.field === AnimeFilterOptions.Search) {
+          this.filtersForm.controls[filterOption.field].setValue(filterOption.value);
+        }
+        if (filterOption.field === AnimeFilterOptions.Type) {
+          this.filtersForm.controls[filterOption.field].setValue(filterOption.value as AnimeType[]);
+        }
+      }
+    }
   }
 
   /** @inheritDoc */
   public ngOnDestroy(): void {
-    this.filtersFormSubscription?.unsubscribe();
+    this.animeTableSubscriptions.unsubscribe();
   }
 
   /**
@@ -199,5 +233,74 @@ export class AnimeTableComponent implements OnInit, OnDestroy {
    */
   public onSortChanged(sort: Sort): void {
     this.listManager.updateSort(matSortToSortOptions<AnimeSortField>(sort));
+  }
+
+  /**
+   * Get initial parameters from query.
+   * @param queryParams URL query parameters map.
+   */
+  private getParamsFromQuery(
+    queryParams: ParamMap,
+  ): ListManagerInitParams<AnimeSortField, AnimeFilterOptions> {
+    const pageNumber = getNumberQueryParameter(
+      queryParams,
+      TableQueryParams.PAGE,
+    );
+    const pageSizeNumber = getNumberQueryParameter(
+      queryParams,
+      TableQueryParams.PAGE_SIZE,
+    );
+    const paginationData = new PaginationData(
+      pageNumber,
+      pageSizeNumber,
+    );
+
+    const sortField = queryParams.get(TableQueryParams.ORDERING_FIELD);
+    const sortDirection = queryParams.get(TableQueryParams.ORDERING_DIRECTION);
+    let sortOptions: SortOptions<AnimeSortField> | undefined;
+    if (sortField !== null && isAnimeSortField(sortField)) {
+      if (sortDirection !== null && isSortDirection(sortDirection)) {
+        sortOptions = {
+          field: sortField,
+          direction: sortDirection,
+        };
+      } else {
+        sortOptions = {
+          field: sortField,
+          direction: SortDirection.Ascending,
+        };
+      }
+    }
+
+    const filtersOptions: FilterOption<AnimeFilterOptions>[] = [];
+    const typesParam = queryParams.get(TableQueryParams.TYPE);
+    if (typesParam !== null) {
+      const types: AnimeType[] = [];
+      for (const type of typesParam.split(MULTIPLE_FILTERS_SEPARATOR)) {
+        if (AnimeType.isAnimeType(type)) {
+          types.push(type);
+        }
+      }
+      filtersOptions.push({
+        field: AnimeFilterOptions.Type,
+        filterType: FilterType.In,
+        value: types,
+      });
+    }
+
+    const searchParam = queryParams.get(TableQueryParams.SEARCH);
+    if (searchParam !== null) {
+      filtersOptions.push({
+        field: AnimeFilterOptions.Search,
+        filterType: FilterType.Exact,
+        value: searchParam,
+      });
+    }
+
+    return {
+      paginationData,
+      sortOptions,
+      filtersOptions,
+    };
   }
 }

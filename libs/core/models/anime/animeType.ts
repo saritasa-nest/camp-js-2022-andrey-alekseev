@@ -40,6 +40,14 @@ export namespace AnimeType {
     }
     return type;
   }
+
+  /**
+   * Check if string is anime type.
+   * @param type String to check.
+   */
+  export function isAnimeType(type: string): type is AnimeType {
+    return Object.values(AnimeType).includes(type as AnimeType);
+  }
 }
 
 export const animeTypeOptionsMap: Readonly<Record<AnimeType, string>> = {
