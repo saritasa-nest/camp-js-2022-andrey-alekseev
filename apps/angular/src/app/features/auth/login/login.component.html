@@ -1,0 +1,32 @@
+<div class="form-wrapper">
+  <h1>Login</h1>
+  <form [formGroup]="loginForm" class="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        name="email"
+        placeholder="example@domain.com"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        name="password"
+        autocomplete="current-password"
+      />
+    </mat-form-field>
+    <mat-error *ngIf="loginForm.hasError(serverErrorKey)" class="form__base-errors">
+      {{loginForm.getError(serverErrorKey)}}
+    </mat-error>
+    <div class="form__controls">
+      <button [disabled]="loginForm.invalid" mat-raised-button color="primary" type="submit">Submit</button>
+      <a [routerLink]="routePaths.registration">Dont have an account?</a>
+    </div>
+  </form>
+</div>

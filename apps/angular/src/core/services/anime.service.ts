@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AnimeBase, AnimeFilters, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
 import { LimitOffsetPaginationDto } from '@js-camp/core/dtos/limitOffsetPagination.dto';
 import { LimitOffsetPaginationMapper } from '@js-camp/core/mappers/limitOffsetPagination.mapper';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
@@ -11,8 +10,8 @@ import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
 import { FilterType } from '@js-camp/core/models/filterOption';
 import { FilterOptionMapper } from '@js-camp/core/mappers/filterOption.mapper';
 import { PaginatedItems } from '@js-camp/core/models/pagination/paginatedItems';
-
 import { PaginationQuery } from '@js-camp/core/models/pagination/paginationQuery';
+import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 
 import { AppUrlConfigService } from './app-url-config.service';
 
@@ -53,7 +52,7 @@ export class AnimeService {
         },
       ]);
     }
-    return this.http.get<LimitOffsetPaginationDto<AnimeDto>>(
+    return this.http.get<LimitOffsetPaginationDto<AnimeBaseDto>>(
       this.appUrls.animeUrls.list,
       {
         params: {

@@ -1,0 +1,108 @@
+<div class="form-wrapper">
+  <h1>Registration</h1>
+  <form [formGroup]="registrationForm" class="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        name="email"
+        placeholder="example@domain.com"
+        autocomplete="email"
+      />
+      <mat-error *ngIf="registrationForm.controls.email.hasError('email')" class="text-danger">
+        Enter valid email
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.email.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.email.getError(serverErrorKey)}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>First name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="firstName"
+        name="firstName"
+        placeholder="Andrey"
+        autocomplete="given-name"
+      />
+      <mat-error *ngIf="registrationForm.controls.firstName.hasError('maxlength')" class="text-danger">
+        Max length for first name is 32.
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.firstName.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.firstName.getError(serverErrorKey)}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Last name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        name="lastName"
+        placeholder="Alekseev"
+        autocomplete="family-name"
+      />
+      <mat-error *ngIf="registrationForm.controls.lastName.hasError('maxlength')" class="text-danger">
+        Max length for last name is 32.
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.lastName.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.lastName.getError(serverErrorKey)}}
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        name="password"
+        autocomplete="new-password"
+      />
+      <mat-error *ngIf="registrationForm.controls.password.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.password.getError(serverErrorKey)}}
+      </mat-error>
+    </mat-form-field>
+    <ul class="password-errors">
+      <li
+        *ngFor="let errorItem of passwordRulesMessageMap | keyvalue"
+        class="password-errors__item"
+        [ngClass]="
+          registrationForm.controls.password.hasError(errorItem.key) ||
+          registrationForm.controls.password.hasError('required')
+            ? 'text-danger'
+            : 'text-success'
+        "
+      >
+        <em class="material-icons">
+          {{
+            registrationForm.controls.password.hasError(errorItem.key) ||
+            registrationForm.controls.password.hasError('required')
+              ? "cancel"
+              : "check_circle"
+          }}
+        </em>
+        {{errorItem.value}}
+      </li>
+    </ul>
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="confirmPassword"
+        name="password"
+        autocomplete="new-password"
+      />
+      <mat-error *ngIf="registrationForm.hasError(noPasswordMatchErrorKey)">
+        Enter same password
+      </mat-error>
+    </mat-form-field>
+    <div class="form__controls">
+      <button [disabled]="registrationForm.invalid" mat-raised-button color="primary" type="submit">Submit</button>
+      <a [routerLink]="routePaths.login">Already have an account?</a>
+    </div>
+  </form>
+</div>

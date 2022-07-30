@@ -1,13 +1,30 @@
 <mat-toolbar class="toolbar" color="primary">
   <a
     mat-icon-button
-    routerLink="{{ routePaths.home }}"
+    [routerLink]="routePaths.home"
     class="toolbar__brand"
     title="Home page"
     aria-label="Home page"
   >
     <img alt="" class="toolbar__logo-image" src="../../assets/logo.png" />
   </a>
+  <ng-container *ngIf="(isLoading$ | async) === false">
+    <ng-container *ngIf="user$ | async as user">
+      <button type="button" mat-button [matMenuTriggerFor]="userMenu">
+        {{ user.email }}
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <button type="button" mat-menu-item (click)="onLogout()">Logout</button>
+      </mat-menu>
+    </ng-container>
+    <a
+      *ngIf="(user$ | async) === null"
+      mat-button
+      [routerLink]="routePaths.login"
+    >
+      Login
+    </a>
+  </ng-container>
 </mat-toolbar>
 <div class="content">
   <router-outlet></router-outlet>
