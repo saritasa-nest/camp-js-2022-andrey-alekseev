@@ -1,3 +1,5 @@
+import { enumToValues } from 'enum-to-array';
+
 /** Sort direction. */
 export enum SortDirection {
   Ascending = 'asc',
@@ -9,7 +11,7 @@ export enum SortDirection {
  * @param sortDirection String to check.
  */
 export function isSortDirection(sortDirection: string): sortDirection is SortDirection {
-  return Object.values(SortDirection).includes(sortDirection as SortDirection);
+  return enumToValues(SortDirection).includes(sortDirection as SortDirection);
 }
 
 /** Sort options for a list of items. */

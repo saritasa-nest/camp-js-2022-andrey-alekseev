@@ -1,5 +1,7 @@
+const DEFAULT_PAGE_SIZE = 10;
+
 /** Pagination data. */
-export class PaginationData {
+export class Pagination {
   /** Current page. */
   public page: number;
 
@@ -9,16 +11,9 @@ export class PaginationData {
   /** Total count. */
   public totalCount: number;
 
-  private defaultPageSize = 10;
-
   public constructor(page?: number, pageSize?: number, totalCount?: number) {
-    this.page = page ?? 1;
-    this.pageSize = pageSize ?? this.defaultPageSize;
+    this.page = page ?? 0;
+    this.pageSize = pageSize ?? DEFAULT_PAGE_SIZE;
     this.totalCount = totalCount ?? 1;
-  }
-
-  /** Get offset. */
-  public get offset(): number {
-    return this.pageSize * (this.page - 1);
   }
 }

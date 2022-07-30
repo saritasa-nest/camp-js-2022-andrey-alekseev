@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '../shared/shared.module';
 import { httpInterceptorProviders } from '../core/interceptors';
@@ -21,7 +20,6 @@ import { LayoutsModule } from './layout/layout.module';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ReactiveFormsModule,
   ],
   providers: [...httpInterceptorProviders],
   bootstrap: [AppComponent],

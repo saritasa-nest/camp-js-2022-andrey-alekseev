@@ -1,43 +1,37 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { AnimeBase, AnimeFilterOptions, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
-import { PaginationData } from '@js-camp/core/pagination';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
+import { AnimeBase, AnimeFilters, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import { Observable, tap, withLatestFrom } from 'rxjs';
+import { MatSort, Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
-import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
-import { AnimeType, animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
+import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-
 import { isSortDirection, SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
+import { Pagination } from '@js-camp/core/models/pagination/pagination';
 
 import { AnimeService } from '../../../../core/services/anime.service';
 import { ListManager, ListManagerInitParams } from '../../../../core/utils/list-manager';
 import { matSortToSortOptions } from '../../../../core/utils/table';
 import { getNumberQueryParameter } from '../../../../core/utils/queryParameters';
 
-interface AnimeFiltersType {
+interface AnimeFiltersFormData {
 
   /** Type of search filter. */
-  [AnimeFilterOptions.Search]: string | null;
+  readonly search: string | null;
 
   /** Type of type filter. */
-  [AnimeFilterOptions.Type]: readonly AnimeType[] | null;
+  readonly type: readonly AnimeType[] | null;
 }
 
 /** Anime table query parameters. */
 enum TableQueryParams {
-  SEARCH = 'search',
-  TYPE = 'type',
-  PAGE = 'page',
-  PAGE_SIZE = 'pageSize',
-  ORDERING_FIELD = 'orderingField',
-  ORDERING_DIRECTION = 'orderingDirection',
-}
-
-interface QueryParameters {
-  [key: string]: string;
+  Search = 'search',
+  Type = 'type',
+  Page = 'page',
+  PageSize = 'pageSize',
+  OrderingField = 'orderingField',
+  OrderingDirection = 'orderingDirection',
 }
 
 const MULTIPLE_FILTERS_SEPARATOR = ',';
@@ -52,13 +46,13 @@ const MULTIPLE_FILTERS_SEPARATOR = ',';
 })
 export class AnimeTableComponent implements OnInit, AfterViewInit {
   /** Anime list manager. */
-  public readonly listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions>;
+  public readonly listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilters>;
 
   /** List of anime. */
   public readonly animeList$: Observable<readonly AnimeBase[]>;
 
   /** Filters form. */
-  public readonly filtersForm = this.formBuilder.group<AnimeFiltersType>({
+  public readonly filtersForm = this.formBuilder.group<AnimeFiltersFormData>({
     search: null,
     type: null,
   });
@@ -73,29 +67,24 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     'status',
   ] as const;
 
-  /** Anime type options map. */
-  public readonly animeTypeOptionsMap = animeTypeOptionsMap;
+  /** Anime type. */
+  public readonly animeType = AnimeType;
 
-  private readonly queryParams$: BehaviorSubject<QueryParameters> = new BehaviorSubject<QueryParameters>({});
+  @ViewChild(MatSort)
+  private readonly tableSort?: MatSort;
 
-  @ViewChild(MatSort) private tableSort?: MatSort;
-
-  private readonly initialParams: ListManagerInitParams<AnimeSortField, AnimeFilterOptions>;
+  private readonly initialParams: ListManagerInitParams<AnimeSortField, AnimeFilters>;
 
   public constructor(
-    private formBuilder: FormBuilder,
-    private activeRoute: ActivatedRoute,
-    private router: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly activeRoute: ActivatedRoute,
+    private readonly router: Router,
     animeService: AnimeService,
   ) {
     this.initialParams = this.getParamsFromQuery(this.activeRoute.snapshot.queryParamMap);
     this.listManager = new ListManager(this.initialParams);
     this.animeList$ = this.listManager.getPaginatedItems(
-      (paginationData, sortOptions, filterOptions) => animeService.getAnimeList(
-        paginationData,
-        sortOptions,
-        filterOptions,
-      ),
+      paginationQuery => animeService.getAnimeList(paginationQuery),
     );
   }
 
@@ -110,10 +99,30 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
 
   /** @inheritDoc */
   public ngOnInit(): void {
-    this.queryParams$.pipe(
+    this.filtersForm.valueChanges.pipe(
+      tap(({ search, type }) => {
+        const filterOptions: AnimeFilters = {
+          searchString: search != null ? search : '',
+          types: type != null ? type : [],
+        };
+
+        this.listManager.updateFilters(filterOptions);
+      }),
       untilDestroyed(this),
-    ).subscribe(
-      queryParams => {
+    ).subscribe();
+
+    this.listManager.pagination$.pipe(
+      withLatestFrom(this.listManager.paginationExtraOptions$),
+      tap(([pagination, { sortOptions, filterOptions }]) => {
+        const queryParams: Record<string, string> = {
+          [TableQueryParams.Page]: pagination.page.toString(),
+          [TableQueryParams.PageSize]: pagination.pageSize.toString(),
+          [TableQueryParams.OrderingField]: sortOptions !== null ? sortOptions.field : '',
+          [TableQueryParams.OrderingDirection]: sortOptions !== null ? sortOptions.direction : '',
+          [TableQueryParams.Type]: filterOptions !== null ? filterOptions.types.join(MULTIPLE_FILTERS_SEPARATOR) : '',
+          [TableQueryParams.Search]: filterOptions !== null ? filterOptions.searchString : '',
+        };
+
         this.router.navigate(
           [],
           {
@@ -121,69 +130,14 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
             queryParamsHandling: 'merge',
           },
         );
-      },
-    );
-
-    this.filtersForm.valueChanges.pipe(
+      }),
       untilDestroyed(this),
-    ).subscribe(
-      filterValues => {
-        const filterOptions: FilterOption<AnimeFilterOptions>[] = [];
-
-        const search = filterValues[AnimeFilterOptions.Search];
-        if (search !== null && search !== undefined) {
-          filterOptions.push({
-            field: AnimeFilterOptions.Search,
-            filterType: FilterType.Exact,
-            value: search,
-          });
-        }
-
-        const types = filterValues[AnimeFilterOptions.Type];
-        if (types !== null && types !== undefined) {
-          filterOptions.push({
-            field: AnimeFilterOptions.Type,
-            filterType: FilterType.In,
-            value: types,
-          });
-        }
-        this.listManager.updateFilters(filterOptions);
-      },
-    );
-
-    this.listManager.pagePagination$.pipe(
-      untilDestroyed(this),
-    ).subscribe(
-      pagination => {
-        this.queryParams$.next({
-          [TableQueryParams.PAGE]: pagination.page.toString(),
-          [TableQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
-        });
-      },
-    );
-    this.listManager.paginationResetParams$.pipe(
-      untilDestroyed(this),
-    ).subscribe(
-      ([sortOptions, filters]) => {
-        const queryParams: QueryParameters = {};
-
-        queryParams[TableQueryParams.ORDERING_FIELD] = sortOptions !== null ? sortOptions.field : '';
-        queryParams[TableQueryParams.ORDERING_DIRECTION] = sortOptions !== null ? sortOptions.direction : '';
-        if (filters !== null) {
-          filters.forEach(filter => {
-            queryParams[filter.field] = typeof filter.value === 'string' ? filter.value : filter.value.join(
-              MULTIPLE_FILTERS_SEPARATOR,
-            );
-          });
-        }
-        this.queryParams$.next(queryParams);
-      },
-    );
+    ).subscribe();
   }
 
   /** @inheritDoc */
   public ngAfterViewInit(): void {
-    const { sortOptions, filtersOptions } = this.getParamsFromQuery(this.activeRoute.snapshot.queryParamMap);
+    const { sortOptions, filtersOptions } = this.initialParams;
     if (this.tableSort === undefined) {
       throw new Error(
         'There aren\'t table sort block',
@@ -198,23 +152,14 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
           disableClear: false,
         },
       );
-
-      // Tricky way to activate styles for sorted column
-      (this.tableSort.sortables.get(sortOptions.field) as MatSortHeader)._setAnimationTransitionState(
-        { toState: 'active' },
-      );
     }
 
-    if (filtersOptions !== undefined) {
-      for (const filterOption of filtersOptions) {
-        if (typeof filterOption.value === 'string' && filterOption.field === AnimeFilterOptions.Search) {
-          this.filtersForm.controls[filterOption.field].setValue(filterOption.value);
-        }
-        if (filterOption.field === AnimeFilterOptions.Type) {
-          this.filtersForm.controls[filterOption.field].setValue(filterOption.value as AnimeType[]);
-        }
-      }
+    if (filtersOptions === undefined) {
+      return;
     }
+
+    this.filtersForm.controls.search.setValue(filtersOptions.searchString);
+    this.filtersForm.controls.type.setValue(filtersOptions.types);
   }
 
   /**
@@ -222,11 +167,13 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
    * @param page Page event.
    */
   public onPaginationChanged(page: PageEvent): void {
-    this.listManager.updatePagination(new PaginationData(
-      page.pageIndex + 1,
-      page.pageSize,
-      page.length,
-    ), true);
+    this.listManager.updatePagination({
+      pagination: new Pagination(
+        page.pageIndex,
+        page.pageSize,
+        page.length,
+      ),
+    });
   }
 
   /**
@@ -243,22 +190,22 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
    */
   private getParamsFromQuery(
     queryParams: ParamMap,
-  ): ListManagerInitParams<AnimeSortField, AnimeFilterOptions> {
+  ): ListManagerInitParams<AnimeSortField, AnimeFilters> {
     const pageNumber = getNumberQueryParameter(
       queryParams,
-      TableQueryParams.PAGE,
+      TableQueryParams.Page,
     );
     const pageSizeNumber = getNumberQueryParameter(
       queryParams,
-      TableQueryParams.PAGE_SIZE,
+      TableQueryParams.PageSize,
     );
-    const paginationData = new PaginationData(
+    const pagination = new Pagination(
       pageNumber,
       pageSizeNumber,
     );
 
-    const sortField = queryParams.get(TableQueryParams.ORDERING_FIELD);
-    const sortDirection = queryParams.get(TableQueryParams.ORDERING_DIRECTION);
+    const sortField = queryParams.get(TableQueryParams.OrderingField);
+    const sortDirection = queryParams.get(TableQueryParams.OrderingDirection);
     let sortOptions: SortOptions<AnimeSortField> | undefined;
     if (sortField !== null && isAnimeSortField(sortField)) {
       if (sortDirection !== null && isSortDirection(sortDirection)) {
@@ -274,33 +221,23 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
       }
     }
 
-    const filtersOptions: FilterOption<AnimeFilterOptions>[] = [];
-    const typesParam = queryParams.get(TableQueryParams.TYPE);
+    const typesParam = queryParams.get(TableQueryParams.Type);
+    const types: AnimeType[] = [];
     if (typesParam !== null) {
-      const types: AnimeType[] = [];
       for (const type of typesParam.split(MULTIPLE_FILTERS_SEPARATOR)) {
         if (AnimeType.isAnimeType(type)) {
           types.push(type);
         }
       }
-      filtersOptions.push({
-        field: AnimeFilterOptions.Type,
-        filterType: FilterType.In,
-        value: types,
-      });
     }
-
-    const searchParam = queryParams.get(TableQueryParams.SEARCH);
-    if (searchParam !== null) {
-      filtersOptions.push({
-        field: AnimeFilterOptions.Search,
-        filterType: FilterType.Exact,
-        value: searchParam,
-      });
-    }
+    const searchParam = queryParams.get(TableQueryParams.Search);
+    const filtersOptions: AnimeFilters = {
+      types,
+      searchString: searchParam !== null ? searchParam : '',
+    };
 
     return {
-      paginationData,
+      pagination,
       sortOptions,
       filtersOptions,
     };

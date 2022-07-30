@@ -11,7 +11,7 @@ export interface FilterParameters {
   [key: string]: string;
 }
 
-export namespace FilterOptionMap {
+export namespace FilterOptionMapper {
 
   /**
    * Map filter options to filter parameters.

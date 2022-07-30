@@ -1,4 +1,3 @@
-import { LimitOffsetPagination } from '@js-camp/core/models/limitOffsetPagination';
 import {
   BehaviorSubject,
   combineLatest, debounceTime,
@@ -6,103 +5,104 @@ import {
   merge,
   Observable,
   shareReplay,
+  skip,
   switchMap,
   switchMapTo,
   tap,
   withLatestFrom,
 } from 'rxjs';
-import { PaginationData } from '@js-camp/core/pagination';
 import { SortOptions } from '@js-camp/core/models/sortOptions';
-import { FilterOption } from '@js-camp/core/models/filterOption';
+import { PaginatedItems } from '@js-camp/core/models/pagination/paginatedItems';
+import { Pagination } from '@js-camp/core/models/pagination/pagination';
+import { PaginationQuery } from '@js-camp/core/models/pagination/paginationQuery';
 
-import { withIsFirst } from '../rxjs/withIsFirst';
-
-export type ApiRequestCallback<TItem, TItemSortFields, TItemFilterFields> = (
-  paginationData: PaginationData,
-  sortOptions: SortOptions<TItemSortFields> | null,
-  filterOptions: readonly FilterOption<TItemFilterFields>[] | null,
-) => Observable<LimitOffsetPagination<TItem>>;
+export type GetListCallback<TItem, TItemSortFields, TItemFilters> = (
+  paginationQuery: PaginationQuery<TItemSortFields, TItemFilters>
+) => Observable<PaginatedItems<TItem>>;
 
 /** List manager initial params. */
-export interface ListManagerInitParams<TItemSortFields, TItemFilterFields> {
+export interface ListManagerInitParams<TItemSortFields, TItemFilters> {
 
   /** Initial pagination data. */
-  paginationData?: PaginationData;
+  readonly pagination?: Pagination;
 
   /** Initial sort options. */
-  sortOptions?: SortOptions<TItemSortFields>;
+  readonly sortOptions?: SortOptions<TItemSortFields>;
 
   /** Initial filters options. */
-  filtersOptions?: readonly FilterOption<TItemFilterFields>[];
+  readonly filtersOptions?: TItemFilters;
+}
+
+interface PaginationExtraOptions<TItemSortFields, TItemFilters> {
+
+  /** Sort options. */
+  readonly sortOptions: SortOptions<TItemSortFields> | null;
+
+  /** Filter options. */
+  readonly filterOptions: TItemFilters | null;
+}
+
+interface PaginationUpdateParams {
+
+  /** Pagination. */
+  readonly pagination: Pagination;
+
+  /** Should trigger update. */
+  readonly triggerUpdate?: boolean;
 }
 
 /** Manager to work with lists. */
-export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
+export class ListManager<TItem, TItemSortFields, TItemFilters> {
 
   /** Pagination options.*/
-  public readonly pagePagination$: Observable<PaginationData>;
+  public readonly pagination$: Observable<Pagination>;
 
   /** Parameters that can reset pagination. */
-  public readonly paginationResetParams$: Observable<
-    [
-      SortOptions<TItemSortFields> | null,
-      readonly FilterOption<TItemFilterOptions>[] | null,
-    ]
-  >;
+  public readonly paginationExtraOptions$: Observable<PaginationExtraOptions<TItemSortFields, TItemFilters>>;
 
-  /** Is list loading. */
-  public readonly isLoading$: Observable<boolean>;
-
-  private readonly loading$ = new BehaviorSubject(true);
+  private readonly loading$ = new BehaviorSubject<boolean>(true);
 
   private readonly reload$ = new BehaviorSubject<void>(undefined);
 
-  private readonly pagination$ = new BehaviorSubject(new PaginationData());
+  private readonly currentPagination$: BehaviorSubject<Pagination>;
 
-  private readonly sort$ = new BehaviorSubject<SortOptions<TItemSortFields> | null>(null);
+  private readonly sort$: BehaviorSubject<SortOptions<TItemSortFields> | null>;
 
-  private readonly filters$ = new BehaviorSubject<readonly FilterOption<TItemFilterOptions>[] | null>(null);
+  private readonly filters$: BehaviorSubject<TItemFilters | null>;
+
+  /** Is list loading. */
+  public readonly isLoading$: Observable<boolean> = this.loading$.asObservable();
 
   public constructor({
-    paginationData,
+    pagination,
     sortOptions,
     filtersOptions,
-  }: ListManagerInitParams<TItemSortFields, TItemFilterOptions> = {}) {
-    if (sortOptions !== undefined) {
-      this.sort$.next(sortOptions);
-    }
+  }: ListManagerInitParams<TItemSortFields, TItemFilters> = {}) {
+    this.sort$ = new BehaviorSubject(sortOptions ?? null);
+    this.currentPagination$ = new BehaviorSubject(pagination ?? new Pagination());
+    this.filters$ = new BehaviorSubject(filtersOptions !== undefined ? filtersOptions : null);
 
-    if (paginationData !== undefined) {
-      this.pagination$.next(paginationData);
-    }
-
-    if (filtersOptions !== undefined) {
-      this.filters$.next(filtersOptions);
-    }
-
-    this.isLoading$ = this.loading$.asObservable();
-
-    this.paginationResetParams$ = combineLatest([
-      this.sort$,
-      this.filters$,
-    ]).pipe(
+    this.paginationExtraOptions$ = combineLatest({
+      /* eslint-disable rxjs/finnish */
+      sortOptions: this.sort$,
+      filterOptions: this.filters$,
+      /* eslint-enable rxjs/finnish */
+    }).pipe(
       debounceTime(500),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
 
-    this.pagePagination$ = merge(
-      this.pagination$,
-      this.paginationResetParams$.pipe(
-        withLatestFrom(this.pagination$),
+    const paginationReset$ = this.paginationExtraOptions$.pipe(
 
-        // Dont reset initial pagination
-        withIsFirst(([, pagination], isFirst) => {
-          if (!isFirst) {
-            return this.resetPagination(pagination);
-          }
-          return pagination;
-        }),
-      ),
+      // Skip first emmit because it resets initial passed pagination
+      skip(1),
+      withLatestFrom(this.currentPagination$),
+      map(([, paginationData]) => this.resetPagination(paginationData)),
+    );
+
+    this.pagination$ = merge(
+      this.currentPagination$,
+      paginationReset$,
     ).pipe(
       shareReplay({ bufferSize: 1, refCount: true }),
     );
@@ -113,16 +113,25 @@ export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
    * @param fetchFunc Function to fetch items.
    */
   public getPaginatedItems(
-    fetchFunc: ApiRequestCallback<TItem, TItemSortFields, TItemFilterOptions>,
+    fetchFunc: GetListCallback<TItem, TItemSortFields, TItemFilters>,
   ): Observable<readonly TItem[]> {
     return this.reload$.pipe(
-      switchMapTo(this.paginationResetParams$),
-      withLatestFrom(this.pagePagination$),
+      switchMapTo(this.paginationExtraOptions$),
+      withLatestFrom(this.pagination$),
       tap(() => this.loading$.next(true)),
-      switchMap(([[sortOptions, filterOptions], pagination]) => fetchFunc(pagination, sortOptions, filterOptions)),
+      switchMap(([{ sortOptions, filterOptions }, pagination]) => fetchFunc({
+        pagination,
+        sortOptions,
+        filterOptions,
+      })),
       tap(() => this.loading$.next(false)),
       tap(paginatedList => {
-        this.updatePagination(paginatedList.pagination);
+        this.updatePagination(
+          {
+            pagination: paginatedList.pagination,
+            triggerUpdate: false,
+          },
+        );
       }),
       map(paginatedList => paginatedList.items),
       shareReplay({ refCount: true, bufferSize: 1 }),
@@ -132,11 +141,11 @@ export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
   /**
    * Update pagination.
    * @param pagination New pagination data.
-   * @param triggerReload Should re-request items.
+   * @param triggerUpdate Should re-request items.
    */
-  public updatePagination(pagination: PaginationData, triggerReload = false): void {
-    this.pagination$.next(pagination);
-    if (triggerReload) {
+  public updatePagination({ pagination, triggerUpdate = true }: PaginationUpdateParams): void {
+    this.currentPagination$.next(pagination);
+    if (triggerUpdate) {
       this.reload$.next();
     }
   }
@@ -153,7 +162,7 @@ export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
    * Update filters.
    * @param filterOptions Filter options.
    */
-  public updateFilters(filterOptions: readonly FilterOption<TItemFilterOptions>[] | null): void {
+  public updateFilters(filterOptions: TItemFilters): void {
     this.filters$.next(filterOptions);
   }
 
@@ -161,9 +170,9 @@ export class ListManager<TItem, TItemSortFields, TItemFilterOptions> {
    * Set page to first.
    * @param currentPagination Current pagination.
    */
-  private resetPagination(currentPagination: PaginationData): PaginationData {
-    return new PaginationData(
-      1,
+  private resetPagination(currentPagination: Pagination): Pagination {
+    return new Pagination(
+      0,
       currentPagination.pageSize,
       currentPagination.totalCount,
     );

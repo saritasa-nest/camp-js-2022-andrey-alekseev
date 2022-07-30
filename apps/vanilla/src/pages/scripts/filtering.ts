@@ -1,9 +1,7 @@
 import { AnimeFilterOptions } from '@js-camp/core/models/anime/animeBase';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
-
 import M from 'materialize-css';
-
-import { animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
+import { AnimeType } from '@js-camp/core/models/anime/animeType';
 
 import { getElementOrRaiseError } from '../../../utils/query';
 
@@ -13,10 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const typesSelect = getElementOrRaiseError<HTMLSelectElement>(
     '.types-select',
   );
-  for (const [value, label] of Object.entries(animeTypeOptionsMap)) {
+  for (const animeType of AnimeType.typesList) {
     const typeOption = document.createElement('option');
-    typeOption.value = value;
-    typeOption.textContent = label;
+    typeOption.value = animeType;
+    typeOption.textContent = AnimeType.toReadable(animeType);
     typesSelect.options.add(typeOption);
   }
   M.FormSelect.init(typesSelect);

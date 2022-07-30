@@ -10,10 +10,6 @@ export function getNumberQueryParameter(paramsMap: ParamMap, key: string): numbe
   if (stringParam === null) {
     return undefined;
   }
-  const numberParam = parseInt(stringParam, 10);
-
-  if (Number.isNaN(numberParam)) {
-    return undefined;
-  }
-  return numberParam;
+  const value = parseInt(stringParam, 10);
+  return isNaN(value) ? undefined : value;
 }

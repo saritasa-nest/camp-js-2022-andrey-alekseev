@@ -5,24 +5,24 @@
 ></mat-progress-bar>
 <div class="filters">
   <mat-form-field>
+    <mat-label>Search</mat-label>
     <input
       matInput
       type="search"
-      placeholder="Search"
       [formControl]="filtersForm.controls.search"
     />
   </mat-form-field>
   <mat-form-field>
+    <mat-label>Select type</mat-label>
     <mat-select
       [multiple]="true"
-      placeholder="Select type"
       [formControl]="filtersForm.controls.type"
     >
       <mat-option
-        *ngFor="let type of animeTypeOptionsMap | keyvalue"
-        [value]="type.key"
+        *ngFor="let type of animeType.typesList"
+        [value]="type"
       >
-        {{ type.value }}
+        {{type | animeType}}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -80,17 +80,17 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   <div class="anime-table__empty-message" *matNoDataRow>
-    There aren't anime for this filters
+    There are no anime for these filters
   </div>
 </mat-table>
 
 <mat-paginator
-  *ngIf="listManager.pagePagination$ | async as pagination"
+  *ngIf="listManager.pagination$ | async as pagination"
   color="primary"
   showFirstLastButtons
   [pageSizeOptions]="[5, 10, 20]"
   [pageSize]="pagination.pageSize"
-  [pageIndex]="pagination.page - 1"
+  [pageIndex]="pagination.page"
   [length]="pagination.totalCount"
   (page)="onPaginationChanged($event)"
 >
