@@ -1,3 +1,8 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
 .toolbar__logo-image {
   --toolbar-logo-height: 26px;
 

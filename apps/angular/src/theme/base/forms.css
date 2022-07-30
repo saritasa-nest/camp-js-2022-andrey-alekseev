@@ -1,0 +1,18 @@
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 50%;
+  justify-content: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form__controls {
+  display: flex;
+  justify-content: space-between;
+}

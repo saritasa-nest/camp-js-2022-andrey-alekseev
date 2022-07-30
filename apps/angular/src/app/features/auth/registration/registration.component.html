@@ -1,0 +1,86 @@
+<div class="form-wrapper">
+  <h1>Registration</h1>
+  <form [formGroup]="registrationForm" class="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        name="email"
+        placeholder="Type email"
+        autocomplete="email"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>First name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="firstName"
+        name="firstName"
+        placeholder="Type first name"
+        autocomplete="given-name"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Last name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        name="lastName"
+        placeholder="Type last name"
+        autocomplete="family-name"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        name="password"
+        placeholder="Type password"
+        autocomplete="new-password"
+      />
+    </mat-form-field>
+    <ul class="password-errors">
+      <li
+        *ngFor="let errorItem of passwordRulesMessageMap | keyvalue"
+        class="password-errors__item"
+        [ngClass]="
+          registrationForm.controls.password.hasError(errorItem.key) ||
+          registrationForm.controls.password.hasError('required')
+            ? 'text-danger'
+            : 'text-success'
+        "
+      >
+        <i class="material-icons">
+          {{
+            registrationForm.controls.password.hasError(errorItem.key) ||
+            registrationForm.controls.password.hasError('required')
+              ? "cancel"
+              : "check_circle"
+          }}
+        </i>
+        {{errorItem.value}}
+      </li>
+    </ul>
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="confirmPassword"
+        name="password"
+        placeholder="Type password"
+        autocomplete="new-password"
+      />
+    </mat-form-field>
+    <div class="form__controls">
+      <button [disabled]="!isButtonActive" mat-raised-button color="primary" type="submit">Submit</button>
+      <a [href]="routePaths.login">Already have an account?</a>
+    </div>
+  </form>
+</div>

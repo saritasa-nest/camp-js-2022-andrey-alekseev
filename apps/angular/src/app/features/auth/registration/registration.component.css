@@ -1,0 +1,12 @@
+.password-errors {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding-inline: unset;
+  margin-block-start: unset;
+}
+
+.password-errors .password-errors__item {
+  display: flex;
+  list-style: none;
+}
