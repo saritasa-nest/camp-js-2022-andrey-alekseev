@@ -9,7 +9,11 @@ import { Observable } from 'rxjs';
 
 import { AppConfigService } from '../services/app-config.service';
 
-/** Api key interceptor. */
+/**
+ * Api key interceptor.
+ * This interceptor adds api key to headers.
+ * This key determines what data will be processed.
+ */
 @Injectable()
 export class ApiKeyInterceptor implements HttpInterceptor {
   public constructor(

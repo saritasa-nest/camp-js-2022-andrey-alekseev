@@ -23,7 +23,7 @@ import { LayoutsModule } from './layout/layout.module';
     BrowserAnimationsModule,
     ReactiveFormsModule,
   ],
-  providers: [httpInterceptorProviders],
+  providers: [...httpInterceptorProviders],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

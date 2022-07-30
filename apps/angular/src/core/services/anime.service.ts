@@ -20,11 +20,8 @@ import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
 import { FilterOption } from '@js-camp/core/models/filterOption';
 import { FilterOptionMap } from '@js-camp/core/mappers/filterOptionMap';
 
+import { AppUrlConfigService } from './app-url-config.service';
 import { paginationDataToLimitOffsetOptions } from '../utils/pagination';
-
-import { AppConfigService } from './app-config.service';
-
-const BASE_URL_PREFIX = 'anime/';
 
 /** Anime service. */
 @Injectable({
@@ -32,15 +29,10 @@ const BASE_URL_PREFIX = 'anime/';
 })
 export class AnimeService {
 
-  private readonly animeListUrl: URL;
-
   public constructor(
     private readonly http: HttpClient,
-    appConfig: AppConfigService,
-  ) {
-    const rootAnimeUrl = appConfig.apiUrl + BASE_URL_PREFIX;
-    this.animeListUrl = new URL(`anime/`, rootAnimeUrl);
-  }
+    private readonly appUrls: AppUrlConfigService,
+  ) {}
 
   /**
    * Get list of anime.
@@ -58,7 +50,7 @@ export class AnimeService {
       filterParams = FilterOptionMap.toDto(filterOptions);
     }
     return this.http.get<LimitOffsetPaginationDto<AnimeDto>>(
-      this.animeListUrl.toString(),
+      this.appUrls.animeUrls.list,
       {
         params: {
           ...LimitOffsetQueryMapper.toDto(

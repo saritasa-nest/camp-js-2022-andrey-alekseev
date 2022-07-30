@@ -1,13 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { AnimeBase, AnimeFilterOptions, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
 import { AnimeType, animeTypeOptionsMap } from '@js-camp/core/models/anime/animeType';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { isSortDirection, SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
 
@@ -42,21 +43,19 @@ interface QueryParameters {
 const MULTIPLE_FILTERS_SEPARATOR = ',';
 
 /** Anime list component. */
+@UntilDestroy()
 @Component({
   selector: 'anime-table',
   templateUrl: './anime-table.component.html',
   styleUrls: ['./anime-table.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AnimeTableComponent implements OnInit, AfterViewInit {
   /** Anime list manager. */
   public readonly listManager: ListManager<AnimeBase, AnimeSortField, AnimeFilterOptions>;
 
   /** List of anime. */
   public readonly animeList$: Observable<readonly AnimeBase[]>;
-
-  /** Anime table subscriptions. */
-  private readonly animeTableSubscriptions = new Subscription();
 
   /** Filters form. */
   public readonly filtersForm = this.formBuilder.group<AnimeFiltersType>({
@@ -111,7 +110,9 @@ export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /** @inheritDoc */
   public ngOnInit(): void {
-    this.animeTableSubscriptions.add(this.queryParams$.subscribe(
+    this.queryParams$.pipe(
+      untilDestroyed(this),
+    ).subscribe(
       queryParams => {
         this.router.navigate(
           [],
@@ -121,9 +122,11 @@ export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
           },
         );
       },
-    ));
+    );
 
-    this.animeTableSubscriptions.add(this.filtersForm.valueChanges.subscribe(
+    this.filtersForm.valueChanges.pipe(
+      untilDestroyed(this),
+    ).subscribe(
       filterValues => {
         const filterOptions: FilterOption<AnimeFilterOptions>[] = [];
 
@@ -146,17 +149,21 @@ export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.listManager.updateFilters(filterOptions);
       },
-    ));
+    );
 
-    this.animeTableSubscriptions.add(this.listManager.pagePagination$.subscribe(
+    this.listManager.pagePagination$.pipe(
+      untilDestroyed(this),
+    ).subscribe(
       pagination => {
         this.queryParams$.next({
           [TableQueryParams.PAGE]: pagination.page.toString(),
           [TableQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
         });
       },
-    ));
-    this.animeTableSubscriptions.add(this.listManager.paginationResetParams$.subscribe(
+    );
+    this.listManager.paginationResetParams$.pipe(
+      untilDestroyed(this),
+    ).subscribe(
       ([sortOptions, filters]) => {
         const queryParams: QueryParameters = {};
 
@@ -171,7 +178,7 @@ export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.queryParams$.next(queryParams);
       },
-    ));
+    );
   }
 
   /** @inheritDoc */
@@ -208,11 +215,6 @@ export class AnimeTableComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
-  }
-
-  /** @inheritDoc */
-  public ngOnDestroy(): void {
-    this.animeTableSubscriptions.unsubscribe();
   }
 
   /**
