@@ -20,8 +20,9 @@ import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
 import { FilterOption } from '@js-camp/core/models/filterOption';
 import { FilterOptionMap } from '@js-camp/core/mappers/filterOptionMap';
 
-import { AppUrlConfigService } from './app-url-config.service';
 import { paginationDataToLimitOffsetOptions } from '../utils/pagination';
+
+import { AppUrlConfigService } from './app-url-config.service';
 
 /** Anime service. */
 @Injectable({
