@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } 
 import { PageEvent } from '@angular/material/paginator';
 import { AnimeBase, AnimeFilterOptions, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
 import { PaginationData } from '@js-camp/core/pagination';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, withLatestFrom } from 'rxjs';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
 import { FilterOption, FilterType } from '@js-camp/core/models/filterOption';
@@ -76,8 +76,6 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
   /** Anime type options map. */
   public readonly animeTypeOptionsMap = animeTypeOptionsMap;
 
-  private readonly queryParams$: BehaviorSubject<QueryParameters> = new BehaviorSubject<QueryParameters>({});
-
   @ViewChild(MatSort) private tableSort?: MatSort;
 
   private readonly initialParams: ListManagerInitParams<AnimeSortField, AnimeFilterOptions>;
@@ -110,20 +108,6 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
 
   /** @inheritDoc */
   public ngOnInit(): void {
-    this.queryParams$.pipe(
-      untilDestroyed(this),
-    ).subscribe(
-      queryParams => {
-        this.router.navigate(
-          [],
-          {
-            queryParams,
-            queryParamsHandling: 'merge',
-          },
-        );
-      },
-    );
-
     this.filtersForm.valueChanges.pipe(
       untilDestroyed(this),
     ).subscribe(
@@ -153,19 +137,13 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
 
     this.listManager.pagePagination$.pipe(
       untilDestroyed(this),
+      withLatestFrom(this.listManager.paginationResetParams$),
     ).subscribe(
-      pagination => {
-        this.queryParams$.next({
+      ([pagination, [sortOptions, filters]]) => {
+        const queryParams: QueryParameters = {
           [TableQueryParams.PAGE]: pagination.page.toString(),
           [TableQueryParams.PAGE_SIZE]: pagination.pageSize.toString(),
-        });
-      },
-    );
-    this.listManager.paginationResetParams$.pipe(
-      untilDestroyed(this),
-    ).subscribe(
-      ([sortOptions, filters]) => {
-        const queryParams: QueryParameters = {};
+        };
 
         queryParams[TableQueryParams.ORDERING_FIELD] = sortOptions !== null ? sortOptions.field : '';
         queryParams[TableQueryParams.ORDERING_DIRECTION] = sortOptions !== null ? sortOptions.direction : '';
@@ -176,7 +154,14 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
             );
           });
         }
-        this.queryParams$.next(queryParams);
+
+        this.router.navigate(
+          [],
+          {
+            queryParams,
+            queryParamsHandling: 'merge',
+          },
+        );
       },
     );
   }
