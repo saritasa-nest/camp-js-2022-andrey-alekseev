@@ -1,3 +1,5 @@
+import { PaginationData } from '../pagination';
+
 /** Options required to paginate list. */
 export interface LimitOffsetPaginationOptions {
 
@@ -14,6 +16,6 @@ export interface LimitOffsetPagination<T>{
   /** Items on page. */
   readonly items: readonly T[];
 
-  /** Count of all items. */
-  readonly count: number;
+  /** Pagination data. */
+  readonly pagination: PaginationData;
 }

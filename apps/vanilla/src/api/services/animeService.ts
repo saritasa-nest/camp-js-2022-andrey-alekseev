@@ -5,7 +5,7 @@ import {
 import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 import {
   AnimeBase,
-  AnimeFilterField,
+  AnimeFilterOptions,
   AnimeSortField,
 } from '@js-camp/core/models/anime/animeBase';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
@@ -44,7 +44,7 @@ export namespace AnimeService {
   export async function getList(
     paginationOptions: LimitOffsetPaginationOptions,
     sortOptions: SortOptions<AnimeSortField> | null,
-    filterOptions: readonly FilterOption<AnimeFilterField>[],
+    filterOptions: readonly FilterOption<AnimeFilterOptions>[],
   ): Promise<LimitOffsetPagination<AnimeBase>> {
     const limitOffsetQueryParams = LimitOffsetQueryMapper.toDto<AnimeSortField>(
       paginationOptions,

@@ -15,5 +15,5 @@ export interface FilterOption<T> {
   readonly field: T;
 
   /** Value of field by which items should be filtered. */
-  readonly value: string;
+  readonly value: string | readonly string[];
 }
