@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, switchMap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { catchError, Observable, switchMap } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { LoginData, RegistrationData } from '@js-camp/core/models/user';
 import { JWTDto } from '@js-camp/core/dtos/jwt.dto';
 import { User } from '@js-camp/core/models/user/user';
@@ -8,6 +8,9 @@ import { User } from '@js-camp/core/models/user/user';
 import { AppUrlConfigService } from './app-url-config.service';
 import { StorageService } from './storage.service';
 import { UserService } from './user.service';
+import { AppErrorMapper } from './mappers/app-error.mapper';
+import { LoginErrorMapper } from './mappers/validation-mappers/login-error-mapper.service';
+import { RegistrationErrorMapper } from './mappers/validation-mappers/registration-error-mapper.service';
 
 /** Authentication service. */
 @Injectable({
@@ -20,6 +23,9 @@ export class AuthService {
     private readonly appUrls: AppUrlConfigService,
     private readonly storageService: StorageService,
     private readonly userService: UserService,
+    private readonly appErrorMapper: AppErrorMapper,
+    private readonly loginErrorMapper: LoginErrorMapper,
+    private readonly registrationErrorMapper: RegistrationErrorMapper,
   ) {}
 
   /**
@@ -32,6 +38,12 @@ export class AuthService {
       loginData,
     ).pipe(
       switchMap(jwtDto => this.userService.storeUserData(jwtDto)),
+      catchError((httpError: unknown) => {
+        if (httpError instanceof HttpErrorResponse) {
+          throw this.appErrorMapper.fromDtoWithValidation<LoginData>(httpError, this.loginErrorMapper);
+        }
+        throw httpError;
+      }),
     );
   }
 
@@ -45,6 +57,12 @@ export class AuthService {
       registrationData,
     ).pipe(
       switchMap(jwtDto => this.userService.storeUserData(jwtDto)),
+      catchError((httpError: unknown) => {
+        if (httpError instanceof HttpErrorResponse) {
+          throw this.appErrorMapper.fromDtoWithValidation<LoginData>(httpError, this.registrationErrorMapper);
+        }
+        throw httpError;
+      }),
     );
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { RegistrationData } from '@js-camp/core/models/user';
@@ -6,8 +6,18 @@ import { first } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { routePaths } from '../../../../core/utils/route-paths';
-import { CustomValidators, emailValidators, PasswordRules, passwordValidators } from '../../../../core/utils/forms';
+import {
+  CustomValidators,
+  emailValidators,
+  NO_PASSWORD_MATCH_ERROR_KEY,
+  PasswordRules,
+  passwordValidators,
+  SERVER_ERROR_KEY,
+  setServerErrorsToControls,
+} from '../../../../core/utils/forms';
 import { AuthService } from '../../../../core/services/auth.service';
+import { AppValidationError } from '../../../../core/models/app-errors';
+import { catchValidationError } from '../../../../core/rxjs/catch-validation-error';
 
 /** Layout component. */
 @UntilDestroy()
@@ -31,6 +41,12 @@ export class RegistrationComponent implements OnInit {
     [PasswordRules.HasSpecialCharacter]: 'Must have at least 1 special character',
   };
 
+  /** No password match validation error key. */
+  public readonly noPasswordMatchErrorKey = NO_PASSWORD_MATCH_ERROR_KEY;
+
+  /** Server validation error key. */
+  public readonly serverErrorKey = SERVER_ERROR_KEY;
+
   /** Login form. */
   public readonly registrationForm = this.formBuilder.nonNullable.group({
     email: ['', emailValidators],
@@ -48,6 +64,7 @@ export class RegistrationComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 
@@ -77,6 +94,13 @@ export class RegistrationComponent implements OnInit {
       .register(registrationData)
       .pipe(
         first(),
+        catchValidationError((error: AppValidationError<RegistrationData>) => {
+          setServerErrorsToControls(error.validationErrors, this.registrationForm);
+
+          // Mark to update controls.
+          this.changeDetectorRef.markForCheck();
+          throw error;
+        }),
       )
       .subscribe(
         () => this.router.navigate([this.routePaths.home]),

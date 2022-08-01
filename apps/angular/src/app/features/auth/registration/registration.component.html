@@ -11,6 +11,12 @@
         placeholder="Type email"
         autocomplete="email"
       />
+      <mat-error *ngIf="registrationForm.controls.email.hasError('email')" class="text-danger">
+        Enter valid email
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.email.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.email.getError(serverErrorKey)}}
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>First name</mat-label>
@@ -22,6 +28,12 @@
         placeholder="Type first name"
         autocomplete="given-name"
       />
+      <mat-error *ngIf="registrationForm.controls.firstName.hasError('maxlength')" class="text-danger">
+        Max length for first name is 32.
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.firstName.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.firstName.getError(serverErrorKey)}}
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Last name</mat-label>
@@ -33,6 +45,12 @@
         placeholder="Type last name"
         autocomplete="family-name"
       />
+      <mat-error *ngIf="registrationForm.controls.lastName.hasError('maxlength')" class="text-danger">
+        Max length for last name is 32.
+      </mat-error>
+      <mat-error *ngIf="registrationForm.controls.lastName.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.lastName.getError(serverErrorKey)}}
+      </mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Password</mat-label>
@@ -44,6 +62,9 @@
         placeholder="Type password"
         autocomplete="new-password"
       />
+      <mat-error *ngIf="registrationForm.controls.password.hasError(serverErrorKey)" class="text-danger">
+        {{registrationForm.controls.password.getError(serverErrorKey)}}
+      </mat-error>
     </mat-form-field>
     <ul class="password-errors">
       <li
@@ -77,6 +98,9 @@
         placeholder="Type password"
         autocomplete="new-password"
       />
+      <mat-error *ngIf="registrationForm.hasError(noPasswordMatchErrorKey)">
+        Enter same password
+      </mat-error>
     </mat-form-field>
     <div class="form__controls">
       <button [disabled]="!isButtonActive" mat-raised-button color="primary" type="submit">Submit</button>

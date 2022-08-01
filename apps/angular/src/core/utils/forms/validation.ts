@@ -1,6 +1,6 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-export const noPasswordMatchError = 'NoPasswordMatch';
+export const NO_PASSWORD_MATCH_ERROR_KEY = 'NoPasswordMatch';
 
 /** Custom form validators. */
 export class CustomValidators {
@@ -39,8 +39,8 @@ export class CustomValidators {
 
     const isNotSamePassword = password !== confirmPassword;
     if (isNotSamePassword) {
-      confirmPasswordControl.setErrors({ [noPasswordMatchError]: true });
-      return { [noPasswordMatchError]: isNotSamePassword };
+      confirmPasswordControl.setErrors({ [NO_PASSWORD_MATCH_ERROR_KEY]: true });
+      return { [NO_PASSWORD_MATCH_ERROR_KEY]: isNotSamePassword };
     }
     return null;
   }

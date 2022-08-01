@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LoginData } from '@js-camp/core/models/user';
@@ -6,8 +6,15 @@ import { first } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { routePaths } from '../../../../core/utils/route-paths';
-import { emailValidators, passwordValidators } from '../../../../core/utils/forms';
+import {
+  emailValidators,
+  passwordValidators,
+  SERVER_ERROR_KEY,
+  setServerErrorsToControls,
+} from '../../../../core/utils/forms';
 import { AuthService } from '../../../../core/services/auth.service';
+import { catchValidationError } from '../../../../core/rxjs/catch-validation-error';
+import { AppValidationError } from '../../../../core/models/app-errors';
 
 /** Layout component. */
 @UntilDestroy()
@@ -30,10 +37,14 @@ export class LoginComponent implements OnInit {
   /** Is button active. */
   public isButtonActive = false;
 
+  /** Server validation error key. */
+  public readonly serverErrorKey = SERVER_ERROR_KEY;
+
   public constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
+    private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
   }
 
@@ -61,6 +72,11 @@ export class LoginComponent implements OnInit {
       .login(loginData)
       .pipe(
         first(),
+        catchValidationError((error: AppValidationError<LoginData>) => {
+          setServerErrorsToControls(error.validationErrors, this.loginForm);
+          this.changeDetectorRef.markForCheck();
+          throw error;
+        }),
       )
       .subscribe(
         () => this.router.navigate([this.routePaths.home]),

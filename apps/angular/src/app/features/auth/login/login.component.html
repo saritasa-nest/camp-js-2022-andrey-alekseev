@@ -22,6 +22,9 @@
         autocomplete="current-password"
       />
     </mat-form-field>
+    <div *ngIf="loginForm.hasError(serverErrorKey)" class="form__base-errors">
+      <p class="text-danger">{{loginForm.getError(serverErrorKey)}}</p>
+    </div>
     <div class="form__controls">
       <button [disabled]="!isButtonActive" mat-raised-button color="primary" type="submit">Submit</button>
       <a [href]="routePaths.registration">Dont have an account?</a>
