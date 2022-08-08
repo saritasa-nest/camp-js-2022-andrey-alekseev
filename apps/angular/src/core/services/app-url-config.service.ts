@@ -15,6 +15,9 @@ interface AuthUrls {
 
   /** Registration url. */
   readonly registration: string;
+
+  /** Refresh token url. */
+  readonly refreshToken: string;
 }
 
 interface UsersUrls {
@@ -50,6 +53,7 @@ export class AppUrlConfigService {
     return {
       login: new URL(`${this.authPrefix}login/`, this.appConfig.apiUrl).toString(),
       registration: new URL(`${this.authPrefix}register/`, this.appConfig.apiUrl).toString(),
+      refreshToken: new URL(`${this.authPrefix}token/refresh/`, this.appConfig.apiUrl).toString(),
     };
   }
 

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
 import {
   LimitOffsetPagination,
 } from '@js-camp/core/models/limitOffsetPagination';
@@ -13,6 +12,8 @@ import {
   PaginationMapper,
 } from '@js-camp/core/mappers/limitOffsetPagination.mapper';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
+
+import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 
 import { AppUrlConfigService } from './app-url-config.service';
 
@@ -29,7 +30,7 @@ export class AnimeService {
 
   /** Get list of anime. */
   public getAnimeList(): Observable<LimitOffsetPagination<AnimeBase>> {
-    return this.http.get<LimitOffsetPaginationDto<AnimeDto>>(
+    return this.http.get<LimitOffsetPaginationDto<AnimeBaseDto>>(
       this.appUrls.animeUrls.list,
     ).pipe(
       map(

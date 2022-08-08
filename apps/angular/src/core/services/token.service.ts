@@ -1,4 +1,4 @@
-import { merge, Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { JWTDto } from '@js-camp/core/dtos/jwt.dto';
 import { Injectable } from '@angular/core';
 
@@ -26,18 +26,18 @@ export class TokenService {
    * Set tokens.
    * @param jwtDto JWT dto.
    */
-  public set(jwtDto: JWTDto): Observable<void> {
-    return merge(
+  public set(jwtDto: JWTDto): Observable<[void, void]> {
+    return combineLatest([
       this.storageService.set(ACCESS_TOKEN_STORAGE_KEY, jwtDto.access),
       this.storageService.set(REFRESH_TOKEN_STORAGE_KEY, jwtDto.refresh),
-    );
+    ]);
   }
 
   /** Clear token. */
-  public clear(): Observable<void> {
-    return merge(
+  public clear(): Observable<[void, void]> {
+    return combineLatest([
       this.storageService.remove(ACCESS_TOKEN_STORAGE_KEY),
       this.storageService.remove(REFRESH_TOKEN_STORAGE_KEY),
-    );
+    ]);
   }
 }
