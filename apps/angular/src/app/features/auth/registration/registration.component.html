@@ -77,14 +77,14 @@
             : 'text-success'
         "
       >
-        <i class="material-icons">
+        <em class="material-icons">
           {{
             registrationForm.controls.password.hasError(errorItem.key) ||
             registrationForm.controls.password.hasError('required')
               ? "cancel"
               : "check_circle"
           }}
-        </i>
+        </em>
         {{errorItem.value}}
       </li>
     </ul>
