@@ -31,6 +31,7 @@ export class LayoutComponent implements OnInit {
   /** Handle logout button click. */
   public onLogout(): void {
     this.userService.logout().pipe(
+      untilDestroyed(this),
       first(),
     )
       .subscribe(() => this.router.navigate([this.router.url]));

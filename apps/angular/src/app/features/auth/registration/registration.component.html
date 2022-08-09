@@ -8,7 +8,7 @@
         formControlName="email"
         type="email"
         name="email"
-        placeholder="Type email"
+        placeholder="example@domain.com"
         autocomplete="email"
       />
       <mat-error *ngIf="registrationForm.controls.email.hasError('email')" class="text-danger">
@@ -25,7 +25,7 @@
         type="text"
         formControlName="firstName"
         name="firstName"
-        placeholder="Type first name"
+        placeholder="Andrey"
         autocomplete="given-name"
       />
       <mat-error *ngIf="registrationForm.controls.firstName.hasError('maxlength')" class="text-danger">
@@ -42,7 +42,7 @@
         type="text"
         formControlName="lastName"
         name="lastName"
-        placeholder="Type last name"
+        placeholder="Alekseev"
         autocomplete="family-name"
       />
       <mat-error *ngIf="registrationForm.controls.lastName.hasError('maxlength')" class="text-danger">
@@ -59,7 +59,6 @@
         type="password"
         formControlName="password"
         name="password"
-        placeholder="Type password"
         autocomplete="new-password"
       />
       <mat-error *ngIf="registrationForm.controls.password.hasError(serverErrorKey)" class="text-danger">
@@ -95,7 +94,6 @@
         type="password"
         formControlName="confirmPassword"
         name="password"
-        placeholder="Type password"
         autocomplete="new-password"
       />
       <mat-error *ngIf="registrationForm.hasError(noPasswordMatchErrorKey)">
@@ -103,7 +101,7 @@
       </mat-error>
     </mat-form-field>
     <div class="form__controls">
-      <button [disabled]="!isButtonActive" mat-raised-button color="primary" type="submit">Submit</button>
+      <button [disabled]="(isButtonActive$ | async) === false" mat-raised-button color="primary" type="submit">Submit</button>
       <a [href]="routePaths.login">Already have an account?</a>
     </div>
   </form>

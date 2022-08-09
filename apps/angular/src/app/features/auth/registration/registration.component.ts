@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormBuilder, Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { RegistrationData } from '@js-camp/core/models/user';
-import { first } from 'rxjs';
+import { BehaviorSubject, first } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { routePaths } from '../../../../core/utils/route-paths';
@@ -58,7 +58,7 @@ export class RegistrationComponent implements OnInit {
   { validators: [CustomValidators.passwordMatchValidator] });
 
   /** Is button active. */
-  public isButtonActive = false;
+  public isButtonActive$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   public constructor(
     private readonly formBuilder: FormBuilder,
@@ -74,7 +74,7 @@ export class RegistrationComponent implements OnInit {
       untilDestroyed(this),
     ).subscribe(
       status => {
-        this.isButtonActive = status === 'VALID';
+        this.isButtonActive$.next(status === 'VALID');
       },
     );
   }
@@ -84,15 +84,25 @@ export class RegistrationComponent implements OnInit {
     if (!this.registrationForm.valid) {
       return;
     }
+    const formValue = this.registrationForm.value;
+    if (
+      formValue.email === undefined ||
+      formValue.password === undefined ||
+      formValue.firstName === undefined ||
+      formValue.lastName === undefined
+    ) {
+      return;
+    }
     const registrationData: RegistrationData = {
-      email: this.registrationForm.value.email as string,
-      password: this.registrationForm.value.password as string,
-      firstName: this.registrationForm.value.firstName as string,
-      lastName: this.registrationForm.value.lastName as string,
+      email: formValue.email,
+      password: formValue.password,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
     };
     this.authService
       .register(registrationData)
       .pipe(
+        untilDestroyed(this),
         first(),
         catchValidationError((error: AppValidationError<RegistrationData>) => {
           setServerErrorsToControls(error.validationErrors, this.registrationForm);

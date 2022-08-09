@@ -8,7 +8,7 @@
         formControlName="email"
         type="email"
         name="email"
-        placeholder="Type email"
+        placeholder="example@domain.com"
       />
     </mat-form-field>
     <mat-form-field appearance="outline">
@@ -18,15 +18,14 @@
         type="password"
         formControlName="password"
         name="password"
-        placeholder="Type password"
         autocomplete="current-password"
       />
     </mat-form-field>
-    <div *ngIf="loginForm.hasError(serverErrorKey)" class="form__base-errors">
-      <p class="text-danger">{{loginForm.getError(serverErrorKey)}}</p>
-    </div>
+    <mat-error *ngIf="loginForm.hasError(serverErrorKey)" class="form__base-errors">
+      {{loginForm.getError(serverErrorKey)}}
+    </mat-error>
     <div class="form__controls">
-      <button [disabled]="!isButtonActive" mat-raised-button color="primary" type="submit">Submit</button>
+      <button [disabled]="(isButtonActive$ | async) === false" mat-raised-button color="primary" type="submit">Submit</button>
       <a [href]="routePaths.registration">Dont have an account?</a>
     </div>
   </form>

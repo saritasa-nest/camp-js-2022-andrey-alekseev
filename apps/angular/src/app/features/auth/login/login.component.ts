@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { FormBuilder } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LoginData } from '@js-camp/core/models/user';
-import { first } from 'rxjs';
+import { BehaviorSubject, first } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { routePaths } from '../../../../core/utils/route-paths';
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
   });
 
   /** Is button active. */
-  public isButtonActive = false;
+  public isButtonActive$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   /** Server validation error key. */
   public readonly serverErrorKey = SERVER_ERROR_KEY;
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
       untilDestroyed(this),
     ).subscribe(
       status => {
-        this.isButtonActive = status === 'VALID';
+        this.isButtonActive$.next(status === 'VALID');
       },
     );
   }
@@ -64,13 +64,18 @@ export class LoginComponent implements OnInit {
     if (!this.loginForm.valid) {
       return;
     }
+    const formValue = this.loginForm.value;
+    if (formValue.email === undefined || formValue.password === undefined) {
+      return;
+    }
     const loginData: LoginData = {
-      email: this.loginForm.value.email as string,
-      password: this.loginForm.value.password as string,
+      email: formValue.email,
+      password: formValue.password,
     };
     this.authService
       .login(loginData)
       .pipe(
+        untilDestroyed(this),
         first(),
         catchValidationError((error: AppValidationError<LoginData>) => {
           setServerErrorsToControls(error.validationErrors, this.loginForm);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject, Observable, tap, map, switchMap, switchMapTo, merge, shareReplay } from 'rxjs';
+import { ReplaySubject, Observable, tap, map, switchMap, switchMapTo, merge, shareReplay, of } from 'rxjs';
 import { User } from '@js-camp/core/models/user/user';
 import { UserDto } from '@js-camp/core/dtos/user.dto';
 import { HttpClient } from '@angular/common/http';
@@ -19,9 +19,7 @@ export class UserService {
   private readonly userFromStorage$ = this.tokenService.accessToken$.pipe(
     switchMap(accessToken => {
       if (accessToken === null) {
-        return new Observable<null>(subscriber => {
-          subscriber.next(null);
-        });
+        return of(null);
       }
       return this.getUser();
     }),
@@ -61,7 +59,7 @@ export class UserService {
   }
 
   /** Remove the token and clear user data. */
-  public logout(): Observable<[void, void]> {
+  public logout(): Observable<void> {
     return this.tokenService.clear().pipe(
       tap(() => this.user$.next(null)),
     );
