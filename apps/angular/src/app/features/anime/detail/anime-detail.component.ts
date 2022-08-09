@@ -9,6 +9,7 @@ import { AnimeService } from '../../../../core/services/anime.service';
 import { AppError } from '../../../../core/models/app-errors';
 
 import { AnimeImageDialogComponent } from './anime-image-modal/anime-image.component';
+import { AnimeDeleteDialogComponent } from './anime-delete-modal/anime-image.component';
 
 /** Anime details component. */
 @Component({
@@ -54,6 +55,18 @@ export class AnimeDetailComponent implements OnInit {
    */
   public openImageModal(anime: Anime): void {
     this.dialog.open(AnimeImageDialogComponent, {
+      data: {
+        anime,
+      },
+    });
+  }
+
+  /**
+   * Open anime delete modal.
+   * @param anime Anime.
+   */
+  public deleteAnime(anime: Anime): void {
+    this.dialog.open(AnimeDeleteDialogComponent, {
       data: {
         anime,
       },

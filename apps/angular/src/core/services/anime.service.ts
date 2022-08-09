@@ -55,4 +55,14 @@ export class AnimeService {
       map(animeDto => AnimeMapper.fromDto(animeDto)),
     );
   }
+
+  /**
+   * Delete anime by id.
+   * @param id Anime id.
+   */
+  public deleteAnime(id: number): Observable<void> {
+    return this.http.delete<void>(
+      this.appUrls.animeUrls.details(id),
+    );
+  }
 }

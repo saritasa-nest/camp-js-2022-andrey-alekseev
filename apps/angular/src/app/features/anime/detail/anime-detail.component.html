@@ -1,12 +1,15 @@
 <anime-page-loader *ngIf="(anime$ | async) === null"></anime-page-loader>
 <div *ngIf="anime$ | async as anime" class="anime">
-  <div class="anime__image-wrapper">
-    <img
-      class="anime__image"
-      [alt]="anime.titleEng"
-      [src]="anime.image"
-      (click)="openImageModal(anime)"
-    />
+  <div class="anime__side-bar">
+    <div class="anime__image-wrapper">
+      <img
+        class="anime__image"
+        [alt]="anime.titleEng"
+        [src]="anime.image"
+        (click)="openImageModal(anime)"
+      />
+    </div>
+    <button type="button" mat-raised-button color="warn" (click)="deleteAnime(anime)">Delete</button>
   </div>
   <div class="anime__content">
     <div class="anime__header">

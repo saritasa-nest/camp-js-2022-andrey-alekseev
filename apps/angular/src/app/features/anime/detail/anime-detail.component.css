@@ -6,6 +6,11 @@
   column-gap: 10px;
 }
 
+.anime__side-bar {
+  display: flex;
+  flex-flow: column;
+}
+
 .anime__title,
 .anime__section-header {
   font-weight: bold;
