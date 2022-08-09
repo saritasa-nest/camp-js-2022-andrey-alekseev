@@ -36,7 +36,7 @@ export class LayoutComponent implements OnInit {
       untilDestroyed(this),
       first(),
     )
-      .subscribe(() => this.router.navigate([this.router.url]));
+      .subscribe(() => this.router.navigate([routePaths.login]));
   }
 
   /** @inheritDoc */

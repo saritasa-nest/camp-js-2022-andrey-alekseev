@@ -7,7 +7,11 @@
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" [alt]="anime.titleEng" [src]="anime.image" />
+      <img
+        class="anime-table__row-image"
+        [alt]="anime.titleEng"
+        [src]="anime.image"
+      />
     </mat-cell>
   </ng-container>
 
@@ -41,5 +45,8 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    (click)="openDetails(row)"
+  ></mat-row>
 </mat-table>
