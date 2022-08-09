@@ -17,6 +17,7 @@
 
 .anime__section-line {
   display: flex;
+  align-items: center;
   column-gap: 5px;
 }
 
@@ -69,8 +70,8 @@
   padding: 5px;
 }
 
-.anime__type,
-.anime__is-aring {
+.anime__section-text {
+  margin-bottom: unset;
   font-weight: bold;
 }
 
