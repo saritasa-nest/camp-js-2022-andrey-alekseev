@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { LoginData } from '@js-camp/core/models/user';
 import { first } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { routePaths } from '../../../../core/utils/route-paths';
 import {
@@ -40,6 +40,7 @@ export class LoginComponent {
   public constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
     private readonly changeDetectorRef: ChangeDetectorRef,
   ) {
@@ -70,7 +71,10 @@ export class LoginComponent {
         untilDestroyed(this),
       )
       .subscribe(
-        () => this.router.navigate([this.routePaths.home]),
+        () => {
+          const nextURL = this.route.snapshot.queryParamMap.get('next') ?? routePaths.home;
+          this.router.navigate([nextURL]);
+        },
       );
   }
 }

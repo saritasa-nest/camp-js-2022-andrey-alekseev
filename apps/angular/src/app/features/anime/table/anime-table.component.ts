@@ -11,6 +11,9 @@ import { isSortDirection, SortDirection, SortOptions } from '@js-camp/core/model
 import { Pagination } from '@js-camp/core/models/pagination/pagination';
 
 import { AnimeService } from '../../../../core/services/anime.service';
+import { UserService } from '../../../../core/services/user.service';
+import { routePaths } from '../../../../core/utils/route-paths';
+import { trackById } from '../../../../core/utils/trackById';
 import { ListManager, ListManagerInitParams } from '../../../../core/utils/list-manager';
 import { matSortToSortOptions } from '../../../../core/utils/table';
 import { getNumberQueryParameter } from '../../../../core/utils/queryParameters';
@@ -57,6 +60,9 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     type: null,
   });
 
+  /** Is user authenticated. */
+  public readonly isUserAuthenticated$ = this.userService.isAuthenticated$;
+
   /** Columns to display in table. */
   public readonly displayedColumns = [
     'image',
@@ -75,10 +81,14 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
 
   private readonly initialParams: ListManagerInitParams<AnimeSortField, AnimeFilters>;
 
+  /** Track by id function. */
+  public readonly trackById = trackById;
+
   public constructor(
     private readonly formBuilder: FormBuilder,
     private readonly activeRoute: ActivatedRoute,
     private readonly router: Router,
+    private readonly userService: UserService,
     animeService: AnimeService,
   ) {
     this.initialParams = this.getParamsFromQuery(this.activeRoute.snapshot.queryParamMap);
@@ -86,15 +96,6 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     this.animeList$ = this.listManager.getPaginatedItems(
       paginationQuery => animeService.getAnimeList(paginationQuery),
     );
-  }
-
-  /**
-   * Track by anime by id.
-   * @param _index Item index.
-   * @param anime Anime model.
-   */
-  public trackAnimeById(_index: number, anime: AnimeBase): number {
-    return anime.id;
   }
 
   /** @inheritDoc */
@@ -241,5 +242,13 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
       sortOptions,
       filtersOptions,
     };
+  }
+
+  /**
+   * Open anime details.
+   * @param animeBase Anime base model.
+   */
+  public openDetails(animeBase: AnimeBase): void {
+    this.router.navigate([`${routePaths.anime}/${animeBase.id}`]);
   }
 }

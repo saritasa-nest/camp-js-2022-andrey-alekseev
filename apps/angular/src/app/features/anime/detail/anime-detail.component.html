@@ -1,0 +1,73 @@
+<anime-page-loader
+  *ngIf="isLoading$ | async"
+></anime-page-loader>
+<p class="anime__error-text" *ngIf="error$ | async">
+  Sorry something went wrong. Maybe link is broken.
+</p>
+<div *ngIf="anime$ | async as anime" class="anime">
+  <div class="anime__image-wrapper">
+    <img
+      class="anime__image"
+      [alt]="anime.titleEng"
+      [src]="anime.image"
+      (click)="onImageClick(anime)"
+    />
+  </div>
+  <div class="anime__content">
+    <div class="anime__header">
+      <h1 class="anime__title">
+        {{ anime.titleEng }} / {{ anime.titleJapan }}
+      </h1>
+      <div class="anime__status">
+        <p class="anime__status-text">{{ anime.status | animeStatus }}</p>
+      </div>
+      <mat-chip-list
+        *ngIf="anime.genres.length > 0"
+        class="anime__genres-list"
+        aria-label="Genres section"
+      >
+        <mat-chip
+          *ngFor="let genre of anime.genres; trackBy: trackById"
+          selectable="false"
+          color="primary"
+        >
+          {{ genre.name }}
+        </mat-chip>
+      </mat-chip-list>
+      <p class="anime__aired">
+        {{ anime.airedStart | formattedDate }} -
+        {{ anime.airedEnd | formattedDate }}
+      </p>
+      <mat-chip-list
+        *ngIf="anime.studios.length > 0"
+        class="anime__studios-list"
+        aria-label="Studios section"
+      >
+        <mat-chip
+          *ngFor="let studio of anime.studios; trackBy: trackById"
+          selectable="false"
+          color="primary"
+        >
+          {{ studio.name }}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
+    <section class="anime__section-line">
+      <h2 class="anime__section-header">Airing status:</h2>
+      <p class="anime__section-text">
+        {{ anime.isAiring ? "Airing" : "Not airing" }}
+      </p>
+    </section>
+    <section class="anime__section-line">
+      <h2 class="anime__section-header">Type:</h2>
+      <p class="anime__section-text">{{ anime.type | animeType }}</p>
+    </section>
+    <section>
+      <h2 class="anime__section-header">Synopsis</h2>
+      <p class="anime__synopsis">{{ anime.synopsis }}</p>
+    </section>
+    <div class="anime__trailer-wrapper">
+      <youtube-player [videoId]="anime.youTubeTrailerId"></youtube-player>
+    </div>
+  </div>
+</div>

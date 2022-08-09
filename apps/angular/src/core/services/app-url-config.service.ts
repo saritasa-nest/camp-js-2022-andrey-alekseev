@@ -6,6 +6,9 @@ interface AnimeUrls {
 
   /** Anime list url. */
   readonly list: string;
+
+  /** Anime details url. */
+  readonly details: (id: number) => string;
 }
 
 interface AuthUrls {
@@ -45,6 +48,7 @@ export class AppUrlConfigService {
   public get animeUrls(): AnimeUrls {
     return {
       list: new URL(`${this.animePrefix}anime/`, this.appConfig.apiUrl).toString(),
+      details: (id: number) => new URL(`${this.animePrefix}anime/${id}/`, this.appConfig.apiUrl).toString(),
     };
   }
 

@@ -33,6 +33,12 @@ export class UserService {
     shareReplay({ refCount: true, bufferSize: 1 }),
   );
 
+  /** Is user authenticated. */
+  public readonly isAuthenticated$ = this.userProfile$.pipe(
+    map(user => user !== null),
+    shareReplay({ refCount: true, bufferSize: 1 }),
+  );
+
   public constructor(
     private readonly http: HttpClient,
     private readonly tokenService: TokenService,

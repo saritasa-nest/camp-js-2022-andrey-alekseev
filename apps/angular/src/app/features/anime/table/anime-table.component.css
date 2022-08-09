@@ -16,3 +16,7 @@
   text-align: center;
   padding: 10px;
 }
+
+.anime-table__row_clickable {
+  cursor: pointer;
+}

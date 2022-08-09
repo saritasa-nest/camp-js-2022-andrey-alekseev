@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AnimeBase, AnimeFilters, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
-import { map, Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LimitOffsetPaginationDto } from '@js-camp/core/dtos/limitOffsetPagination.dto';
 import { LimitOffsetPaginationMapper } from '@js-camp/core/mappers/limitOffsetPagination.mapper';
@@ -12,6 +12,9 @@ import { FilterOptionMapper } from '@js-camp/core/mappers/filterOption.mapper';
 import { PaginatedItems } from '@js-camp/core/models/pagination/paginatedItems';
 import { PaginationQuery } from '@js-camp/core/models/pagination/paginationQuery';
 import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
+import { Anime } from '@js-camp/core/models/anime/anime';
+import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
+import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
 
 import { AppUrlConfigService } from './app-url-config.service';
 
@@ -72,6 +75,19 @@ export class AnimeService {
           pagination,
         ),
       ),
+    );
+  }
+
+  /**
+   * Get anime by id.
+   * @param id Anime id.
+   */
+  public getAnime(id: number): Observable<Anime> {
+    return this.http.get<AnimeDto>(
+      this.appUrls.animeUrls.details(id),
+    ).pipe(
+      map(animeDto => AnimeMapper.fromDto(animeDto)),
+      shareReplay({ bufferSize: 1, refCount: true }),
     );
   }
 }

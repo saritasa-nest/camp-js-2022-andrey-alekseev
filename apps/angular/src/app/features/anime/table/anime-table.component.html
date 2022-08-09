@@ -31,7 +31,7 @@
   [dataSource]="animeList$"
   matSort
   (matSortChange)="onSortChanged($event)"
-  [trackBy]="trackAnimeById"
+  [trackBy]="trackById"
 >
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
@@ -61,7 +61,7 @@
       AiredStart
     </mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      {{ anime.airedStart | date: "yyyy-mm-dd" }}
+      {{ anime.airedStart | formattedDate }}
     </mat-cell>
   </ng-container>
 
@@ -78,7 +78,20 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <ng-container [ngSwitch]="isUserAuthenticated$ | async">
+    <ng-container *ngSwitchCase="true">
+      <mat-row
+        class="anime-table__row_clickable"
+        *matRowDef="let anime; columns: displayedColumns"
+        (click)="openDetails(anime)"
+      ></mat-row>
+    </ng-container>
+    <ng-container *ngSwitchCase="false">
+      <mat-row
+        *matRowDef="let anime; columns: displayedColumns"
+      ></mat-row>
+    </ng-container>
+  </ng-container>
   <div class="anime-table__empty-message" *matNoDataRow>
     There are no anime for these filters
   </div>
