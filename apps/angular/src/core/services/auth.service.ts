@@ -90,4 +90,9 @@ export class AuthService {
       }),
     );
   }
+
+  /** Logout user. */
+  public logout(): Observable<void> {
+    return this.userService.removeUserData();
+  }
 }

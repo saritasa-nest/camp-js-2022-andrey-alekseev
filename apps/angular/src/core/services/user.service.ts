@@ -59,7 +59,7 @@ export class UserService {
   }
 
   /** Remove the token and clear user data. */
-  public logout(): Observable<void> {
+  public removeUserData(): Observable<void> {
     return this.tokenService.clear().pipe(
       tap(() => this.user$.next(null)),
     );

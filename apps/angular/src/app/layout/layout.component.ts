@@ -6,6 +6,7 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 import { routePaths } from '../../core/utils/route-paths';
 import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 
 /** Layout component. */
 @UntilDestroy()
@@ -24,13 +25,14 @@ export class LayoutComponent implements OnInit {
   public user?: User | null;
 
   public constructor(
-    public readonly userService: UserService,
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
     private readonly router: Router,
   ) {}
 
   /** Handle logout button click. */
   public onLogout(): void {
-    this.userService.logout().pipe(
+    this.authService.logout().pipe(
       untilDestroyed(this),
       first(),
     )
