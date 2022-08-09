@@ -7,11 +7,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { map } from 'rxjs/operators';
 
 import { AnimeService } from '../../../../core/services/anime.service';
-import { AppError } from '../../../../core/models/app-errors';
 import { routePaths } from '../../../../core/utils/route-paths';
 import { trackById } from '../../../../core/utils/trackById';
+import { getIdParamFromQuery } from '../../../../core/utils/queryParams';
 
 import { AnimeImageDialogComponent } from './anime-image-modal/anime-image.component';
+import { AnimeDeleteDialogComponent } from './anime-delete-modal/anime-delete-dialog.component';
 
 /** Anime details component. */
 @Component({
@@ -41,14 +42,7 @@ export class AnimeDetailComponent implements OnInit {
     animeService: AnimeService,
     route: ActivatedRoute,
   ) {
-    const idParam = route.snapshot.paramMap.get('id');
-    if (idParam === null) {
-      throw new AppError('Id is not provided');
-    }
-    const animeId = parseInt(idParam, 10);
-    if (Number.isNaN(animeId) || animeId < 0) {
-      this.router.navigate([routePaths.home]);
-    }
+    const animeId = getIdParamFromQuery(route.snapshot.paramMap);
     this.anime$ = animeService.getAnime(animeId).pipe(
       tap(() => this.isLoading$.next(false)),
       catchError((error: unknown) => {
@@ -82,4 +76,23 @@ export class AnimeDetailComponent implements OnInit {
     });
   }
 
+  /**
+   * Open anime delete modal.
+   * @param anime Anime.
+   */
+  public deleteAnime(anime: Anime): void {
+    this.dialog.open(AnimeDeleteDialogComponent, {
+      data: {
+        anime,
+      },
+    });
+  }
+
+  /**
+   * Open edit page on button click.
+   * @param anime Anime.
+   */
+  public onEditClick(anime: Anime): void {
+    this.router.navigate([routePaths.animeEdit(anime.id)]);
+  }
 }

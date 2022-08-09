@@ -1,0 +1,152 @@
+<div class="form-wrapper">
+  <ng-container [ngSwitch]="anime === undefined">
+    <h1 *ngSwitchCase="true">Create anime</h1>
+    <h1 *ngSwitchCase="false">Edit anime</h1>
+  </ng-container>
+  <form [formGroup]="animeForm" class="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Title eng</mat-label>
+      <input
+        matInput
+        type="text"
+        name="titleEng"
+        [formControl]="animeForm.controls.titleEng"
+        placeholder="anime name"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Title japan</mat-label>
+      <input
+        matInput
+        type="text"
+        name="titleJapan"
+        [formControl]="animeForm.controls.titleJapan"
+        placeholder="私のアニメ"
+      />
+    </mat-form-field>
+    <image-upload [imageUrl]="anime?.image" (imageUploaded)="onImageUpload($event)"></image-upload>
+    <mat-form-field appearance="fill">
+      <mat-label>Enter aired dates</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input
+          matStartDate
+          placeholder="Start date"
+          [formControl]="animeForm.controls.airedStart"
+        />
+        <input
+          matEndDate
+          placeholder="End date"
+          [formControl]="animeForm.controls.airedEnd"
+        />
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Studios</mat-label>
+      <div class="chip-list-wrapper">
+        <mat-chip-list #chipList>
+          <ng-container *ngFor="let select of selectData">
+            <mat-chip class="cardinal-colors" (click)="removeChip(select)">
+              {{ select.item }}
+              <mat-icon class="mat-chip-remove">cancel</mat-icon>
+            </mat-chip>
+          </ng-container>
+        </mat-chip-list>
+      </div>
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let data of studios$ | async">
+          <div (click)="optionClicked($event, data)">
+            <mat-checkbox [checked]="data.selected"
+                          (change)="toggleSelection(data)"
+                          (click)="$event.stopPropagation()">
+              {{ data.item }}
+            </mat-checkbox>
+          </div>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select [formControl]="animeForm.controls.type">
+        <mat-option *ngFor="let type of animeType.creationTypesList" [value]="type">
+          {{ type | animeType }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Status</mat-label>
+      <mat-select [formControl]="animeForm.controls.status">
+        <mat-option
+          *ngFor="let status of animeStatus.statusesList"
+          [value]="status"
+        >
+          {{ status | animeStatus }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Season</mat-label>
+      <mat-select [formControl]="animeForm.controls.season">
+        <mat-option
+          *ngFor="let season of animeSeason.seasonsList"
+          [value]="season"
+        >
+          {{ season | animeSeason }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Rating</mat-label>
+      <mat-select [formControl]="animeForm.controls.rating">
+        <mat-option
+          *ngFor="let rating of animeRating.ratingsList"
+          [value]="rating"
+        >
+          {{ rating | animeRating }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Source</mat-label>
+      <mat-select [formControl]="animeForm.controls.source">
+        <mat-option
+          *ngFor="let source of animeSource.sourcesList"
+          [value]="source"
+        >
+          {{ source | animeSource }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Synopsis</mat-label>
+      <textarea
+        matInput
+        name="synopsis"
+        [formControl]="animeForm.controls.synopsis"
+      ></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>YouTube trailer id</mat-label>
+      <input
+        matInput
+        name="youTubeTrailerId"
+        [formControl]="animeForm.controls.youTubeTrailerId"
+      />
+    </mat-form-field>
+    <mat-checkbox name="isAiring" [formControl]="animeForm.controls.isAiring">
+      Is Airing
+    </mat-checkbox>
+    <div class="form__controls">
+      <button
+        [disabled]="animeForm.invalid"
+        mat-raised-button
+        color="primary"
+        type="submit"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

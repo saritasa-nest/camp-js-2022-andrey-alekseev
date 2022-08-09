@@ -5,13 +5,17 @@
   Sorry something went wrong. Maybe link is broken.
 </p>
 <div *ngIf="anime$ | async as anime" class="anime">
-  <div class="anime__image-wrapper">
-    <img
-      class="anime__image"
-      [alt]="anime.titleEng"
-      [src]="anime.image"
-      (click)="onImageClick(anime)"
-    />
+  <div class="anime__side-bar">
+    <div class="anime__image-wrapper">
+      <img
+        class="anime__image"
+        [alt]="anime.titleEng"
+        [src]="anime.image"
+        (click)="onImageClick(anime)"
+      />
+    </div>
+    <button type="button" mat-raised-button color="warn" (click)="deleteAnime(anime)">Delete</button>
+    <button type="button" mat-raised-button color="primary" (click)="onEditClick(anime)">Edit</button>
   </div>
   <div class="anime__content">
     <div class="anime__header">
@@ -67,7 +71,7 @@
       <p class="anime__synopsis">{{ anime.synopsis }}</p>
     </section>
     <div class="anime__trailer-wrapper">
-      <youtube-player [videoId]="anime.youTubeTrailerId"></youtube-player>
+      <youtube-player *ngIf="anime.youTubeTrailerId !== null" [videoId]="anime.youTubeTrailerId"></youtube-player>
     </div>
   </div>
 </div>

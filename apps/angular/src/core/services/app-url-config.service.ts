@@ -9,6 +9,9 @@ interface AnimeUrls {
 
   /** Anime details url. */
   readonly details: (id: number) => string;
+
+  /** Studios list url. */
+  readonly studios: string;
 }
 
 interface AuthUrls {
@@ -29,6 +32,12 @@ interface UsersUrls {
   readonly profile: string;
 }
 
+interface S3DirectUrls {
+
+  /** S3 direct params url. */
+  readonly getParams: string;
+}
+
 /** Service that provides API urls. */
 @Injectable({
   providedIn: 'root',
@@ -40,6 +49,8 @@ export class AppUrlConfigService {
 
   private readonly usersPrefix = 'users/';
 
+  private readonly s3directPrefix = 's3direct/';
+
   public constructor(
     private readonly appConfig: AppConfigService,
   ) {}
@@ -49,6 +60,7 @@ export class AppUrlConfigService {
     return {
       list: new URL(`${this.animePrefix}anime/`, this.appConfig.apiUrl).toString(),
       details: (id: number) => new URL(`${this.animePrefix}anime/${id}/`, this.appConfig.apiUrl).toString(),
+      studios: new URL(`${this.animePrefix}studios/`, this.appConfig.apiUrl).toString(),
     };
   }
 
@@ -65,6 +77,13 @@ export class AppUrlConfigService {
   public get usersUrls(): UsersUrls {
     return {
       profile: new URL(`${this.usersPrefix}profile/`, this.appConfig.apiUrl).toString(),
+    };
+  }
+
+  /** Get s3direct API urls. */
+  public get s3directUrls(): S3DirectUrls {
+    return {
+      getParams: new URL(`${this.s3directPrefix}get_params/`, this.appConfig.apiUrl).toString(),
     };
   }
 }

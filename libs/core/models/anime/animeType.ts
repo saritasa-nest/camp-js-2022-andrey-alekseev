@@ -1,4 +1,4 @@
-import { enumToKeys, enumToValues } from 'enum-to-array';
+import { enumToKeys } from 'enum-to-array';
 
 /** Represents anime type. */
 export enum AnimeType {
@@ -11,19 +11,27 @@ export enum AnimeType {
   Unknown = 'UNKNOWN',
 }
 
+export type AnimeCreationType = Exclude<AnimeType, AnimeType.Unknown>;
+
 export namespace AnimeType {
 
-  const TO_READABLE_MAP: Readonly<Record<AnimeType, string>> = {
+  const TO_READABLE_CREATION_MAP: Readonly<Record<AnimeCreationType, string>> = {
     [AnimeType.TV]: 'TV',
     [AnimeType.OVA]: 'OVA',
     [AnimeType.Movie]: 'Movie',
     [AnimeType.Special]: 'Special',
     [AnimeType.ONA]: 'ONA',
     [AnimeType.Music]: 'Music',
+  };
+
+  const TO_READABLE_MAP: Readonly<Record<AnimeType, string>> = {
+    ...TO_READABLE_CREATION_MAP,
     [AnimeType.Unknown]: 'Unknown',
   };
 
   export const typesList = enumToKeys(TO_READABLE_MAP);
+
+  export const creationTypesList = enumToKeys(TO_READABLE_CREATION_MAP);
 
   /**
    * Converts a certain anime type into readable equivalent.
@@ -43,14 +51,6 @@ export namespace AnimeType {
       throw new Error('Unknown type');
     }
     return type;
-  }
-
-  /**
-   * Check if string is anime type.
-   * @param type String to check.
-   */
-  export function isAnimeType(type: string): type is AnimeType {
-    return enumToValues(AnimeType).includes(type as AnimeType);
   }
 
 }

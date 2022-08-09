@@ -15,6 +15,12 @@ import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 import { Anime } from '@js-camp/core/models/anime/anime';
 import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
 import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
+import { AnimeCreateFormData, AnimeEditFormData } from '@js-camp/core/models/anime/animeFormData';
+
+import { Studio } from '@js-camp/core/models/studio';
+import { StudioDto } from '@js-camp/core/dtos/studio.dto';
+
+import { StudioMapper } from '@js-camp/core/mappers/studio.mapper';
 
 import { AppUrlConfigService } from './app-url-config.service';
 
@@ -88,6 +94,55 @@ export class AnimeService {
     ).pipe(
       map(animeDto => AnimeMapper.fromDto(animeDto)),
       shareReplay({ bufferSize: 1, refCount: true }),
+    );
+  }
+
+  /**
+   * Create anime.
+   * @param animeCreateFormData Anime create form data.
+   */
+  public createAnime(animeCreateFormData: AnimeCreateFormData): Observable<Anime> {
+    return this.http.post<AnimeDto>(
+      this.appUrls.animeUrls.list,
+      AnimeMapper.toCreateFormDto(animeCreateFormData),
+    ).pipe(
+      map(animeDto => AnimeMapper.fromDto(animeDto)),
+    );
+  }
+
+  /**
+   * Edit anime.
+   * @param animeEditFormData Updated anime.
+   */
+  public editAnime(animeEditFormData: AnimeEditFormData): Observable<Anime> {
+    return this.http.put<AnimeDto>(
+      this.appUrls.animeUrls.details(animeEditFormData.id),
+      AnimeMapper.toEditFormDto(animeEditFormData),
+    ).pipe(
+      map(animeDto => AnimeMapper.fromDto(animeDto)),
+    );
+  }
+
+  /**
+   * Delete anime by id.
+   * @param id Anime id.
+   */
+  public deleteAnime(id: number): Observable<void> {
+    return this.http.delete<void>(
+      this.appUrls.animeUrls.details(id),
+    );
+  }
+
+  /** Get studios. */
+  public getStudios(): Observable<readonly Studio[]> {
+    return this.http.get<LimitOffsetPaginationDto<StudioDto>>(
+      this.appUrls.animeUrls.studios,
+    ).pipe(
+      map(studioPaginationDto => PaginationMapper.mapPaginationFromDto(
+        studioPaginationDto,
+        StudioMapper.fromDto,
+      )),
+      map(studioPagination => studioPagination.items),
     );
   }
 }

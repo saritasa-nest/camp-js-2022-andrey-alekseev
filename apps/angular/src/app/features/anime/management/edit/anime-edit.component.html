@@ -1,0 +1,6 @@
+<anime-page-loader *ngIf="(anime$ | async) === null"></anime-page-loader>
+<anime-form
+  *ngIf="anime$ | async as anime"
+  [anime]="anime"
+  (formSubmit)="onFormSubmit($event)"
+></anime-form>

@@ -2,10 +2,10 @@
 export interface AiredDto {
 
   /** Aired start date. */
-  readonly start: string;
+  readonly start: string | null;
 
   /** Aired end date. */
-  readonly end: string;
+  readonly end: string | null;
 }
 
 /** Anime base dto. */

@@ -10,6 +10,7 @@
   </a>
   <ng-container *ngIf="(isLoading$ | async) === false">
     <ng-container *ngIf="user$ | async as user">
+      <a mat-button [routerLink]="routePaths.animeCreate">CreateAnime</a>
       <button type="button" mat-button [matMenuTriggerFor]="userMenu">
         {{ user.email }}
       </button>

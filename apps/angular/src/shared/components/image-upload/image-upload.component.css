@@ -1,0 +1,14 @@
+.image-upload-wrapper {
+  display: flex;
+  column-gap: 5px;
+  align-items: center;
+}
+
+.preview__image {
+  --preview-image-width: 200px;
+  --preview-image-height: 200px;
+
+  width: var(--preview-image-width);
+  height: var(--preview-image-height);
+  object-fit: cover;
+}

@@ -11,8 +11,17 @@ export interface AnimeDto extends AnimeBaseDto {
   /** Is airing. */
   readonly airing: boolean;
 
+  /** Rating. */
+  readonly rating: string;
+
+  /** Season. */
+  readonly season: string;
+
+  /** Source. */
+  readonly source: string;
+
   /** YouTube trailer id. */
-  readonly trailer_youtube_id: string;
+  readonly trailer_youtube_id: string | null;
 
   /** Studios data. */
   readonly studios_data: readonly StudioDto[];
@@ -20,3 +29,14 @@ export interface AnimeDto extends AnimeBaseDto {
   /** Genres data. */
   readonly genres_data: readonly GenreDto[];
 }
+
+export interface AnimeEditFormDto extends Omit<AnimeDto, 'created' | 'modified' | 'studios_data' | 'genres_data'> {
+
+  /** Studios ids list. */
+  readonly studios: readonly number[];
+
+  /** Genres ids list. */
+  readonly genres: readonly number[];
+}
+
+export type AnimeCreateFormDto = Omit<AnimeEditFormDto, 'id'>;

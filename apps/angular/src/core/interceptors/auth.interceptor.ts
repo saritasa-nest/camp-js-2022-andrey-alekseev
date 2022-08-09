@@ -13,6 +13,7 @@ import { TokenService } from '../services/token.service';
 import { AppUrlConfigService } from '../services/app-url-config.service';
 import { AuthService } from '../services/auth.service';
 import { routePaths } from '../utils/route-paths';
+import { AppConfigService } from '../services/app-config.service';
 
 /**
  * Auth interceptor.
@@ -29,6 +30,7 @@ export class AuthInterceptor implements HttpInterceptor {
   public constructor(
     private readonly tokenService: TokenService,
     private readonly appUrlConfigService: AppUrlConfigService,
+    private readonly appConfigService: AppConfigService,
     private readonly authService: AuthService,
     private readonly router: Router,
   ) {}
@@ -103,10 +105,15 @@ export class AuthInterceptor implements HttpInterceptor {
 
   /**
    * Add token to header.
+   * Skip not API urls.
    * @param request Http request.
    * @param token Access token.
    */
   private addTokenHeader(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
+    if (!request.url.includes(this.appConfigService.apiUrl)) {
+      return request;
+    }
+
     return request.clone({
       headers: request.headers.set('Authorization', `Bearer ${token}`),
     });

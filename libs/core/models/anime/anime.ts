@@ -2,7 +2,10 @@ import { Genre } from '../genre/genre';
 import { OmitImmerable } from '../immerable';
 import { Studio } from '../studio';
 
+import { AnimeSeason } from './animeSeason';
+import { AnimeRating } from './animeRating';
 import { AnimeBase } from './animeBase';
+import { AnimeSource } from './animeSource';
 
 /** Anime model. */
 export class Anime extends AnimeBase {
@@ -16,8 +19,17 @@ export class Anime extends AnimeBase {
   /** Is airing. */
   public readonly isAiring: boolean;
 
+  /** Rating. */
+  public readonly rating: AnimeRating;
+
+  /** Season. */
+  public readonly season: AnimeSeason;
+
+  /** Source. */
+  public readonly source: AnimeSource;
+
   /** YouTube trailer id. */
-  public readonly youTubeTrailerId: string;
+  public readonly youTubeTrailerId: string | null;
 
   /** List of studios. */
   public readonly studios: readonly Studio[];
@@ -30,6 +42,9 @@ export class Anime extends AnimeBase {
     this.synopsis = data.synopsis;
     this.airedEnd = data.airedEnd;
     this.isAiring = data.isAiring;
+    this.rating = data.rating;
+    this.season = data.season;
+    this.source = data.source;
     this.youTubeTrailerId = data.youTubeTrailerId;
     this.studios = data.studios;
     this.genres = data.genres;

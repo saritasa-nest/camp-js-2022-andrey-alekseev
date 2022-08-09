@@ -1,9 +1,10 @@
+import { enumToKeys } from 'enum-to-array';
+
 /** Represents anime status. */
 export enum AnimeStatus {
   Airing = 'AIRING',
   Finished = 'FINISHED',
   NotYetAired = 'NOT_YET_AIRED',
-  Unknown = 'unknown',
 }
 
 export namespace AnimeStatus {
@@ -12,8 +13,9 @@ export namespace AnimeStatus {
     [AnimeStatus.Airing]: 'Airing',
     [AnimeStatus.Finished]: 'Finished',
     [AnimeStatus.NotYetAired]: 'Not yet aired',
-    [AnimeStatus.Unknown]: 'Unknown',
   };
+
+  export const statusesList = enumToKeys(TO_READABLE_MAP);
 
   /**
    * Converts a certain anime status into readable equivalent.
@@ -28,7 +30,17 @@ export namespace AnimeStatus {
    * @param value Value.
    */
   export function toAnimeStatus(value: string): AnimeStatus {
-    const type = value as AnimeStatus;
-    return TO_READABLE_MAP[type] ? type : AnimeStatus.Unknown;
+    if (!isAnimeStatus(value)) {
+      throw new Error('Unknown anime status');
+    }
+    return value;
+  }
+
+  /**
+   * Type guard for anime status.
+   * @param value Value.
+   */
+  export function isAnimeStatus(value: string): value is AnimeStatus {
+    return statusesList.includes(value as AnimeStatus);
   }
 }
