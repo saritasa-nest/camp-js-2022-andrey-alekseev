@@ -9,7 +9,7 @@ import { AnimeService } from '../../../../core/services/anime.service';
 import { AppError } from '../../../../core/models/app-errors';
 
 import { AnimeImageDialogComponent } from './anime-image-modal/anime-image.component';
-import { AnimeDeleteDialogComponent } from './anime-delete-modal/anime-image.component';
+import { AnimeDeleteDialogComponent } from './anime-delete-modal/anime-delete-dialog.component';
 
 /** Anime details component. */
 @Component({

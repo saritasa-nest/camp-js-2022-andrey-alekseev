@@ -13,7 +13,8 @@ import { AnimeRoutingModule } from './anime-routing.module';
 import { AnimeTableComponent } from './table/anime-table.component';
 import { AnimeDetailComponent } from './detail/anime-detail.component';
 import { AnimeImageDialogComponent } from './detail/anime-image-modal/anime-image.component';
-import { AnimeDeleteDialogComponent } from './detail/anime-delete-modal/anime-image.component';
+import { AnimeDeleteDialogComponent } from './detail/anime-delete-modal/anime-delete-dialog.component';
+import { AnimeFormComponent } from './management/anime-form.component';
 
 /** Anime module. */
 @NgModule({
@@ -22,6 +23,7 @@ import { AnimeDeleteDialogComponent } from './detail/anime-delete-modal/anime-im
     AnimeDetailComponent,
     AnimeImageDialogComponent,
     AnimeDeleteDialogComponent,
+    AnimeFormComponent,
   ],
   imports: [
     CommonModule,
