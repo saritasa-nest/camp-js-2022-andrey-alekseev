@@ -5,12 +5,12 @@ import {
 import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 import {
   AnimeBase,
-  AnimeFilterField,
+  AnimeFilterOptions,
   AnimeSortField,
 } from '@js-camp/core/models/anime/animeBase';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
 import {
-  PaginationMapper,
+  LimitOffsetPaginationMapper,
 } from '@js-camp/core/mappers/limitOffsetPagination.mapper';
 import {
   LimitOffsetPaginationDto,
@@ -26,8 +26,8 @@ import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
 
 import { FilterOption } from '@js-camp/core/models/filterOption';
 import {
-  FilterOptionMap,
-} from '@js-camp/core/mappers/filterOptionMap';
+  FilterOptionMapper,
+} from '@js-camp/core/mappers/filterOption.mapper';
 
 import { http } from '..';
 
@@ -44,14 +44,14 @@ export namespace AnimeService {
   export async function getList(
     paginationOptions: LimitOffsetPaginationOptions,
     sortOptions: SortOptions<AnimeSortField> | null,
-    filterOptions: readonly FilterOption<AnimeFilterField>[],
+    filterOptions: readonly FilterOption<AnimeFilterOptions>[],
   ): Promise<LimitOffsetPagination<AnimeBase>> {
     const limitOffsetQueryParams = LimitOffsetQueryMapper.toDto<AnimeSortField>(
       paginationOptions,
       sortOptions,
       animeSortFieldMap,
     );
-    const filterParams = FilterOptionMap.toDto(
+    const filterParams = FilterOptionMapper.toDto(
       filterOptions,
     );
     const { data } = await http.get<LimitOffsetPaginationDto<AnimeBaseDto>>(`${url}anime/`, {
@@ -60,7 +60,7 @@ export namespace AnimeService {
         ...filterParams,
       },
     });
-    return PaginationMapper.mapPaginationFromDto(
+    return LimitOffsetPaginationMapper.mapPaginationFromDto(
       data,
       AnimeBaseMapper.fromDto,
     );

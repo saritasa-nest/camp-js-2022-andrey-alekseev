@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SharedModule } from '../shared/shared.module';
 import { httpInterceptorProviders } from '../core/interceptors';
@@ -19,6 +19,7 @@ import { LayoutsModule } from './layout/layout.module';
     LayoutsModule,
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
   ],
   providers: [...httpInterceptorProviders],
   bootstrap: [AppComponent],

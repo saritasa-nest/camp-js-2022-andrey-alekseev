@@ -5,3 +5,14 @@
   height: var(--table-row-image-size);
   object-fit: cover;
 }
+
+.filters {
+  display: flex;
+  column-gap: 10px;
+  padding: 10px;
+}
+
+.anime-table__empty-message {
+  text-align: center;
+  padding: 10px;
+}

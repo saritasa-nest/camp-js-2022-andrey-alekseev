@@ -7,13 +7,3 @@ export interface LimitOffsetPaginationOptions {
   /** Amount of items on the page. */
   readonly offset: number;
 }
-
-/** Limit offset pagination wrapper. */
-export interface LimitOffsetPagination<T>{
-
-  /** Items on page. */
-  readonly items: readonly T[];
-
-  /** Count of all items. */
-  readonly count: number;
-}

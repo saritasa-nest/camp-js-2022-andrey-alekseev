@@ -1,3 +1,5 @@
+import { enumToValues } from 'enum-to-array';
+
 import { Immerable, OmitImmerable } from '../immerable';
 
 import { AnimeStatus } from './animeStatus';
@@ -11,9 +13,22 @@ export enum AnimeSortField {
   Status = 'status',
 }
 
-/** Anime filter options. */
-export enum AnimeFilterField {
-  Type = 'type',
+/**
+ * Check if string is anime sort field.
+ * @param sortField String to check.
+ */
+export function isAnimeSortField(sortField: string): sortField is AnimeSortField {
+  return enumToValues(AnimeSortField).includes(sortField as AnimeSortField);
+}
+
+/** Anime filters. */
+export interface AnimeFilters {
+
+  /** Search string. */
+  readonly searchString: string;
+
+  /** Anime types. */
+  readonly types: readonly AnimeType[];
 }
 
 /** Base model for anime. */

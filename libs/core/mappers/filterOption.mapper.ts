@@ -11,7 +11,7 @@ export interface FilterParameters {
   [key: string]: string;
 }
 
-export namespace FilterOptionMap {
+export namespace FilterOptionMapper {
 
   /**
    * Map filter options to filter parameters.
@@ -23,7 +23,7 @@ export namespace FilterOptionMap {
     const result: FilterParameters = {};
     filterOptions.forEach(filterOption => {
       const filterParam = `${filterOption.field}${filterTypeMap[filterOption.filterType]}`;
-      result[filterParam] = filterOption.value;
+      result[filterParam] = typeof filterOption.value === 'string' ? filterOption.value : filterOption.value.join(',');
     });
     return result;
   }

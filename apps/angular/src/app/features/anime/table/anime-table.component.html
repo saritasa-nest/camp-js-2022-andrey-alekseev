@@ -1,18 +1,53 @@
 <mat-progress-bar
-  *ngIf="isLoading"
+  *ngIf="listManager.isLoading$ | async"
   color="accent"
   mode="indeterminate"
 ></mat-progress-bar>
-<mat-table [dataSource]="animeList$" [trackBy]="trackAnimeById">
+<div class="filters">
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      type="search"
+      [formControl]="filtersForm.controls.search"
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Select type</mat-label>
+    <mat-select
+      [multiple]="true"
+      [formControl]="filtersForm.controls.type"
+    >
+      <mat-option
+        *ngFor="let type of animeType.typesList"
+        [value]="type"
+      >
+        {{type | animeType}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<mat-table
+  [dataSource]="animeList$"
+  matSort
+  (matSortChange)="onSortChanged($event)"
+  [trackBy]="trackAnimeById"
+>
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
-      <img class="anime-table__row-image" [alt]="anime.titleEng" [src]="anime.image" />
+      <img
+        class="anime-table__row-image"
+        [alt]="anime.titleEng"
+        [src]="anime.image"
+      />
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="titleEng">
-    <mat-header-cell *matHeaderCellDef>Title English</mat-header-cell>
+    <mat-header-cell mat-sort-header *matHeaderCellDef>
+      Title English
+    </mat-header-cell>
     <mat-cell *matCellDef="let anime">{{ anime.titleEng }}</mat-cell>
   </ng-container>
 
@@ -22,7 +57,9 @@
   </ng-container>
 
   <ng-container matColumnDef="airedStart">
-    <mat-header-cell *matHeaderCellDef>AiredStart</mat-header-cell>
+    <mat-header-cell mat-sort-header *matHeaderCellDef>
+      AiredStart
+    </mat-header-cell>
     <mat-cell *matCellDef="let anime">
       {{ anime.airedStart | date: "yyyy-mm-dd" }}
     </mat-cell>
@@ -34,7 +71,7 @@
   </ng-container>
 
   <ng-container matColumnDef="status">
-    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+    <mat-header-cell mat-sort-header *matHeaderCellDef>Status</mat-header-cell>
     <mat-cell *matCellDef="let anime">{{
       anime.status | animeStatus
     }}</mat-cell>
@@ -42,4 +79,19 @@
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <div class="anime-table__empty-message" *matNoDataRow>
+    There are no anime for these filters
+  </div>
 </mat-table>
+
+<mat-paginator
+  *ngIf="listManager.pagination$ | async as pagination"
+  color="primary"
+  showFirstLastButtons
+  [pageSizeOptions]="[5, 10, 20]"
+  [pageSize]="pagination.pageSize"
+  [pageIndex]="pagination.page"
+  [length]="pagination.totalCount"
+  (page)="onPaginationChanged($event)"
+>
+</mat-paginator>
