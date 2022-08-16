@@ -8,9 +8,21 @@ import { AnimeRating } from '@js-camp/core/models/anime/animeRating';
 import { AnimeSource } from '@js-camp/core/models/anime/animeSource';
 import { AnimeCreateFormData } from '@js-camp/core/models/anime/animeFormData';
 
+import { map, tap } from 'rxjs';
+
+import { Studio, StudioFilters } from '@js-camp/core/models/studio';
+
+import { Pagination } from '@js-camp/core/models/pagination/pagination';
+
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
+import { first } from 'rxjs/operators';
+
 import { AnimeService } from '../../../../../core/services/anime.service';
+import { ListManager } from '../../../../../core/utils/list-manager';
 
 /** Anime form component. */
+@UntilDestroy()
 @Component({
   selector: 'anime-form',
   templateUrl: './anime-form.component.html',
@@ -40,8 +52,15 @@ export class AnimeFormComponent implements OnInit {
   /** Anime rating. */
   public readonly animeSource = AnimeSource;
 
+  /** Studios list manager. */
+  public readonly studiosListManager = new ListManager<Studio, null, StudioFilters>();
+
   /** Anime studios. */
-  public readonly studios$ = this.animeService.getStudios();
+  public readonly studios$ = this.studiosListManager.getPaginatedItems(
+    paginationQuery => this.animeService.getStudios(paginationQuery),
+  ).pipe(
+    map(studios => studios.map(studio => studio.name)),
+  );
 
   /** Anime form. */
   public readonly animeForm = new FormGroup({
@@ -123,5 +142,35 @@ export class AnimeFormComponent implements OnInit {
    */
   public onImageUpload(imageUrl: string): void {
     this.animeForm.controls.image.setValue(imageUrl);
+  }
+
+  /**
+   * Handle studio filter changed.
+   * @param searchString Search string.
+   */
+  public onStudioFilterChanged(searchString: string): void {
+    this.studiosListManager.updateFilters({
+      searchString,
+    });
+  }
+
+  /**
+   * Handle studio filter changed.
+   * @param searchString Search string.
+   */
+  public onStudiosScroll(): void {
+    this.studiosListManager.pagination$.pipe(
+      first(),
+      tap(pagination => {
+        this.studiosListManager.updatePagination({
+          pagination: new Pagination(
+            pagination.page + 1,
+            pagination.pageSize,
+            pagination.totalCount,
+          ),
+        });
+      }),
+      untilDestroyed(this),
+    ).subscribe();
   }
 }

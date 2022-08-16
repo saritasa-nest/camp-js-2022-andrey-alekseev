@@ -1,5 +1,13 @@
 import { Immerable, OmitImmerable } from './immerable';
 
+/** Studio filters. */
+export interface StudioFilters {
+
+  /** Search string. */
+  readonly searchString: string;
+
+}
+
 /** Studio model. */
 export class Studio extends Immerable {
 

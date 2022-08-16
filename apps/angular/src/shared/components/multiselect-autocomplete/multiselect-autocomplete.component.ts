@@ -1,87 +1,134 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, Observable, retryWhen, scan, tap } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-import { ItemData } from '../../core/interfaces/multi-select-item-data';
+/** Select item. */
+export interface SelectItem {
 
+  /** Select item value. */
+  readonly value: string;
+
+  /** Is item selected. */
+  isSelected: boolean;
+}
+
+/** Multi select autocomplete component. */
+@UntilDestroy()
 @Component({
   selector: 'multiselect-autocomplete',
   templateUrl: './multiselect-autocomplete.component.html',
-  styleUrls: ['./multiselect-autocomplete.component.scss'],
 })
 export class MultiselectAutocompleteComponent implements OnInit {
 
-  @Output() result = new EventEmitter<{ key: string; data: Array<string>; }>();
+  /** Chosen values. */
+  @Output()
+  public readonly chosenItems = new EventEmitter<{ key: string; data: Array<string>; }>();
 
-  @Input() placeholder = 'Select Data';
+  /** Filter changed. */
+  @Output()
+  public readonly filterChanged = new EventEmitter<string>();
 
-  @Input() data: Array<string> = [];
+  /** Scroll. */
+  @Output()
+  public readonly scrollEvent = new EventEmitter<undefined>();
 
-  @Input() key = '';
+  /** Select placeholder. */
+  @Input()
+  public readonly placeholder = 'Select Data';
 
-  selectControl = new FormControl();
+  /** Select items data. */
+  @Input()
+  public data$?: Observable<Array<string>>;
 
-  rawData: Array<ItemData> = [];
+  /** Select key. */
+  @Input()
+  public readonly key = '';
 
-  selectData: Array<ItemData> = [];
+  /** Select control. */
+  public readonly searchControl = new FormControl<string>('', { nonNullable: true });
 
-  filteredData: Observable<Array<ItemData>>;
+  /** Selected data. */
+  public readonly selectedItems: Array<SelectItem> = [];
 
-  filterString = '';
+  /** Select items. */
+  public items$!: Observable<Array<SelectItem>>;
 
-  constructor() {
-    this.filteredData = this.selectControl.valueChanges.pipe(
-      startWith<string>(''),
-      map(value => typeof value === 'string' ? value : this.filterString),
-      map(filter => this.filter(filter)),
+  public constructor() {
+    this.searchControl.valueChanges.pipe(
+      filter(filterString => filterString !== undefined),
+      tap(filterString => {
+        this.filterChanged.emit(filterString);
+
+        // this.items$ = this.initItems();
+      }),
+      untilDestroyed(this),
+    ).subscribe();
+  }
+
+  /** @inheritDoc */
+  public ngOnInit(): void {
+    if (this.data$ === undefined) {
+      throw new Error('Data must be provided');
+    }
+    this.items$ = this.initItems();
+  }
+
+  private initItems(): Observable<SelectItem[]> {
+    if (this.data$ === undefined) {
+      throw new Error('Data must be provided');
+    }
+    return this.data$.pipe(
+      map(data => data.map(item => {
+        const isSelected = this.selectedItems.includes({
+          value: item,
+          isSelected: true,
+        });
+        return {
+          value: item,
+          isSelected,
+        };
+      })),
+      scan((acc, value) => acc.concat(value)),
+      untilDestroyed(this),
     );
   }
 
-  ngOnInit(): void {
-    this.data.forEach((item: string) => {
-      this.rawData.push({ item, selected: false });
-    });
-  }
+  /**
+   * Toggle selection on item.
+   * @param item Select item.
+   */
+  public toggleSelection(item: SelectItem): void {
+    item.isSelected = !item.isSelected;
 
-  public filter(filter: string): Array<ItemData> {
-    this.filterString = filter;
-    if (filter.length > 0) {
-      return this.rawData.filter(option => option.item.toLowerCase().indexOf(filter.toLowerCase()) >= 0);
-    }
-    return this.rawData.slice();
-
-  }
-
-  public optionClicked(event: Event, data: ItemData): void {
-    event.stopPropagation();
-    this.toggleSelection(data);
-  }
-
-  public toggleSelection(data: ItemData): void {
-    data.selected = !data.selected;
-
-    if (data.selected === true) {
-      this.selectData.push(data);
+    if (item.isSelected) {
+      this.selectedItems.push(item);
     } else {
-      const i = this.selectData.findIndex(value => value.item === data.item);
-      this.selectData.splice(i, 1);
+      const i = this.selectedItems.findIndex(value => value.value === item.value);
+      this.selectedItems.splice(i, 1);
     }
 
-    this.selectControl.setValue(this.selectData);
     this.emitAdjustedData();
   }
 
+  /** Emmit selected items. */
   public emitAdjustedData(): void {
     const results: Array<string> = [];
-    this.selectData.forEach((data: ItemData) => {
-      results.push(data.item);
+    this.selectedItems.forEach((data: SelectItem) => {
+      results.push(data.value);
     });
-    this.result.emit({ key: this.key, data: results });
+    this.chosenItems.emit({ key: this.key, data: results });
   }
 
-  public removeChip(data: ItemData): void {
-    this.toggleSelection(data);
+  /**
+   * Handle remove button clicked.
+   * @param item Select item.
+   */
+  public onRemoveClicked(item: SelectItem): void {
+    this.toggleSelection(item);
   }
 
+  public onScroll() {
+    this.scrollEvent.emit();
+  }
 }

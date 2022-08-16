@@ -17,7 +17,7 @@ import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
 import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
 import { AnimeCreateFormData, AnimeEditFormData } from '@js-camp/core/models/anime/animeFormData';
 
-import { Studio } from '@js-camp/core/models/studio';
+import { Studio, StudioFilters } from '@js-camp/core/models/studio';
 import { StudioDto } from '@js-camp/core/dtos/studio.dto';
 
 import { StudioMapper } from '@js-camp/core/mappers/studio.mapper';
@@ -134,15 +134,39 @@ export class AnimeService {
   }
 
   /** Get studios. */
-  public getStudios(): Observable<readonly Studio[]> {
+  public getStudios({
+    pagination,
+    sortOptions,
+    filterOptions,
+  }: PaginationQuery<null, StudioFilters>): Observable<PaginatedItems<Studio>> {
+    let filterParams = {};
+    if (filterOptions !== null) {
+      filterParams = FilterOptionMapper.toDto([
+        {
+          field: 'search',
+          filterType: FilterType.Exact,
+          value: filterOptions.searchString,
+        },
+      ]);
+    }
     return this.http.get<LimitOffsetPaginationDto<StudioDto>>(
       this.appUrls.animeUrls.studios,
+      {
+        params: {
+          ...LimitOffsetQueryMapper.toDto(
+            pagination,
+            null,
+            null,
+          ),
+          ...filterParams,
+        },
+      },
     ).pipe(
-      map(studioPaginationDto => PaginationMapper.mapPaginationFromDto(
+      map(studioPaginationDto => LimitOffsetPaginationMapper.mapPaginationFromDto(
         studioPaginationDto,
         StudioMapper.fromDto,
+        pagination,
       )),
-      map(studioPagination => studioPagination.items),
     );
   }
 }

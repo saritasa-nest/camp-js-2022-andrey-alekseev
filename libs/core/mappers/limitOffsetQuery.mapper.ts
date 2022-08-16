@@ -16,10 +16,13 @@ export namespace LimitOffsetQueryMapper {
   export function toDto<T extends string>(
     pagination: Pagination,
     sortOptions: SortOptions<T> | null,
-    fieldMap: Record<T, string>,
+    fieldMap: Record<T, string> | null,
   ): LimitOffsetQueryDto {
     let ordering = '';
     if (sortOptions !== null) {
+      if (fieldMap === null) {
+        throw new Error('Fields map must be provided with sort options.');
+      }
       const sortField = fieldMap[sortOptions.field];
       ordering = sortOptions.direction === SortDirection.Ascending ? sortField : `-${sortField}`;
     }

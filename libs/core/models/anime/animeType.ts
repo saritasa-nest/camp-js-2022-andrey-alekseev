@@ -1,4 +1,4 @@
-import { enumToKeys } from 'enum-to-array';
+import { enumToKeys, enumToValues } from 'enum-to-array';
 
 /** Represents anime type. */
 export enum AnimeType {
@@ -51,6 +51,14 @@ export namespace AnimeType {
       throw new Error('Unknown type');
     }
     return type;
+  }
+
+  /**
+   * Check if string is anime type.
+   * @param type String to check.
+   */
+  export function isAnimeType(type: string): type is AnimeType {
+    return enumToValues(AnimeType).includes(type as AnimeType);
   }
 
 }
