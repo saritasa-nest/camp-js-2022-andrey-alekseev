@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Init navbar for user.
+ * Init Navbar for user.
  * Set user email to dropdown and show it if user logged in.
  */
 async function initNavbarForUser(): Promise<void> {

@@ -1,3 +1,4 @@
 export const CONFIG = {
-  apiUrl: import.meta.env.VITE_APP_API_BASE_URL ?? '',
+  apiUrl: import.meta.env.VITE_APP_API_BASE_URL,
+  schemaApiKey: import.meta.env.VITE_APP_API_KEY,
 };

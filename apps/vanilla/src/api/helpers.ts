@@ -13,7 +13,7 @@ export namespace UserHelpers {
   }
 
   /**
-   * Sets session token.
+   * Sets auth token.
    * @param token Session token.
    */
   export async function setSessionToken(token?: JWTDto): Promise<void> {
