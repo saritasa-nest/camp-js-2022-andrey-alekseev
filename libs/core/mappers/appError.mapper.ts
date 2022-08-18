@@ -1,18 +1,20 @@
 import { AxiosError } from 'axios';
 
 import { ValidationErrorDto } from '../dtos/validationError.dto';
-import { AppError, AppValidationError } from '../models/appError';
+import { AppError, AppValidationError, ValidationError } from '../models/appError';
 
-import { ValidationErrorMapper } from './validation-mappers/validationError.mapper';
+export type ValidationErrorMapper = <T extends undefined>(
+  errorDto: ValidationErrorDto<T> | undefined
+) => ValidationError<T>;
 
 /** Mapper for app errors. */
-export class AppErrorMapper {
+export namespace AppErrorMapper {
 
   /**
    * Convert http error to application error.
    * @param httpError Http error.
    */
-  public static fromDto(httpError: AxiosError): AppError {
+  export function fromDto(httpError: AxiosError): AppError {
     const { message } = httpError;
     return new AppError(message);
   }
@@ -21,11 +23,11 @@ export class AppErrorMapper {
    * Convert http error to error with validation.
    * Can return AppError if response has no validation errors.
    * @param error Axios error.
-   * @param mapper Errors mapper.
+   * @param mapperFunc Errors mapper.
    */
-  public static fromDtoWithValidation<T>(
+  export function fromDtoWithValidation<T>(
     error: AxiosError<ValidationErrorDto<T>>,
-    mapper: ValidationErrorMapper<T>,
+    mapperFunc: ValidationErrorMapper<T>,
   ): AppError | AppValidationError<T> {
 
     const { response } = error;
@@ -35,11 +37,11 @@ export class AppErrorMapper {
       response.status !== 400 &&
       response.status !== 401
     ) {
-      return this.fromDto(error);
+      return fromDto(error);
     }
     return new AppValidationError<T>(
       error.message,
-      mapper.errorFromDto({
+      mapperFunc({
         ...response.data,
         detail: response.data.detail,
       }),

@@ -2,16 +2,14 @@ import { RegistrationData } from '../../models/user';
 import { getErrorMessage, ValidationErrorDto } from '../../dtos/validationError.dto';
 import { ValidationError } from '../../models/appError';
 
-import { ValidationErrorMapper } from './validationError.mapper';
-
 /** Mapper for registration errors. */
-export class RegistrationErrorMapper implements ValidationErrorMapper<RegistrationData> {
+export namespace RegistrationErrorMapper {
 
   /**
    * Map registration errors.
    * @param errorDto Registration error dto.
    */
-  public errorFromDto(errorDto: ValidationErrorDto<RegistrationData> | undefined): ValidationError<RegistrationData> {
+  export function errorFromDto(errorDto: ValidationErrorDto<RegistrationData> | undefined): ValidationError<RegistrationData> {
     return {
       email: getErrorMessage(errorDto?.data?.email),
       firstName: getErrorMessage(errorDto?.data?.firstName),

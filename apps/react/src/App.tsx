@@ -5,13 +5,14 @@ import { HashRouter } from 'react-router-dom';
 import { RootRouter } from './routes/RootRouter';
 import { store } from './store';
 import { NavBar } from './components/Navbar';
+import { PageLoader } from './components/PageLoader/PageLoader';
 
 export const App: FC = () => (
   <Provider store={store}>
     <HashRouter>
       <div>
         <NavBar/>
-        <Suspense fallback={<div>Brrr... here should be your loader component</div>}>
+        <Suspense fallback={<PageLoader/>}>
           <RootRouter />
         </Suspense>
       </div>

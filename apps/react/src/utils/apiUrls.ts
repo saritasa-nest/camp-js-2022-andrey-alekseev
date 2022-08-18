@@ -12,15 +12,13 @@ interface AuthUrls {
 }
 
 /** Class that provides API urls. */
-export class ApiUrls {
+export namespace ApiUrls {
+  const authPrefix = 'auth/';
 
   /** Get authentication API urls. */
-  public static get authUrls(): AuthUrls {
-    const authPrefix = 'auth/';
-    return {
-      login: `${authPrefix}login/`,
-      register: `${authPrefix}register/`,
-      tokenRefresh: `${authPrefix}token/refresh/`,
-    };
-  }
+  export const authUrls: AuthUrls = {
+    login: `${authPrefix}login/`,
+    register: `${authPrefix}register/`,
+    tokenRefresh: `${authPrefix}token/refresh/`,
+  };
 }

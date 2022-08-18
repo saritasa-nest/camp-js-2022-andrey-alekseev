@@ -34,7 +34,7 @@ export namespace AuthService {
       }
       throw AppErrorMapper.fromDtoWithValidation(
         error,
-        new RegistrationErrorMapper(),
+        RegistrationErrorMapper.errorFromDto,
       );
     }
 
@@ -56,7 +56,7 @@ export namespace AuthService {
       }
       throw AppErrorMapper.fromDtoWithValidation(
         error,
-        new LoginErrorMapper(),
+        LoginErrorMapper.errorFromDto,
       );
     }
 

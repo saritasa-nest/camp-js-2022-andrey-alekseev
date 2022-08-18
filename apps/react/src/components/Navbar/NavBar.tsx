@@ -20,6 +20,7 @@ const NavBarComponent: FC = () => {
     dispatch(getUserProfile());
   }, []);
 
+  /** Logout user on logout click. */
   const onLogoutClick = async() => {
     await dispatch(logoutUser());
     navigate(routePaths.login);
@@ -38,7 +39,7 @@ const NavBarComponent: FC = () => {
           {user !== null && (
             <>
               <Typography>{user.email}</Typography>
-              <Button color="inherit" onClick={() => onLogoutClick()}>Logout</Button>
+              <Button color="inherit" onClick={onLogoutClick}>Logout</Button>
             </>
           )}
         </>
