@@ -60,9 +60,6 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     type: null,
   });
 
-  /** Is user authenticated. */
-  public readonly isUserAuthenticated$ = this.userService.isAuthenticated$;
-
   /** Columns to display in table. */
   public readonly displayedColumns = [
     'image',
@@ -75,6 +72,9 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
 
   /** Anime type. */
   public readonly animeType = AnimeType;
+
+  /** Route paths. */
+  public readonly routePaths = routePaths;
 
   @ViewChild(MatSort)
   private readonly tableSort?: MatSort;
@@ -244,11 +244,4 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     };
   }
 
-  /**
-   * Open anime details.
-   * @param animeBase Anime base model.
-   */
-  public openDetails(animeBase: AnimeBase): void {
-    this.router.navigate([`${routePaths.anime}/${animeBase.id}`]);
-  }
 }

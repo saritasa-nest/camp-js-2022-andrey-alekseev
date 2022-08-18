@@ -6,23 +6,13 @@
 <div class="filters">
   <mat-form-field>
     <mat-label>Search</mat-label>
-    <input
-      matInput
-      type="search"
-      [formControl]="filtersForm.controls.search"
-    />
+    <input matInput type="search" [formControl]="filtersForm.controls.search" />
   </mat-form-field>
   <mat-form-field>
     <mat-label>Select type</mat-label>
-    <mat-select
-      [multiple]="true"
-      [formControl]="filtersForm.controls.type"
-    >
-      <mat-option
-        *ngFor="let type of animeType.typesList"
-        [value]="type"
-      >
-        {{type | animeType}}
+    <mat-select [multiple]="true" [formControl]="filtersForm.controls.type">
+      <mat-option *ngFor="let type of animeType.typesList" [value]="type">
+        {{ type | animeType }}
       </mat-option>
     </mat-select>
   </mat-form-field>
@@ -36,6 +26,10 @@
   <ng-container matColumnDef="image">
     <mat-header-cell *matHeaderCellDef>Image</mat-header-cell>
     <mat-cell *matCellDef="let anime">
+      <a
+        class="anime-table__row-link"
+        [routerLink]="routePaths.anime + '/' + anime.id"
+        ></a>
       <img
         class="anime-table__row-image"
         [alt]="anime.titleEng"
@@ -78,20 +72,7 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <ng-container [ngSwitch]="isUserAuthenticated$ | async">
-    <ng-container *ngSwitchCase="true">
-      <mat-row
-        class="anime-table__row_clickable"
-        *matRowDef="let anime; columns: displayedColumns"
-        (click)="openDetails(anime)"
-      ></mat-row>
-    </ng-container>
-    <ng-container *ngSwitchCase="false">
-      <mat-row
-        *matRowDef="let anime; columns: displayedColumns"
-      ></mat-row>
-    </ng-container>
-  </ng-container>
+  <mat-row class="anime-table__row" *matRowDef="let anime; columns: displayedColumns"></mat-row>
   <div class="anime-table__empty-message" *matNoDataRow>
     There are no anime for these filters
   </div>

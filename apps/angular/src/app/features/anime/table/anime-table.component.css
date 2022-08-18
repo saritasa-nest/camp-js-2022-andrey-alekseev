@@ -1,9 +1,22 @@
+.anime-table__row {
+  position: relative;
+}
+
 .anime-table__row-image {
   --table-row-image-size: 128px;
 
   width: var(--table-row-image-size);
   height: var(--table-row-image-size);
   object-fit: cover;
+}
+
+.anime-table__row-link {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  font-size: 0;
 }
 
 .filters {
@@ -15,8 +28,4 @@
 .anime-table__empty-message {
   text-align: center;
   padding: 10px;
-}
-
-.anime-table__row_clickable {
-  cursor: pointer;
 }

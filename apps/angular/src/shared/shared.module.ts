@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AnimeTypePipe } from './pipes/anime-type.pipe';
@@ -21,6 +21,7 @@ const EXPORTED_DECLARATIONS = [
     CommonModule,
     MatProgressSpinnerModule,
   ],
+  providers: [DatePipe],
   exports: [...EXPORTED_DECLARATIONS],
 })
 export class SharedModule { }
