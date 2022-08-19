@@ -1,13 +1,10 @@
-import { FC, memo, useEffect } from 'react';
+import { FC, memo } from 'react';
 import {
   Box,
   List,
   ListItemButton,
-  Toolbar,
 } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
-import { selectAnimeList } from '@js-camp/react/store/anime/selectors';
-import { getAnimeList } from '@js-camp/react/store/anime/dispatchers';
+import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 
 import { AnimeListItem } from '../AnimeListItem';
 
@@ -15,15 +12,12 @@ interface Props {
 
   /** Class name. */
   readonly className?: string;
+
+  /** Class name. */
+  readonly animeList?: readonly AnimeBase[] | undefined;
 }
 
-const AnimeListComponent: FC<Props> = ({ className }) => {
-  const dispatch = useAppDispatch();
-  const animeList = useAppSelector(selectAnimeList);
-
-  useEffect(() => {
-    dispatch(getAnimeList());
-  }, [dispatch]);
+const AnimeListComponent: FC<Props> = ({ className, animeList }) => {
 
   const animeItems = animeList?.map(anime => (
     <ListItemButton key={anime.id}>
@@ -32,7 +26,6 @@ const AnimeListComponent: FC<Props> = ({ className }) => {
   ));
   return (
     <Box className={className}>
-      <Toolbar />
       <List>
         {animeItems}
       </List>

@@ -4,7 +4,7 @@ import { Field, FormikProvider, useFormik } from 'formik';
 import { LoginData } from '@js-camp/core/models/user';
 import { loginUser } from '@js-camp/react/store/auth/dispatchers';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { AppError } from '@js-camp/core/models/appError';
 import { selectLoginError } from '@js-camp/react/store/auth/selectors';
 import { clearLoginError } from '@js-camp/react/store/auth/slice';
@@ -17,17 +17,10 @@ import { FormControls } from '../../../../components/form/FormControls';
 
 import { LoginValidationSchema } from './formSettings';
 
-/** Location state. */
-export interface LocationState {
-
-  /** From path. */
-  from: string;
-}
-
 const LoginFormComponent: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+  const [search] = useSearchParams();
 
   const loginError = useAppSelector(selectLoginError);
   const [formError, setFormError] = useState<string | null>(null);
@@ -53,14 +46,8 @@ const LoginFormComponent: FC = () => {
       if (result.payload instanceof AppError) {
         throw result.payload;
       }
-      if (location.state === null) {
-        navigate(routePaths.home);
-        return;
-      }
-      const { from } = location.state as LocationState;
-      if (from !== undefined) {
-        navigate(from);
-      }
+      const next = search.get('next') ?? routePaths.home;
+      navigate(next);
     },
   });
 
