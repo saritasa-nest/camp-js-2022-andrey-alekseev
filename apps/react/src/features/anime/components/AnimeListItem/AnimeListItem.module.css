@@ -1,0 +1,14 @@
+.anime-card {
+  width: 100%;
+}
+
+.anime-card__content {
+  display: flex;
+  column-gap: 10px;
+}
+
+.anime-card__image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}

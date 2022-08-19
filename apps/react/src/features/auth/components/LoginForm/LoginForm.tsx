@@ -4,7 +4,7 @@ import { Field, FormikProvider, useFormik } from 'formik';
 import { LoginData } from '@js-camp/core/models/user';
 import { loginUser } from '@js-camp/react/store/auth/dispatchers';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppError } from '@js-camp/core/models/appError';
 import { selectLoginError } from '@js-camp/react/store/auth/selectors';
 import { clearLoginError } from '@js-camp/react/store/auth/slice';
@@ -17,9 +17,17 @@ import { FormControls } from '../../../../components/form/FormControls';
 
 import { LoginValidationSchema } from './formSettings';
 
+/** Location state. */
+export interface LocationState {
+
+  /** From path. */
+  from: string;
+}
+
 const LoginFormComponent: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loginError = useAppSelector(selectLoginError);
   const [formError, setFormError] = useState<string | null>(null);
@@ -42,8 +50,16 @@ const LoginFormComponent: FC = () => {
     validationSchema: LoginValidationSchema,
     async onSubmit(values) {
       const result = await dispatch(loginUser(values));
-      if (!(result.payload instanceof AppError)) {
+      if (result.payload instanceof AppError) {
+        throw result.payload;
+      }
+      if (location.state === null) {
         navigate(routePaths.home);
+        return;
+      }
+      const { from } = location.state as LocationState;
+      if (from !== undefined) {
+        navigate(from);
       }
     },
   });
