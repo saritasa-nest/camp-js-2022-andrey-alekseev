@@ -1,6 +1,6 @@
 import { FC, memo, useEffect, useState } from 'react';
-import { Button } from '@mui/material';
-import { useFormik } from 'formik';
+import { Button, Typography } from '@mui/material';
+import { Field, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
 import { LoginData } from '@js-camp/core/models/user';
 import { loginUser } from '@js-camp/react/store/auth/dispatchers';
@@ -10,9 +10,12 @@ import { AppError } from '@js-camp/core/models/appError';
 import { selectLoginError } from '@js-camp/react/store/auth/selectors';
 import { clearLoginError } from '@js-camp/react/store/auth/slice';
 
-import { routePaths } from '../../../utils/routePaths';
-import { passwordYupValidator } from '../../../utils/forms';
-import { TextField } from '../../../components/TextField/TextField';
+import { TextField } from 'formik-mui';
+
+import { routePaths } from '../../../../utils/routePaths';
+import { passwordYupValidator } from '../../../../utils/forms';
+import { Form } from '../../../../components/form/Form';
+import { FormControls } from '../../../../components/form/FormControls';
 
 const LoginValidationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email')
@@ -63,30 +66,38 @@ const LoginFormComponent: FC = () => {
   }, []);
 
   return (
-    <form className='form' onSubmit={formik.handleSubmit}>
-      <TextField
-        name="email"
-        autoComplete="email"
-        label="Email"
-        {...formik}
-      />
-      <TextField
-        name="password"
-        autoComplete="current-password"
-        label="Password"
-        type="password"
-        {...formik}
-      />
-      {formError !== null && (
-        <p className='text-danger'>{formError}</p>
-      )}
-      <div className='form__controls'>
-        <Button type="submit" variant="contained" disabled={!formik.isValid}>
-          Submit
-        </Button>
-        <Link to={routePaths.registration}>Don't have account?</Link>
-      </div>
-    </form>
+    <FormikProvider value={formik}>
+      <Form onSubmit={formik.handleSubmit}>
+        <Field
+          component={TextField}
+          name="email"
+          autoComplete="email"
+          label="Email"
+        />
+        <Field
+          component={TextField}
+          name="password"
+          autoComplete="current-password"
+          label="Password"
+          type="password"
+        />
+        {formError !== null && (
+          <Typography
+            sx={theme => ({
+                color: theme.palette.error.main,
+            })}
+          >
+            {formError}
+          </Typography>
+        )}
+        <FormControls>
+          <Button type="submit" variant="contained" disabled={!formik.isValid}>
+              Submit
+          </Button>
+          <Link to={routePaths.registration}>Don't have account?</Link>
+        </FormControls>
+      </Form>
+    </FormikProvider>
   );
 };
 

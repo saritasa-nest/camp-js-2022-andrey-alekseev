@@ -33,15 +33,14 @@ const NavBarComponent: FC = () => {
       </IconButton>
       {!isUserLoading && (
         <>
-          {user === null &&
-        <Button component={Link} color="inherit" to={routePaths.login}>Login</Button>
-          }
-          {user !== null && (
-            <>
-              <Typography>{user.email}</Typography>
-              <Button color="inherit" onClick={onLogoutClick}>Logout</Button>
-            </>
-          )}
+          {user === null ?
+            <Button component={Link} color="inherit" to={routePaths.login}>Login</Button> :
+            (
+              <>
+                <Typography>{user.email}</Typography>
+                <Button color="inherit" onClick={onLogoutClick}>Logout</Button>
+              </>
+            )}
         </>
       )}
 

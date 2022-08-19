@@ -5,7 +5,7 @@ import { HashRouter } from 'react-router-dom';
 import { RootRouter } from './routes/RootRouter';
 import { store } from './store';
 import { NavBar } from './components/Navbar';
-import { PageLoader } from './components/PageLoader/PageLoader';
+import { PageLoader } from './components/PageLoader';
 
 export const App: FC = () => (
   <Provider store={store}>

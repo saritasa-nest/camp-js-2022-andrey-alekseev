@@ -1,12 +1,13 @@
 import { FC, memo } from 'react';
 
-import { LoginForm } from '../components/LoginForm';
+import { LoginForm } from '../../components/LoginForm';
+import { FormWrapper } from '../../../../components/form/FormWrapper';
 
 const LoginPageComponent: FC = () => (
-  <div className='form-wrapper'>
+  <FormWrapper>
     <h1>Login</h1>
     <LoginForm/>
-  </div>
+  </FormWrapper>
 );
 
 export const LoginPage = memo(LoginPageComponent);
