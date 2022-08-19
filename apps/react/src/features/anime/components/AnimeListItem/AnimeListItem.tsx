@@ -12,7 +12,7 @@ interface Props {
   readonly anime: AnimeBase;
 }
 
-const AnimeListItemComponent: FC<Props> = ({ anime }: Props) => (
+const AnimeListItemComponent: FC<Props> = ({ anime }) => (
   <Card className={style['anime-card']}>
     <CardContent className={style['anime-card__content']}>
       <CardMedia

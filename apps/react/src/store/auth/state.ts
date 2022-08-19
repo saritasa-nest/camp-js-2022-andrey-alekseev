@@ -20,5 +20,5 @@ export interface AuthState {
 
 export const initialState: AuthState = {
   user: null,
-  isLoading: false,
+  isLoading: true,
 };
