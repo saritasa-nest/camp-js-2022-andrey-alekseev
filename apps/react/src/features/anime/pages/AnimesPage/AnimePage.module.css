@@ -1,0 +1,9 @@
+.anime-page-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+.anime-list {
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: scroll;
+}
