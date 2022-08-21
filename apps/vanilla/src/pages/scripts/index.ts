@@ -1,7 +1,9 @@
 import { LimitOffsetPagination } from '@js-camp/core/models/limitOffsetPagination';
-import { AnimeBase, AnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { AnimeStatus } from '@js-camp/core/models/anime/animeStatus';
+
+import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 
 import { AnimeService } from '../../api/services/animeService';
 import {

@@ -6,16 +6,26 @@ import { animeBaseAdapter, AnimeState, initialState } from './state';
 export const animeSlice = createSlice({
   name: 'anime',
   initialState,
-  reducers: {},
+  reducers: {
+    clearAnimeList(state) {
+      animeBaseAdapter.removeAll(state as AnimeState);
+    },
+    setLoading(state) {
+      state.isLoading = true;
+    },
+  },
   extraReducers: builder => builder
     .addCase(getAnimeList.pending, state => {
       state.isLoading = true;
     })
     .addCase(getAnimeList.fulfilled, (state, action) => {
-      animeBaseAdapter.upsertMany(state as AnimeState, action.payload);
+      animeBaseAdapter.addMany(state as AnimeState, action.payload.items);
+      state.totalCount = action.payload.pagination.totalCount;
       state.isLoading = false;
     })
     .addCase(getAnimeList.rejected, state => {
       state.isLoading = false;
     }),
 });
+
+export const { clearAnimeList, setLoading } = animeSlice.actions;

@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { AnimeBase, AnimeFilters, AnimeSortField, isAnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import { AnimeBase, AnimeFilters } from '@js-camp/core/models/anime/animeBase';
 import { Observable, tap, withLatestFrom } from 'rxjs';
 import { MatSort, Sort } from '@angular/material/sort';
 import { FormBuilder } from '@angular/forms';
@@ -9,6 +9,8 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { isSortDirection, SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
 import { Pagination } from '@js-camp/core/models/pagination/pagination';
+
+import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 
 import { AnimeService } from '../../../../core/services/anime.service';
 import { ListManager, ListManagerInitParams } from '../../../../core/utils/list-manager';
@@ -207,7 +209,7 @@ export class AnimeTableComponent implements OnInit, AfterViewInit {
     const sortField = queryParams.get(TableQueryParams.OrderingField);
     const sortDirection = queryParams.get(TableQueryParams.OrderingDirection);
     let sortOptions: SortOptions<AnimeSortField> | undefined;
-    if (sortField !== null && isAnimeSortField(sortField)) {
+    if (sortField !== null && AnimeSortField.isAnimeSortField(sortField)) {
       if (sortDirection !== null && isSortDirection(sortDirection)) {
         sortOptions = {
           field: sortField,

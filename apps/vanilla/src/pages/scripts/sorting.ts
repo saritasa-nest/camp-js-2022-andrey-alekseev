@@ -1,6 +1,6 @@
 import { SortDirection, SortOptions } from '@js-camp/core/models/sortOptions';
 
-import { AnimeSortField } from '@js-camp/core/models/anime/animeBase';
+import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 
 import { TableUpdateCallback } from './types';
 

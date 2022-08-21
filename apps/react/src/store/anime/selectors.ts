@@ -12,3 +12,8 @@ export const selectIsAnimeBaseLoading = createSelector(
   (state: RootState) => state.anime.isLoading,
   isLoading => isLoading,
 );
+
+export const selectAnimeBaseTotalCount = createSelector(
+  (state: RootState) => state.anime.totalCount,
+  pagination => pagination,
+);

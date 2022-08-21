@@ -13,3 +13,9 @@ export interface PaginationQuery<TItemSortFields, TItemFilters>{
   /** Filter options. */
   readonly filterOptions: TItemFilters | null;
 }
+
+/** Pagination query without pagination. */
+export type PaginationExtraQuery<TItemSortFields, TItemFilters> = Omit<
+  PaginationQuery<TItemSortFields, TItemFilters>,
+  'pagination'
+>;

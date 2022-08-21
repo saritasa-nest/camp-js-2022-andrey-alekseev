@@ -6,7 +6,7 @@ import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 import {
   AnimeBase,
   AnimeFilterOptions,
-  AnimeSortField,
+
 } from '@js-camp/core/models/anime/animeBase';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
 import {
@@ -28,6 +28,8 @@ import { FilterOption } from '@js-camp/core/models/filterOption';
 import {
   FilterOptionMapper,
 } from '@js-camp/core/mappers/filterOption.mapper';
+
+import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 
 import { http } from '..';
 

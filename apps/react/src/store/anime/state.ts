@@ -10,8 +10,12 @@ export interface AnimeState extends EntityState<AnimeBase> {
 
   /** Is anime loading. */
   readonly isLoading: boolean;
+
+  /** Total count. */
+  readonly totalCount: number;
 }
 
 export const initialState: AnimeState = animeBaseAdapter.getInitialState({
   isLoading: false,
+  totalCount: 0,
 });

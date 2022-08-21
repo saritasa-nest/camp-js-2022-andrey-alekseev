@@ -1,0 +1,1 @@
+export { AnimeListForm } from './AnimeListForm';
