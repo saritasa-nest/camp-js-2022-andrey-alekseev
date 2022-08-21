@@ -3,7 +3,8 @@
 }
 
 .anime-card__content {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
   column-gap: 10px;
 }
 

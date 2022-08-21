@@ -1,6 +1,5 @@
 import { FC, memo } from 'react';
 import {
-  Box,
   List,
   ListItemButton,
 } from '@mui/material';
@@ -11,25 +10,22 @@ import { AnimeListItem } from '../AnimeListItem';
 interface Props {
 
   /** Class name. */
-  readonly className?: string;
+  readonly animeList: readonly AnimeBase[];
 
-  /** Class name. */
-  readonly animeList?: readonly AnimeBase[] | undefined;
+  /** Is list loading. */
+  readonly isLoading: boolean;
 }
 
-const AnimeListComponent: FC<Props> = ({ className, animeList }) => {
-
-  const animeItems = animeList?.map(anime => (
-    <ListItemButton key={anime.id}>
+const AnimeListComponent: FC<Props> = ({ animeList, isLoading }) => {
+  const animeItems = (isLoading ? Array.from<undefined>(new Array(10)) : animeList)?.map((anime, index) => (
+    <ListItemButton key={anime?.id ?? index}>
       <AnimeListItem anime={anime}/>
     </ListItemButton>
   ));
   return (
-    <Box className={className}>
-      <List>
-        {animeItems}
-      </List>
-    </Box>
+    <List>
+      {animeItems}
+    </List>
   );
 };
 
