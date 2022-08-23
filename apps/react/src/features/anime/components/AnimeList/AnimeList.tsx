@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 
-import { AnimeListItem, AnimeListItemSkeleton } from '../AnimeListItem';
+import { AnimeListItem } from '../AnimeListItem';
 
 interface Props {
 
@@ -19,10 +19,7 @@ interface Props {
 const AnimeListComponent: FC<Props> = ({ animeList, isLoading }) => {
   const animeItems = (isLoading ? Array.from<undefined>(new Array(10)) : animeList)?.map((anime, index) => (
     <ListItemButton key={anime?.id ?? index}>
-      {anime !== undefined ?
-        <AnimeListItem anime={anime}/> :
-        <AnimeListItemSkeleton/>
-      }
+      <AnimeListItem anime={anime}/>
     </ListItemButton>
   ));
   return (
