@@ -1,7 +1,6 @@
 import { FC, memo, useEffect, useState } from 'react';
 import { Button, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import * as Yup from 'yup';
 import { LoginData } from '@js-camp/core/models/user';
 import { loginUser } from '@js-camp/react/store/auth/dispatchers';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
@@ -13,15 +12,10 @@ import { clearLoginError } from '@js-camp/react/store/auth/slice';
 import { TextField } from 'formik-mui';
 
 import { routePaths } from '../../../../utils/routePaths';
-import { passwordYupValidator } from '../../../../utils/forms';
 import { Form } from '../../../../components/form/Form';
 import { FormControls } from '../../../../components/form/FormControls';
 
-const LoginValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email')
-    .required('Required'),
-  password: passwordYupValidator,
-});
+import { LoginValidationSchema } from './formSettings';
 
 const LoginFormComponent: FC = () => {
   const dispatch = useAppDispatch();

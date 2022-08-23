@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   readonly children: ReactNode;
 }
 
-const FormControlsComponent: FC<Props> = ({ children, ...props }: Props) => (
+const FormControlsComponent: FC<Props> = ({ children, ...props }) => (
   <div className={styles['form__controls']} {...props}>
     {children}
   </div>

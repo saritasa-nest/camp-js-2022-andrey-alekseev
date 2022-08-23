@@ -8,7 +8,7 @@ interface Props extends FormHTMLAttributes<HTMLFormElement> {
   readonly children: ReactNode;
 }
 
-const FormComponent: FC<Props> = ({ children, ...props }: Props) => (
+const FormComponent: FC<Props> = ({ children, ...props }) => (
   <form className={styles['form']} {...props}>
     {children}
   </form>
