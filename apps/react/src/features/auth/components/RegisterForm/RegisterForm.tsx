@@ -1,7 +1,6 @@
 import { FC, memo, useEffect, useState } from 'react';
 import { Button, Typography } from '@mui/material';
 import { Field, FormikProvider, useFormik } from 'formik';
-import * as Yup from 'yup';
 import { RegistrationData } from '@js-camp/core/models/user';
 import { registerUser } from '@js-camp/react/store/auth/dispatchers';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
@@ -13,21 +12,10 @@ import { clearRegistrationError } from '@js-camp/react/store/auth/slice';
 import { TextField } from 'formik-mui';
 
 import { routePaths } from '../../../../utils/routePaths';
-import { passwordYupValidator } from '../../../../utils/forms';
 import { Form } from '../../../../components/form/Form';
 import { FormControls } from '../../../../components/form/FormControls';
 
-const RegisterValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email')
-    .required('Required'),
-  firstName: Yup.string().max(255),
-  lastName: Yup.string().max(255),
-  password: passwordYupValidator,
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref('password'), null],
-    'Passwords must match',
-  ),
-});
+import { RegisterValidationSchema } from './formSettings';
 
 interface RegistrationDataWithConfirmation extends RegistrationData {
 

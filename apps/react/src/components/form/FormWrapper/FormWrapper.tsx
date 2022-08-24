@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   readonly children: ReactNode;
 }
 
-const FormWrapperComponent: FC<Props> = ({ children, ...props }: Props) => (
+const FormWrapperComponent: FC<Props> = ({ children, ...props }) => (
   <div className={styles['form-wrapper']} {...props}>
     {children}
   </div>

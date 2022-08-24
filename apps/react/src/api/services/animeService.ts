@@ -1,6 +1,7 @@
 import { AnimeBaseDto } from '@js-camp/core/dtos/animeBase.dto';
 import {
-  AnimeBase, AnimeFilters,
+  AnimeBase,
+  AnimeFilters,
 } from '@js-camp/core/models/anime/animeBase';
 import { AnimeBaseMapper } from '@js-camp/core/mappers/animeBase.mapper';
 import {

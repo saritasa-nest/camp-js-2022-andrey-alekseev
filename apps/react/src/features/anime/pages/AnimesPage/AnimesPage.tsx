@@ -5,7 +5,7 @@ import {
   selectAnimeBaseTotalCount,
   selectIsAnimeBaseLoading,
 } from '@js-camp/react/store/anime/selectors';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import { Box, debounce } from '@mui/material';
 import {
   DEFAULT_PAGE_SIZE,

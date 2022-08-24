@@ -8,7 +8,7 @@ import {
 import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 import { DEFAULT_PAGE_SIZE } from '@js-camp/core/models/pagination/pagination';
 
-import { AnimeListItem, AnimeListItemSkeleton } from '../AnimeListItem';
+import { AnimeListItem } from '../AnimeListItem';
 
 interface Props {
 
@@ -24,10 +24,7 @@ const AnimeListComponent: FC<Props> = ({ animeList, isLoading }) => {
   animeList.length === 0 && isLoading ?
   Array.from<undefined>(new Array(DEFAULT_PAGE_SIZE)) : animeList)?.map((anime, index) => (
     <ListItemButton key={anime?.id ?? index}>
-      {anime !== undefined ?
-        <AnimeListItem anime={anime}/> :
-        <AnimeListItemSkeleton/>
-      }
+      <AnimeListItem anime={anime}/>
     </ListItemButton>
   ));
   return (
