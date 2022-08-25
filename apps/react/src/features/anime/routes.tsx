@@ -3,9 +3,8 @@ import { Navigate, RouteObject } from 'react-router-dom';
 
 import { AuthenticatedGuard } from '../../routes/guards/AuthenticatedGuard';
 
-import { AnimeDetails } from './components/AnimeDetails';
-
 const AnimesPage = lazy(() => import('./pages/AnimesPage').then(module => ({ default: module.AnimesPage })));
+const AnimeDetails = lazy(() => import('./components/AnimeDetails').then(module => ({ default: module.AnimeDetails })));
 
 export const animeRoutes: RouteObject[] = [
   {

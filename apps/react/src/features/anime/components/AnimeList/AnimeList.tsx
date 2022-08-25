@@ -17,11 +17,20 @@ interface Props {
 }
 
 const AnimeListComponent: FC<Props> = ({ animeList, isLoading }) => {
-  const animeItems = (isLoading ? Array.from<undefined>(new Array(10)) : animeList)?.map((anime, index) => (
-    <ListItemButton key={anime?.id ?? index}>
+  let animeItems = animeList.map(anime => (
+    <ListItemButton key={anime.id}>
       <AnimeListItem anime={anime}/>
     </ListItemButton>
   ));
+
+  if (isLoading) {
+    animeItems = [...Array(10)].map((_, index) => (
+      <ListItemButton key={index}>
+        <AnimeListItem/>
+      </ListItemButton>
+    ));
+  }
+
   return (
     <List>
       {animeItems}

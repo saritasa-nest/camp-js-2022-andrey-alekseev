@@ -4,6 +4,7 @@ import { selectAllAnimeBase, selectIsAnimeBaseLoading } from '@js-camp/react/sto
 import { getAnimeList } from '@js-camp/react/store/anime/dispatchers';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { Pagination } from '@js-camp/core/models/pagination/pagination';
 
 import { AnimeList } from '../../components/AnimeList';
 
@@ -15,7 +16,11 @@ const AnimesPageComponent: FC = () => {
   const isLoading = useAppSelector(selectIsAnimeBaseLoading);
 
   useEffect(() => {
-    dispatch(getAnimeList());
+    dispatch(getAnimeList({
+      pagination: new Pagination(1, 10),
+      filterOptions: null,
+      sortOptions: null,
+    }));
   }, [dispatch]);
 
   return (
