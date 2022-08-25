@@ -17,9 +17,12 @@ import { FilterType } from '@js-camp/core/models/filterOption';
 import { LimitOffsetQueryMapper } from '@js-camp/core/mappers/limitOffsetQuery.mapper';
 import { animeSortFieldMap } from '@js-camp/core/mappers/animeSortFieldMap';
 import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
+import { Anime } from '@js-camp/core/models/anime/anime';
+import { AnimeDto } from '@js-camp/core/dtos/anime.dto';
+import { AnimeMapper } from '@js-camp/core/mappers/anime.mapper';
 
-import { http } from '..';
 import { ApiUrls } from '../../utils/apiUrls';
+import { http } from '..';
 
 export namespace AnimeService {
 
@@ -69,5 +72,14 @@ export namespace AnimeService {
       AnimeBaseMapper.fromDto,
       pagination,
     );
+  }
+
+  /**
+   * Get anime details.
+   * @param id Anime id.
+   */
+  export async function getDetails(id: number): Promise<Anime> {
+    const { data } = await http.get<AnimeDto>(ApiUrls.animeUrls.details(id));
+    return AnimeMapper.fromDto(data);
   }
 }

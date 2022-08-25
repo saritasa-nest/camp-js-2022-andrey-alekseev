@@ -4,14 +4,14 @@ import {
   selectAllAnimeBase,
   selectAnimeBaseTotalCount,
   selectIsAnimeBaseLoading,
-} from '@js-camp/react/store/anime/selectors';
+} from '@js-camp/react/store/animeBase/selectors';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { Box, debounce } from '@mui/material';
 import {
   DEFAULT_PAGE_SIZE,
   Pagination,
 } from '@js-camp/core/models/pagination/pagination';
-import { getAnimeList } from '@js-camp/react/store/anime/dispatchers';
+import { getAnimeList } from '@js-camp/react/store/animeBase/dispatchers';
 import {
   isSortDirection,
   SortDirection,
@@ -21,7 +21,7 @@ import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { PaginationExtraQuery } from '@js-camp/core/models/pagination/paginationQuery';
 import { AnimeFilters } from '@js-camp/core/models/anime/animeBase';
-import { clearAnimeList, setLoading } from '@js-camp/react/store/anime/slice';
+import { clearAnimeList, setLoading } from '@js-camp/react/store/animeBase/slice';
 
 import { AnimeList } from '../../components/AnimeList';
 import { InfiniteScroller } from '../../../../components/InfiniteScroller';

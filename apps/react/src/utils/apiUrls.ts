@@ -16,6 +16,8 @@ interface AnimeUrls {
   /** Base url. */
   readonly base: string;
 
+  /** Details url. */
+  readonly details: (id: number) => string;
 }
 
 /** Class that provides API urls. */
@@ -33,5 +35,6 @@ export namespace ApiUrls {
   /** Get anime API urls. */
   export const animeUrls: AnimeUrls = {
     base: `${animePrefix}anime/`,
+    details: (id: number) => `${animePrefix}anime/${id}/`,
   };
 }

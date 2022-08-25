@@ -1,0 +1,9 @@
+.image-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-modal__image:focus-visible {
+  outline: unset;
+}

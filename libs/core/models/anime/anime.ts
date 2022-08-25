@@ -17,7 +17,7 @@ export class Anime extends AnimeBase {
   public readonly isAiring: boolean;
 
   /** YouTube trailer id. */
-  public readonly youTubeTrailerId: string;
+  public readonly youTubeTrailerId: string | null;
 
   /** List of studios. */
   public readonly studios: readonly Studio[];

@@ -12,7 +12,7 @@ export interface AnimeDto extends AnimeBaseDto {
   readonly airing: boolean;
 
   /** YouTube trailer id. */
-  readonly trailer_youtube_id: string;
+  readonly trailer_youtube_id: string | null;
 
   /** Studios data. */
   readonly studios_data: readonly StudioDto[];

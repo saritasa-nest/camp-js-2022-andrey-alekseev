@@ -17,7 +17,7 @@ export const animeRoutes: RouteObject[] = [
         element: <AnimesPage/>,
         children: [
           {
-            path: '',
+            path: 'anime/:id/',
             element: <AnimeDetails/>,
           },
         ],

@@ -4,6 +4,7 @@ import {
 } from 'react-redux';
 
 import { animeSlice } from './anime/slice';
+import { animeBaseSlice } from './animeBase/slice';
 import { genresSlice } from './genre/slice';
 import { authSlice } from './auth/slice';
 
@@ -11,6 +12,7 @@ export const store = configureStore({
   reducer: {
     genres: genresSlice.reducer,
     auth: authSlice.reducer,
+    animeBase: animeBaseSlice.reducer,
     anime: animeSlice.reducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({
