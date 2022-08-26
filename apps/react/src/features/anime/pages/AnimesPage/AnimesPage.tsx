@@ -138,14 +138,14 @@ const AnimesPageComponent: FC = () => {
     setSearchParams(newParams, { replace: true });
   }, [paginationExtraQuery]);
 
-  const paginationExtraQueryChanged = (
+  const paginationExtraQueryChanged = debounce((
     extraQuery: PaginationExtraQuery<AnimeSortField, AnimeFilters>,
   ) => {
     setPaginationExtraQuery(extraQuery);
     resetPage();
     dispatch(clearAnimeList());
     dispatch(setLoading());
-  };
+  }, 500);
 
   /** Determine if there are other objects in the list. */
   const hasMore = useMemo(() => {
@@ -161,10 +161,7 @@ const AnimesPageComponent: FC = () => {
       <Box className={style['anime-list']} ref={animeListRef}>
         <div className={style['anime-list__toolbar']}>
           <AnimeListForm
-            paginationExtraQueryChanged={debounce(
-              paginationExtraQueryChanged,
-              500,
-            )}
+            paginationExtraQueryChanged={paginationExtraQueryChanged}
             initialParams={paginationExtraQuery}
           />
         </div>

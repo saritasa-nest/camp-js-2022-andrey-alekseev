@@ -1,31 +1,31 @@
 import { useState, MouseEvent, ReactNode, useEffect } from 'react';
 import { Badge, Button, Menu, MenuItem } from '@mui/material';
 
-interface Props<TOption> {
+interface Props<Option> {
 
   /** Select updated callback. */
-  readonly selectUpdated: (selectedOptions: readonly TOption[]) => void;
+  readonly selectUpdated: (selectedOptions: readonly Option[]) => void;
 
   /** Is multiple select. */
   readonly isMultiple: boolean;
 
   /** Function that checks that option in array. */
-  readonly includes?: (options: readonly TOption[], option: TOption) => boolean;
+  readonly includes?: (options: readonly Option[], option: Option) => boolean;
 
   /** Select options. */
-  readonly selectOptions: readonly TOption[];
+  readonly selectOptions: readonly Option[];
 
   /** Selected options. */
-  readonly initSelectedOptions?: readonly TOption[];
+  readonly initSelectedOptions?: readonly Option[];
 
   /** Function that maps option ket to readable. */
-  readonly toReadableMapper: (option: TOption) => string;
+  readonly toReadableMapper: (option: Option) => string;
 
   /** Button content. */
   readonly buttonContent: ReactNode;
 }
 
-const MenuSelectComponent = <TOption extends unknown>({
+const MenuSelectComponent = <Option extends unknown>({
   selectOptions,
   initSelectedOptions,
   includes,
@@ -33,9 +33,9 @@ const MenuSelectComponent = <TOption extends unknown>({
   selectUpdated,
   buttonContent,
   isMultiple = false,
-}: Props<TOption>) => {
+}: Props<Option>) => {
   const [anchorElement, setAnchorElement] = useState<null | HTMLElement>(null);
-  const [selectedOptions, setSelectedOptions] = useState<readonly TOption[]>(
+  const [selectedOptions, setSelectedOptions] = useState<readonly Option[]>(
     initSelectedOptions !== undefined ? initSelectedOptions : [],
   );
   const open = Boolean(anchorElement);
@@ -56,7 +56,7 @@ const MenuSelectComponent = <TOption extends unknown>({
    * Toggle selection clicked item.
    * @param option Clicked option.
    */
-  const handleMenuItemClick = (option: TOption) => {
+  const handleMenuItemClick = (option: Option) => {
     setSelectedOptions(options => {
       if (options.includes(option)) {
         return options.filter(item => item !== option);
