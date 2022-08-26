@@ -1,8 +1,8 @@
-import { FC, memo, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
 import {
-  selectAllAnimeBase,
   selectAnimeBaseTotalCount,
+  selectAnimeList,
   selectIsAnimeBaseLoading,
 } from '@js-camp/react/store/animeBase/selectors';
 import { Outlet, useSearchParams } from 'react-router-dom';
@@ -21,7 +21,9 @@ import { AnimeSortField } from '@js-camp/core/models/anime/animeSortField';
 import { AnimeType } from '@js-camp/core/models/anime/animeType';
 import { PaginationExtraQuery } from '@js-camp/core/models/pagination/paginationQuery';
 import { AnimeFilters } from '@js-camp/core/models/anime/animeBase';
-import { clearAnimeList, setLoading } from '@js-camp/react/store/animeBase/slice';
+import { clearAnimeList } from '@js-camp/react/store/animeBase/slice';
+
+import { selectAnimeExtraIds } from '@js-camp/react/store/anime/selectors';
 
 import { AnimeList } from '../../components/AnimeList';
 import { InfiniteScroller } from '../../../../components/InfiniteScroller';
@@ -84,9 +86,10 @@ function getInitialParamsFromQuery(
 }
 
 const AnimesPageComponent: FC = () => {
-  const animeList = useAppSelector(selectAllAnimeBase);
+  const animeList = useAppSelector(selectAnimeList);
   const isLoading = useAppSelector(selectIsAnimeBaseLoading);
   const totalCount = useAppSelector(selectAnimeBaseTotalCount);
+  const selectedAnimes = useAppSelector(selectAnimeExtraIds);
   const [search, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
@@ -106,7 +109,7 @@ const AnimesPageComponent: FC = () => {
     animeListRef?.current?.scrollTo(0, 0);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     dispatch(
       getAnimeList({
         pagination: new Pagination(currentPage, DEFAULT_PAGE_SIZE),
@@ -143,8 +146,7 @@ const AnimesPageComponent: FC = () => {
   ) => {
     setPaginationExtraQuery(extraQuery);
     resetPage();
-    dispatch(clearAnimeList());
-    dispatch(setLoading());
+    dispatch(clearAnimeList(selectedAnimes));
   };
 
   /** Determine if there are other objects in the list. */

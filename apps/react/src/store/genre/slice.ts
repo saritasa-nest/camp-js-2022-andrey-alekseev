@@ -1,24 +1,28 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Anime } from '@js-camp/core/models/anime/anime';
 
 import { fetchGenres } from './dispatchers';
-import { initialState } from './state';
+import { genreAdapter, GenreState, initialState } from './state';
 
 export const genresSlice = createSlice({
   name: 'genres',
   initialState,
-  reducers: {},
+  reducers: {
+    animeWithGenresFetched(state, action: PayloadAction<Anime>) {
+      genreAdapter.upsertMany(state as GenreState, action.payload.genres);
+    },
+  },
   extraReducers: builder => builder
     .addCase(fetchGenres.pending, state => {
       state.isLoading = true;
     })
     .addCase(fetchGenres.fulfilled, (state, action) => {
-      state.genres = action.payload;
+      genreAdapter.addMany(state as GenreState, action.payload);
       state.isLoading = false;
     })
-    .addCase(fetchGenres.rejected, (state, action) => {
-      if (action.error.message) {
-        state.error = action.error.message;
-      }
+    .addCase(fetchGenres.rejected, state => {
       state.isLoading = false;
     }),
 });
+
+export const { animeWithGenresFetched } = genresSlice.actions;

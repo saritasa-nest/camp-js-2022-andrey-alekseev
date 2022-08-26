@@ -1,19 +1,18 @@
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { Genre } from '@js-camp/core/models/genre/genre';
 
-/** Genres state. */
-export interface GenresState {
+export const genreAdapter = createEntityAdapter<Genre>({
+  selectId: genre => genre.id,
+});
 
-  /** Genres list. */
-  readonly genres: Genre[];
+/** Anime Genre state. */
+export interface GenreState extends EntityState<Genre> {
 
-  /** Error. */
-  readonly error?: string;
-
-  /** Whether the genres are loading or not. */
+  /** Is genres loading. */
   readonly isLoading: boolean;
 }
 
-export const initialState: GenresState = {
+export const initialState: GenreState = genreAdapter.getInitialState({
+  listIds: [],
   isLoading: false,
-  genres: [],
-};
+});

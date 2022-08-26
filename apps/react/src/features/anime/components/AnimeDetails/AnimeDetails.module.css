@@ -1,3 +1,7 @@
+:root {
+  --status-color: rgb(24 135 152);
+}
+
 .anime {
   display: grid;
   box-shadow: var(--base-box-shadow);
@@ -42,7 +46,7 @@
 }
 
 .anime__status__text {
-  background-color: #188798;
+  background-color: var(--status-color);
   border-radius: 5px;
 }
 

@@ -1,18 +1,18 @@
 import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
-import { Anime } from '@js-camp/core/models/anime/anime';
+import { AnimeExtra } from '@js-camp/core/models/anime/anime';
 
-export const animeAdapter = createEntityAdapter<Anime>({
+export const animeAdapter = createEntityAdapter<AnimeExtra>({
   selectId: anime => anime.id,
 });
 
-/** Anime state. */
-export interface AnimeState extends EntityState<Anime> {
+/** Anime extra state. */
+export interface AnimeExtraState extends EntityState<AnimeExtra> {
 
   /** Is anime loading. */
   readonly isLoading: boolean;
 
 }
 
-export const initialState: AnimeState = animeAdapter.getInitialState({
+export const initialState: AnimeExtraState = animeAdapter.getInitialState({
   isLoading: false,
 });

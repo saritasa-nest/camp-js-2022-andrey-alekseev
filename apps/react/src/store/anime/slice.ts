@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { AnimeExtra } from '@js-camp/core/models/anime/anime';
+
 import { getAnimeById } from './dispatchers';
-import { animeAdapter, AnimeState, initialState } from './state';
+import { animeAdapter, AnimeExtraState, initialState } from './state';
 
 export const animeSlice = createSlice({
-  name: 'anime',
+  name: 'animeExtra',
   initialState,
   reducers: {},
   extraReducers: builder => builder
@@ -12,7 +14,14 @@ export const animeSlice = createSlice({
       state.isLoading = true;
     })
     .addCase(getAnimeById.fulfilled, (state, action) => {
-      animeAdapter.addOne(state as AnimeState, action.payload);
+      const anime = action.payload;
+      const genresIds = anime.genres.map(genre => genre.id);
+      const studiosIds = anime.studios.map(studio => studio.id);
+      animeAdapter.addOne(state as AnimeExtraState, new AnimeExtra({
+        ...action.payload,
+        genresIds,
+        studiosIds,
+      }));
       state.isLoading = false;
     })
     .addCase(getAnimeById.rejected, state => {

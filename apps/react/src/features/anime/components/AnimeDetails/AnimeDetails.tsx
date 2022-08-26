@@ -1,5 +1,5 @@
-import { FC, memo, useEffect, useState } from 'react';
-import { Skeleton, Typography } from '@mui/material';
+import { FC, memo, useLayoutEffect, useState } from 'react';
+import { Typography } from '@mui/material';
 import { Anime } from '@js-camp/core/models/anime/anime';
 import { useAppDispatch, useAppSelector } from '@js-camp/react/store';
 import {
@@ -14,6 +14,7 @@ import { ChipList } from '../../../../components/ChipList';
 
 import style from './AnimeDetails.module.css';
 import { AnimeImageModal } from './AnimeImageModal';
+import { AnimeDetailsSkeleton } from './AnimeDetailsSkeleton';
 
 const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
 
@@ -28,7 +29,7 @@ const AnimeDetailsComponent: FC = () => {
   const isLoading = useAppSelector(selectIsAnimeLoading);
   const [isModalOpened, setIsModalOpened] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (anime === undefined) {
       dispatch(getAnimeById(parseInt(id, 10)));
     }
@@ -45,35 +46,7 @@ const AnimeDetailsComponent: FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className={style['anime']}>
-        <div>
-          <Skeleton variant="rectangular" className={style['anime__image']} />
-        </div>
-        <div className={style['anime__content']}>
-          <div className={style['anime__header']}>
-            <Skeleton
-              component="h1"
-              className={style['anime__title']}
-              width="40%"
-            ></Skeleton>
-            <div className={style['anime__status']}>
-              <Skeleton variant="rounded" />
-            </div>
-            <ChipList isLoading={isLoading} />
-          </div>
-          <Skeleton width="10%"></Skeleton>
-          <ChipList isLoading={isLoading} />
-          <Skeleton variant="rectangular" width="20%"></Skeleton>
-          <Skeleton variant="rectangular" width="20%"></Skeleton>
-          <Skeleton height="200px" variant="rectangular"></Skeleton>
-          <Skeleton
-            className={style['anime__trailer']}
-            variant="rectangular"
-          ></Skeleton>
-        </div>
-      </div>
-    );
+    return <AnimeDetailsSkeleton/>;
   }
 
   if (anime === undefined) {
@@ -85,6 +58,8 @@ const AnimeDetailsComponent: FC = () => {
       <div>
         <img
           className={style['anime__image']}
+          role='button'
+          tabIndex={0}
           alt={anime.titleEng}
           src={anime.image}
           onClick={onImageClick}

@@ -12,7 +12,7 @@ export namespace AnimeMapper {
    * @param dto Anime dto.
    */
   export function fromDto(dto: AnimeDto): Anime {
-    return new Anime({
+    return {
       ...AnimeBaseMapper.fromDto(dto),
       isAiring: dto.airing,
       airedEnd: dto.aired.end !== null ? new Date(dto.aired.end) : null,
@@ -20,6 +20,6 @@ export namespace AnimeMapper {
       youTubeTrailerId: dto.trailer_youtube_id,
       genres: dto.genres_data.map(GenreMapper.fromDto),
       studios: dto.studios_data.map(StudioMapper.fromDto),
-    });
+    };
   }
 }

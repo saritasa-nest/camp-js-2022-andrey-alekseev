@@ -1,6 +1,7 @@
 import { RootState } from '@js-camp/react/store';
 import { animeBaseAdapter } from '@js-camp/react/store/animeBase/state';
-import { createSelector } from '@reduxjs/toolkit';
+import { createSelector, EntityId } from '@reduxjs/toolkit';
+import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 
 export const {
   selectAll: selectAllAnimeBase,
@@ -15,5 +16,11 @@ export const selectIsAnimeBaseLoading = createSelector(
 
 export const selectAnimeBaseTotalCount = createSelector(
   (state: RootState) => state.animeBase.totalCount,
-  pagination => pagination,
+  totalCount => totalCount,
+);
+
+export const selectAnimeList = createSelector(
+  selectAllAnimeBase,
+  (state: RootState) => state.animeBase.listIds,
+  (allAnimeBase: AnimeBase[], listIds: EntityId[]) => allAnimeBase.filter(animeBase => listIds.includes(animeBase.id)),
 );
