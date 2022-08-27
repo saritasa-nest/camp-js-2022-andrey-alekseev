@@ -2,7 +2,6 @@ import { RootState } from '@js-camp/react/store';
 import { animeAdapter } from '@js-camp/react/store/anime/state';
 import { createSelector } from '@reduxjs/toolkit';
 import { selectAnimeBaseById } from '@js-camp/react/store/animeBase/selectors';
-import { EntityId } from '@reduxjs/toolkit/dist/entities/models';
 import { Anime, AnimeExtra } from '@js-camp/core/models/anime/anime';
 import { AnimeBase } from '@js-camp/core/models/anime/animeBase';
 import { selectAllGenres } from '@js-camp/react/store/genre/selectors';
@@ -21,16 +20,18 @@ export const selectIsAnimeLoading = createSelector(
 );
 
 export const selectAnimeById = createSelector(
-  (state: RootState, id: EntityId) => selectAnimeBaseById(state, id),
-  (state: RootState, id: EntityId) => selectAnimeExtraById(state, id),
-  (state: RootState) => selectAllGenres(state.genres),
-  (state: RootState) => selectAllStudios(state.studio),
+  [
+    selectAnimeBaseById,
+    selectAnimeExtraById,
+    selectAllGenres,
+    selectAllStudios,
+  ],
   (
     animeBase: AnimeBase | undefined,
     animeExtra: AnimeExtra | undefined,
     genres: Genre[],
     studios: Studio[],
-  ) => {
+  ): Anime | undefined => {
     if (animeBase === undefined || animeExtra === undefined) {
       return undefined;
     }
@@ -39,6 +40,6 @@ export const selectAnimeById = createSelector(
       ...animeExtra,
       genres: genres.filter(genre => animeExtra.genresIds.includes(genre.id)),
       studios: studios.filter(studio => animeExtra.studiosIds.includes(studio.id)),
-    } as Anime;
+    };
   },
 );

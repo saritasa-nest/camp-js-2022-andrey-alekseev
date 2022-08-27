@@ -9,7 +9,7 @@ export const animeBaseAdapter = createEntityAdapter<AnimeBase>({
 export interface AnimeBaseState extends EntityState<AnimeBase> {
 
   /** Ids of items that should be presented in list. */
-  readonly listIds: EntityId[];
+  readonly listIds: readonly EntityId[];
 
   /** Is anime loading. */
   readonly isLoading: boolean;

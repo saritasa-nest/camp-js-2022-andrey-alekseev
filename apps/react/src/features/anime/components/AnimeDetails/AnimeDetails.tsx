@@ -71,7 +71,7 @@ const AnimeDetailsComponent: FC = () => {
             {anime.titleEng} / {anime.titleJapan}
           </h1>
           <div className={style['anime__status']}>
-            <Typography className={style['anime__status__text']}>{anime.status}</Typography>
+            <Typography className={style['anime__status-text']}>{anime.status}</Typography>
           </div>
           <ChipList items={anime.genres} />
         </div>

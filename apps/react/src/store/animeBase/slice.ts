@@ -11,6 +11,11 @@ export const animeBaseSlice = createSlice({
   name: 'animeBase',
   initialState,
   reducers: {
+    /**
+     * Clear all anime from list except provided.
+     * @param state State.
+     * @param action Payload action.
+     */
     clearAnimeList(state, action: PayloadAction<EntityId[]>) {
       const animeExtraIds = action.payload;
       animeBaseAdapter.removeMany(state as AnimeBaseState, state.listIds.filter(id => !animeExtraIds.includes(id)));

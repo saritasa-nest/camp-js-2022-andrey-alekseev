@@ -18,7 +18,7 @@ const AnimeDetailsSkeletonComponent: FC = () => (
           width="40%"
         ></Skeleton>
         <div className={style['anime__status']}>
-          <Skeleton variant="rounded" />
+          <Skeleton className={style['anime__status-text']} variant='rectangular'/>
         </div>
         <ChipList isLoading={true} />
       </div>

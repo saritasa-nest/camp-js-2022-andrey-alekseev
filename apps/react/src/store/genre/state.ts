@@ -13,6 +13,5 @@ export interface GenreState extends EntityState<Genre> {
 }
 
 export const initialState: GenreState = genreAdapter.getInitialState({
-  listIds: [],
   isLoading: false,
 });
